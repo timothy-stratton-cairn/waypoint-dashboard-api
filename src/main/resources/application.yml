@@ -4,7 +4,28 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8082
-
+  application:
+    name: waypoint-authorization-api
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/dashboard?useSSL=false
+    username: root
+    password:
+    hikari:
+      poolName: Hikari
+      auto-commit: true
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+  liquibase:
+    enabled: false
+    drop-first: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
 
 logging:
   level:

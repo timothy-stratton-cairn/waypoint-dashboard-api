@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.controller;
+package com.cairn.waypoint.dashboard.endpoints;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
