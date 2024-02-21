@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
