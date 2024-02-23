@@ -3,7 +3,6 @@ package com.cairn.waypoint.dashboard.service;
 
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
