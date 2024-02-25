@@ -1,13 +1,19 @@
 package com.cairn.waypoint.dashboard.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-
-import java.util.Set;
+import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
@@ -16,14 +22,20 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "protocol")
+@SQLRestriction("active=1")
 public class Protocol extends BaseEntity {
-    private String name;
-    private String description;
 
-    @OneToMany(mappedBy = "parentProtocol")
-    private Set<ProtocolStep> protocolSteps;
+  private String name;
+  private String description;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "protocol_id")
-    private Set<ProtocolUser> associatedUsers;
+  @JoinColumn(name = "protocol_template_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private ProtocolTemplate protocolTemplate;
+
+  @OneToMany(mappedBy = "parentProtocol")
+  private Set<ProtocolStep> protocolSteps;
+
+  @JoinColumn(name = "protocol_id")
+  @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private Set<ProtocolUser> associatedUsers;
 }

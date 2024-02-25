@@ -7,7 +7,8 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper
 public interface ProtocolMapper {
-    ProtocolMapper INSTANCE = Mappers.getMapper(ProtocolMapper.class);
 
-    ProtocolDto toDto(Protocol account);
+  ProtocolMapper INSTANCE = Mappers.getMapper(ProtocolMapper.class);
+
+  ProtocolDto toDto(Protocol protocol);
 }

@@ -1,11 +1,11 @@
-package com.cairn.waypoint.dashboard.endpoints.protocol.dto;
+package com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class ProtocolDto {
+public class ProtocolTemplateDto {
 
   private Long id;
   private String name;

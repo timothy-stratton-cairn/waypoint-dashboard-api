@@ -1,20 +1,16 @@
-waypoint:
-  dashboard:
-    base-url: ${APP_BASE_URL}
-
 spring:
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${AUTH_API_ISSUER_URL}
+          issuer-uri: http://localhost:8082
   application:
-    name: waypoint-dashboard-api
+    name: waypoint-authorization-api
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/dashboard?useSSL=false
+    username: root
+    password:
     hikari:
       poolName: Hikari
       auto-commit: true
@@ -25,9 +21,18 @@ spring:
         useServerPrepStmts: true
   liquibase:
     enabled: true
+    drop-first: true
   jpa:
     hibernate:
       ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+server:
+  port: 8083
 
 logging:
   level:

@@ -7,7 +7,8 @@ import lombok.Data;
 @Data
 @Builder
 public class ProtocolDetailsDto {
-    private Long id;
-    private String name;
-    private AssociatedUsersListDto associatedUsers;
+
+  private Long id;
+  private String name;
+  private AssociatedUsersListDto associatedUsers;
 }

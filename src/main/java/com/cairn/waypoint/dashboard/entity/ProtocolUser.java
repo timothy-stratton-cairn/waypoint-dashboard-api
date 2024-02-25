@@ -1,7 +1,11 @@
 package com.cairn.waypoint.dashboard.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,9 +21,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Table(name = "protocol_user")
 public class ProtocolUser extends BaseEntity {
-    @Column(name = "protocol_id", nullable = false)
-    private Long protocolId;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+  @Column(name = "protocol_id", nullable = false)
+  private Long protocolId;
+
+  @Column(name = "user_id", nullable = false)
+  private Long userId;
 }

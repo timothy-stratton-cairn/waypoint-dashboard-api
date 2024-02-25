@@ -1,12 +1,16 @@
 package com.cairn.waypoint.dashboard.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
@@ -14,17 +18,14 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "protocol_step_template_category")
-public class TemplateCategory extends BaseEntity {
+@SQLRestriction("active=1")
+@Table(name = "protocol_template")
+public class ProtocolTemplate extends BaseEntity {
 
   private String name;
   private String description;
-  private Long responsibleUserId;
-  private Long responsibleRoleId;
-  private Long accountableUserId;
-  private Long accountableRoleId;
-  private Long consultedUserId;
-  private Long consultedRoleId;
-  private Long informedUserId;
-  private Long informedRoleId;
+
+  @OneToMany(mappedBy = "parentProtocolTemplate",
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private Set<StepTemplate> protocolTemplateSteps;
 }
