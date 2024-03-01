@@ -1,6 +1,5 @@
-package com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto;
+package com.cairn.waypoint.dashboard.endpoints.steptemplate.dto;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddProtocolTemplateDetailsDto {
-
+public class AddStepTemplateDetailsDto {
   private String name;
   private String description;
-  private LinkedHashSet<Long> associatedStepTemplateIds;
+  private Long linkedStepTaskId;
+  private Long linkedHomeworkTemplateId;
 }

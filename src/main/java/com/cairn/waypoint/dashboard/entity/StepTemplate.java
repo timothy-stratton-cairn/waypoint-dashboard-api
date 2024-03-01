@@ -35,8 +35,4 @@ public class StepTemplate extends BaseEntity {
       joinColumns = @JoinColumn(name = "protocol_step_template_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "homework_template_id", referencedColumnName = "id"))
   private HomeworkTemplate linkedHomeworkTemplate;
-
-  @JoinColumn(name = "parent_protocol_template_id", nullable = false)
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private ProtocolTemplate parentProtocolTemplate;
 }

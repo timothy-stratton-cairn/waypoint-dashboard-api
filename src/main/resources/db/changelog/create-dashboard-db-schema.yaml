@@ -157,13 +157,11 @@ databaseChangeLog:
               `description` varchar(255) DEFAULT NULL,
               `linked_step_task_id` bigint DEFAULT NULL,
               `linked_homework_template_id` bigint DEFAULT NULL,
-              `parent_protocol_template_id` bigint NOT NULL,
               `active` bit(1) DEFAULT NULL,
               PRIMARY KEY (`id`),
               UNIQUE KEY `UK_c71yadhy8i564bjwo059g722l` (`name`),
               CONSTRAINT `FK22tpvuk2d68kxt0qmydhlvt56` FOREIGN KEY (`linked_homework_template_id`) REFERENCES `homework_template` (`id`),
-              CONSTRAINT `FK4g4uwhxfuvdd01wx304a4xbx8` FOREIGN KEY (`linked_step_task_id`) REFERENCES `protocol_step_task` (`id`),
-              CONSTRAINT `FK57a8uqptt3c1vn1lyqs5ab1cg` FOREIGN KEY (`parent_protocol_template_id`) REFERENCES `protocol` (`id`)
+              CONSTRAINT `FK4g4uwhxfuvdd01wx304a4xbx8` FOREIGN KEY (`linked_step_task_id`) REFERENCES `protocol_step_task` (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
   - changeSet:
@@ -384,4 +382,28 @@ databaseChangeLog:
               KEY `FKlsmp50ewlw802qyyavo1pqgr3` (`homework_id`),
               CONSTRAINT `FK587suy45fy6ipqxoxcvpyq4a3` FOREIGN KEY (`protocol_step_id`) REFERENCES `protocol_step` (`id`),
               CONSTRAINT `FKlsmp50ewlw802qyyavo1pqgr3` FOREIGN KEY (`homework_id`) REFERENCES `homework` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-template-linked-step-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_template_linked_step_template`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_template_linked_step_template` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `protocol_template_id` bigint NOT NULL,
+              `step_template_id` bigint NOT NULL,
+              `ordinal_index` int NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `FKos6qejhkyqx3ugym74exyrc55` (`protocol_template_id`, `step_template_id`),
+              CONSTRAINT `FKos6qejhkyqx3ugym74exyrc35` FOREIGN KEY (`protocol_template_id`) REFERENCES `protocol_template` (`id`),
+              CONSTRAINT `FKos6qejhkyqx3ugym74exyrc45` FOREIGN KEY (`step_template_id`) REFERENCES `protocol_step_template` (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

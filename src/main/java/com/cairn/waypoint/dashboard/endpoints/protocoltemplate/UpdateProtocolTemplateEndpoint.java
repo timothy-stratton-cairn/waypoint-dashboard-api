@@ -1,10 +1,10 @@
 package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AddProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.UpdateProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTemplateMapper;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
+import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
@@ -18,8 +18,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,7 +92,7 @@ public class UpdateProtocolTemplateEndpoint {
       return generateFailureResponse("Protocol Template with name [" +
           updateProtocolTemplateDetailsDto.getName() + "] already exists", HttpStatus.CONFLICT);
     } else {
-      Set<StepTemplate> stepTemplates;
+      LinkedHashSet<StepTemplate> stepTemplates;
 
       try {
         stepTemplates = populateAssociatedProtocolStepTemplateIfExists(updateProtocolTemplateDetailsDto);
@@ -108,7 +111,7 @@ public class UpdateProtocolTemplateEndpoint {
     }
   }
 
-  private Set<StepTemplate> populateAssociatedProtocolStepTemplateIfExists(
+  private LinkedHashSet<StepTemplate> populateAssociatedProtocolStepTemplateIfExists(
       UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto) {
     if (updateProtocolTemplateDetailsDto.getAssociatedStepTemplateIds() != null) {
         return this.stepTemplateService
@@ -120,15 +123,36 @@ public class UpdateProtocolTemplateEndpoint {
   }
 
   private Long updateProtocolTemplate(UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto,
-      String modifiedBy, Set<StepTemplate> stepTemplates, ProtocolTemplate targetProtocolTemplate) {
+      String modifiedBy, LinkedHashSet<StepTemplate> stepTemplates, ProtocolTemplate targetProtocolTemplate) {
     ProtocolTemplate updatedProtocolTemplate = ProtocolTemplateMapper.INSTANCE.toEntity(updateProtocolTemplateDetailsDto);
 
     updatedProtocolTemplate.setModifiedBy(modifiedBy);
-    updatedProtocolTemplate.setProtocolTemplateSteps(stepTemplates);
+    updatedProtocolTemplate.setProtocolTemplateSteps(
+        updateProtocolStepTemplates(targetProtocolTemplate, stepTemplates, modifiedBy));
 
     BeanUtils.copyPropertiesIgnoreNulls(updatedProtocolTemplate, targetProtocolTemplate);
 
-    return this.protocolTemplateService.saveProtocolTemplate(targetProtocolTemplate);
+    return this.protocolTemplateService.  saveProtocolTemplate(targetProtocolTemplate);
+  }
+
+  private Set<ProtocolTemplateLinkedStepTemplate> updateProtocolStepTemplates(
+      ProtocolTemplate protocolTemplate, LinkedHashSet<StepTemplate> stepTemplates,
+      String modifiedBy) {
+    if (stepTemplates == null) {
+      return null;
+    }
+
+    //TODO here we need to first pulled the existing entities, reorder to the provided order
+    // and then reassociate those with the Protocol Template
+    AtomicInteger ordinalIndex = new AtomicInteger(0);
+    return stepTemplates.stream()
+        .map(stepTemplate -> ProtocolTemplateLinkedStepTemplate.builder()
+            .modifiedBy(modifiedBy)
+            .protocolTemplateId(protocolTemplate.getId())
+            .stepTemplate(stepTemplate)
+            .ordinalIndex(ordinalIndex.getAndIncrement())
+            .build())
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {

@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AddProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTemplateMapper;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
+import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
@@ -16,7 +17,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +80,7 @@ public class AddProtocolTemplateEndpoint {
       return generateFailureResponse("Protocol Template with name [" +
           addProtocolTemplateDetailsDto.getName() + "] already exists", HttpStatus.CONFLICT);
     } else {
-      Set<StepTemplate> stepTemplates;
+      LinkedHashSet<StepTemplate> stepTemplates;
       try {
         stepTemplates = this.stepTemplateService
             .getStepTemplateEntitiesFromIdCollection(
@@ -87,7 +92,7 @@ public class AddProtocolTemplateEndpoint {
       Long createdProtocolTemplateId = createProtocolTemplate(addProtocolTemplateDetailsDto,
           principal.getName(), stepTemplates);
 
-      log.info("Account [{}] created successfully with ID [{}]", addProtocolTemplateDetailsDto.getName(),
+      log.info("Protocol Template [{}] created successfully with ID [{}]", addProtocolTemplateDetailsDto.getName(),
           createdProtocolTemplateId);
       return ResponseEntity.status(HttpStatus.CREATED)
           .body("Protocol Template ["
@@ -96,15 +101,38 @@ public class AddProtocolTemplateEndpoint {
   }
 
   private Long createProtocolTemplate(AddProtocolTemplateDetailsDto addProtocolTemplateDetailsDto,
-      String modifiedBy, Set<StepTemplate> stepTemplates) {
+      String modifiedBy, LinkedHashSet<StepTemplate> stepTemplates) {
 
     ProtocolTemplate protocolTemplateToCreate = ProtocolTemplateMapper.INSTANCE
         .toEntity(addProtocolTemplateDetailsDto);
 
     protocolTemplateToCreate.setModifiedBy(modifiedBy);
-    protocolTemplateToCreate.setProtocolTemplateSteps(stepTemplates);
 
+    Long createdProtocolTemplateId = this.protocolTemplateService.saveProtocolTemplate(protocolTemplateToCreate);
+    Optional<ProtocolTemplate> protocolTemplateEntity = this.protocolTemplateService.getProtocolTemplateById(createdProtocolTemplateId);
+
+    if (protocolTemplateEntity.isEmpty()) {
+      //TODO handle this gracefully
+      return null;
+    }
+
+    protocolTemplateEntity.get().setProtocolTemplateSteps(
+        createProtocolStepTemplates(protocolTemplateToCreate, stepTemplates, modifiedBy));
     return this.protocolTemplateService.saveProtocolTemplate(protocolTemplateToCreate);
+  }
+
+  private Set<ProtocolTemplateLinkedStepTemplate> createProtocolStepTemplates(
+      ProtocolTemplate protocolTemplate, LinkedHashSet<StepTemplate> stepTemplates,
+  String modifiedBy) {
+    AtomicInteger ordinalIndex = new AtomicInteger(0);
+    return stepTemplates.stream()
+        .map(stepTemplate -> ProtocolTemplateLinkedStepTemplate.builder()
+            .modifiedBy(modifiedBy)
+            .protocolTemplateId(protocolTemplate.getId())
+            .stepTemplate(stepTemplate)
+            .ordinalIndex(ordinalIndex.getAndIncrement())
+            .build())
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
