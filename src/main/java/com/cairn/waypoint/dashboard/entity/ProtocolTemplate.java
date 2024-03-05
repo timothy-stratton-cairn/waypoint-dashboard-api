@@ -25,7 +25,7 @@ public class ProtocolTemplate extends BaseEntity {
   private String name;
   private String description;
 
-  @OneToMany(mappedBy = "protocolTemplateId",
-      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @OneToMany(mappedBy = "protocolTemplate",
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
   private Set<ProtocolTemplateLinkedStepTemplate> protocolTemplateSteps;
 }

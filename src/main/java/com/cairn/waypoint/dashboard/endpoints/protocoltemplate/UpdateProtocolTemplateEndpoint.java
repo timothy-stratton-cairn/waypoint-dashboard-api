@@ -6,6 +6,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTe
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.service.ProtocolTemplateLinkedStepTemplateService;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
 import com.cairn.waypoint.dashboard.utility.BeanUtils;
@@ -41,11 +42,14 @@ public class UpdateProtocolTemplateEndpoint {
 
   private final ProtocolTemplateService protocolTemplateService;
   private final StepTemplateService stepTemplateService;
+  private final ProtocolTemplateLinkedStepTemplateService protocolTemplateLinkedStepTemplateService;
 
   public UpdateProtocolTemplateEndpoint(ProtocolTemplateService protocolTemplateService,
-      StepTemplateService stepTemplateService) {
+      StepTemplateService stepTemplateService,
+      ProtocolTemplateLinkedStepTemplateService protocolTemplateLinkedStepTemplateService) {
     this.protocolTemplateService = protocolTemplateService;
     this.stepTemplateService = stepTemplateService;
+    this.protocolTemplateLinkedStepTemplateService = protocolTemplateLinkedStepTemplateService;
   }
 
   @PatchMapping(PATH)
@@ -130,9 +134,13 @@ public class UpdateProtocolTemplateEndpoint {
     updatedProtocolTemplate.setProtocolTemplateSteps(
         updateProtocolStepTemplates(targetProtocolTemplate, stepTemplates, modifiedBy));
 
+    this.protocolTemplateLinkedStepTemplateService
+        .deleteCollectionOfProtocolTemplateLinkedStepTemplates(
+            targetProtocolTemplate.getProtocolTemplateSteps());
+
     BeanUtils.copyPropertiesIgnoreNulls(updatedProtocolTemplate, targetProtocolTemplate);
 
-    return this.protocolTemplateService.  saveProtocolTemplate(targetProtocolTemplate);
+    return this.protocolTemplateService.saveProtocolTemplate(targetProtocolTemplate);
   }
 
   private Set<ProtocolTemplateLinkedStepTemplate> updateProtocolStepTemplates(
@@ -148,7 +156,7 @@ public class UpdateProtocolTemplateEndpoint {
     return stepTemplates.stream()
         .map(stepTemplate -> ProtocolTemplateLinkedStepTemplate.builder()
             .modifiedBy(modifiedBy)
-            .protocolTemplateId(protocolTemplate.getId())
+            .protocolTemplate(protocolTemplate)
             .stepTemplate(stepTemplate)
             .ordinalIndex(ordinalIndex.getAndIncrement())
             .build())

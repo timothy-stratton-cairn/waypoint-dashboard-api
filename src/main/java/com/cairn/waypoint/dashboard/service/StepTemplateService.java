@@ -36,12 +36,12 @@ public class StepTemplateService {
     return this.stepTemplateRepository.findByName(name);
   }
 
-  public LinkedHashSet<StepTemplate> getStepTemplateEntitiesFromIdCollection(Set<Long> roleIdList) {
-    return roleIdList.stream()
-        .map(roleId -> this.stepTemplateRepository.findById(roleId)
+  public LinkedHashSet<StepTemplate> getStepTemplateEntitiesFromIdCollection(Set<Long> stepTemplateIdList) {
+    return stepTemplateIdList.stream()
+        .map(stepTemplateId -> this.stepTemplateRepository.findById(stepTemplateId)
             .orElseThrow(
                 () -> new EntityNotFoundException(
-                    "Step Template with ID [" + roleId + "] not found")))
+                    "Step Template with ID [" + stepTemplateId + "] not found")))
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 }

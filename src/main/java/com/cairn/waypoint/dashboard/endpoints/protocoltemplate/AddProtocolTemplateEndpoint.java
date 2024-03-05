@@ -128,7 +128,7 @@ public class AddProtocolTemplateEndpoint {
     return stepTemplates.stream()
         .map(stepTemplate -> ProtocolTemplateLinkedStepTemplate.builder()
             .modifiedBy(modifiedBy)
-            .protocolTemplateId(protocolTemplate.getId())
+            .protocolTemplate(protocolTemplate)
             .stepTemplate(stepTemplate)
             .ordinalIndex(ordinalIndex.getAndIncrement())
             .build())
