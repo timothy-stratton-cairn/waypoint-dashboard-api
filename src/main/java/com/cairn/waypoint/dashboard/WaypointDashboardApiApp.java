@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 @SpringBootApplication
 public class WaypointDashboardApiApp {
+
   public static void main(String[] args) {
     SpringApplication app = new SpringApplication(WaypointDashboardApiApp.class);
     app.setAdditionalProfiles("dev");

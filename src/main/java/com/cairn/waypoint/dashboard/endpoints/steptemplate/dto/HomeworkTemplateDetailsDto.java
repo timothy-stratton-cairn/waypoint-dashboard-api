@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class HomeworkTemplateDetailsDto {
+
   private Long id;
   private String name;
 }

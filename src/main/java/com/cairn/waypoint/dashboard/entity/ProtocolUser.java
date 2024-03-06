@@ -5,7 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,14 +16,15 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false, exclude = "protocol")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "protocol_user")
 public class ProtocolUser extends BaseEntity {
 
-  @Column(name = "protocol_id", nullable = false)
-  private Long protocolId;
+  @JoinColumn(name = "protocol_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private Protocol protocol;
 
   @Column(name = "user_id", nullable = false)
   private Long userId;

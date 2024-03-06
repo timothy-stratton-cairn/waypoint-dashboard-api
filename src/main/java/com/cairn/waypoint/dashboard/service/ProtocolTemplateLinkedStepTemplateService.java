@@ -10,7 +10,8 @@ public class ProtocolTemplateLinkedStepTemplateService {
 
   private final ProtocolTemplateLinkedStepTemplateRepository protocolTemplateLinkedStepTemplateRepository;
 
-  public ProtocolTemplateLinkedStepTemplateService(ProtocolTemplateLinkedStepTemplateRepository protocolTemplateLinkedStepTemplateRepository) {
+  public ProtocolTemplateLinkedStepTemplateService(
+      ProtocolTemplateLinkedStepTemplateRepository protocolTemplateLinkedStepTemplateRepository) {
     this.protocolTemplateLinkedStepTemplateRepository = protocolTemplateLinkedStepTemplateRepository;
   }
 
@@ -20,7 +21,8 @@ public class ProtocolTemplateLinkedStepTemplateService {
       protocolTemplateLinkedStepTemplate.setActive(Boolean.FALSE);
     });
 
-    this.protocolTemplateLinkedStepTemplateRepository.saveAllAndFlush(protocolTemplateLinkedStepTemplates);
+    this.protocolTemplateLinkedStepTemplateRepository.saveAllAndFlush(
+        protocolTemplateLinkedStepTemplates);
   }
 
 }

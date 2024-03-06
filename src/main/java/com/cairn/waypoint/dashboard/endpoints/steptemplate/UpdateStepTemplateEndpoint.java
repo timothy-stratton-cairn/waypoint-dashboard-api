@@ -75,8 +75,10 @@ public class UpdateStepTemplateEndpoint {
     log.info("User [{}] is attempted to update a Step Template with ID [{}]",
         principal.getName(), stepTemplateId);
 
-    Optional<StepTemplate> stepTemplateToBeUpdated = this.stepTemplateService.getStepTemplateById(stepTemplateId);
-    Optional<StepTemplate> stepTemplateByName = this.stepTemplateService.findStepTemplateByName(updateStepTemplateDetailsDto.getName());
+    Optional<StepTemplate> stepTemplateToBeUpdated = this.stepTemplateService.getStepTemplateById(
+        stepTemplateId);
+    Optional<StepTemplate> stepTemplateByName = this.stepTemplateService.findStepTemplateByName(
+        updateStepTemplateDetailsDto.getName());
 
     Optional<StepTask> linkedStepTask = Optional.empty();
     Optional<HomeworkTemplate> linkedHomeworkTemplate = Optional.empty();
@@ -109,7 +111,8 @@ public class UpdateStepTemplateEndpoint {
           principal.getName(), linkedStepTask.orElse(null),
           linkedHomeworkTemplate.orElse(null), stepTemplateToBeUpdated.get());
 
-      log.info("Step Task [{}] updated successfully with ID [{}]", updateStepTemplateDetailsDto.getName(),
+      log.info("Step Task [{}] updated successfully with ID [{}]",
+          updateStepTemplateDetailsDto.getName(),
           createdStepTemplateId);
       return ResponseEntity.status(HttpStatus.OK)
           .body("Step Template with ID [" + stepTemplateId + "] and name ["

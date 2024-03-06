@@ -88,16 +88,17 @@ public class AddStepTemplateEndpoint {
           addStepTemplateDetailsDto.getLinkedStepTaskId() + "] not found", HttpStatus.NOT_FOUND);
     } else if (addStepTemplateDetailsDto.getLinkedHomeworkTemplateId() != null &&
         (linkedHomeworkTemplate = this.homeworkTemplateService.getHomeworkTemplateById(
-        addStepTemplateDetailsDto.getLinkedStepTaskId())).isEmpty()) {
+            addStepTemplateDetailsDto.getLinkedStepTaskId())).isEmpty()) {
       return generateFailureResponse("Homework Template with ID [" +
-          addStepTemplateDetailsDto.getLinkedHomeworkTemplateId() + "] not found",
+              addStepTemplateDetailsDto.getLinkedHomeworkTemplateId() + "] not found",
           HttpStatus.NOT_FOUND);
     } else {
       Long createdStepTemplateId = createStepTemplate(addStepTemplateDetailsDto,
           principal.getName(), linkedStepTask.orElse(null),
           linkedHomeworkTemplate.orElse(null));
 
-      log.info("Step Task [{}] created successfully with ID [{}]", addStepTemplateDetailsDto.getName(),
+      log.info("Step Task [{}] created successfully with ID [{}]",
+          addStepTemplateDetailsDto.getName(),
           createdStepTemplateId);
       return ResponseEntity.status(HttpStatus.CREATED)
           .body("Step Template ["

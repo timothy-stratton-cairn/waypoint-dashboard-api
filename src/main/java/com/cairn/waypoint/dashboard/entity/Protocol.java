@@ -27,12 +27,15 @@ public class Protocol extends BaseEntity {
 
   private String name;
   private String description;
+  private String comment;
 
   @JoinColumn(name = "protocol_template_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private ProtocolTemplate protocolTemplate;
 
-  @OneToMany(mappedBy = "parentProtocol")
+
+  @JoinColumn(name = "parent_protocol_id")
+  @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<ProtocolStep> protocolSteps;
 
   @JoinColumn(name = "protocol_id")

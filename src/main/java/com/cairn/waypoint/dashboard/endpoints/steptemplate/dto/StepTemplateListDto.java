@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class StepTemplateListDto {
+
   private List<StepTemplateDto> stepTemplates;
   private Integer numOfStepTemplates;
 

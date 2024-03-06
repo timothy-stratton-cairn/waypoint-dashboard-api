@@ -81,8 +81,10 @@ public class UpdateProtocolTemplateEndpoint {
     log.info("User [{}] is attempted to update a Protocol Template with id [{}]",
         principal.getName(), protocolTemplateId);
 
-    Optional<ProtocolTemplate> protocolTemplateToBeUpdated = this.protocolTemplateService.getProtocolTemplateById(protocolTemplateId);
-    Optional<ProtocolTemplate> protocolTemplateByName = this.protocolTemplateService.findProtocolTemplateByName(updateProtocolTemplateDetailsDto.getName());
+    Optional<ProtocolTemplate> protocolTemplateToBeUpdated = this.protocolTemplateService.getProtocolTemplateById(
+        protocolTemplateId);
+    Optional<ProtocolTemplate> protocolTemplateByName = this.protocolTemplateService.findProtocolTemplateByName(
+        updateProtocolTemplateDetailsDto.getName());
 
     if (protocolTemplateToBeUpdated.isEmpty()) {
       return generateFailureResponse("Protocol Template with id [" +
@@ -99,7 +101,8 @@ public class UpdateProtocolTemplateEndpoint {
       LinkedHashSet<StepTemplate> stepTemplates;
 
       try {
-        stepTemplates = populateAssociatedProtocolStepTemplateIfExists(updateProtocolTemplateDetailsDto);
+        stepTemplates = populateAssociatedProtocolStepTemplateIfExists(
+            updateProtocolTemplateDetailsDto);
       } catch (EntityNotFoundException e) {
         return generateFailureResponse(e.getMessage(), HttpStatus.NOT_FOUND);
       }
@@ -118,17 +121,20 @@ public class UpdateProtocolTemplateEndpoint {
   private LinkedHashSet<StepTemplate> populateAssociatedProtocolStepTemplateIfExists(
       UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto) {
     if (updateProtocolTemplateDetailsDto.getAssociatedStepTemplateIds() != null) {
-        return this.stepTemplateService
-            .getStepTemplateEntitiesFromIdCollection(
-                updateProtocolTemplateDetailsDto.getAssociatedStepTemplateIds());
+      return this.stepTemplateService
+          .getStepTemplateEntitiesFromIdCollection(
+              updateProtocolTemplateDetailsDto.getAssociatedStepTemplateIds());
     } else {
       return null;
     }
   }
 
-  private Long updateProtocolTemplate(UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto,
-      String modifiedBy, LinkedHashSet<StepTemplate> stepTemplates, ProtocolTemplate targetProtocolTemplate) {
-    ProtocolTemplate updatedProtocolTemplate = ProtocolTemplateMapper.INSTANCE.toEntity(updateProtocolTemplateDetailsDto);
+  private Long updateProtocolTemplate(
+      UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto,
+      String modifiedBy, LinkedHashSet<StepTemplate> stepTemplates,
+      ProtocolTemplate targetProtocolTemplate) {
+    ProtocolTemplate updatedProtocolTemplate = ProtocolTemplateMapper.INSTANCE.toEntity(
+        updateProtocolTemplateDetailsDto);
 
     updatedProtocolTemplate.setModifiedBy(modifiedBy);
     updatedProtocolTemplate.setProtocolTemplateSteps(

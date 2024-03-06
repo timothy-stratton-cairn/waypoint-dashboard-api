@@ -75,7 +75,8 @@ public class AddProtocolTemplateEndpoint {
     log.info("User [{}] is attempted to create a Protocol Template with name [{}]",
         principal.getName(), addProtocolTemplateDetailsDto.getName());
 
-    if (this.protocolTemplateService.findProtocolTemplateByName(addProtocolTemplateDetailsDto.getName())
+    if (this.protocolTemplateService.findProtocolTemplateByName(
+            addProtocolTemplateDetailsDto.getName())
         .isPresent()) {
       return generateFailureResponse("Protocol Template with name [" +
           addProtocolTemplateDetailsDto.getName() + "] already exists", HttpStatus.CONFLICT);
@@ -92,7 +93,8 @@ public class AddProtocolTemplateEndpoint {
       Long createdProtocolTemplateId = createProtocolTemplate(addProtocolTemplateDetailsDto,
           principal.getName(), stepTemplates);
 
-      log.info("Protocol Template [{}] created successfully with ID [{}]", addProtocolTemplateDetailsDto.getName(),
+      log.info("Protocol Template [{}] created successfully with ID [{}]",
+          addProtocolTemplateDetailsDto.getName(),
           createdProtocolTemplateId);
       return ResponseEntity.status(HttpStatus.CREATED)
           .body("Protocol Template ["
@@ -108,8 +110,10 @@ public class AddProtocolTemplateEndpoint {
 
     protocolTemplateToCreate.setModifiedBy(modifiedBy);
 
-    Long createdProtocolTemplateId = this.protocolTemplateService.saveProtocolTemplate(protocolTemplateToCreate);
-    Optional<ProtocolTemplate> protocolTemplateEntity = this.protocolTemplateService.getProtocolTemplateById(createdProtocolTemplateId);
+    Long createdProtocolTemplateId = this.protocolTemplateService.saveProtocolTemplate(
+        protocolTemplateToCreate);
+    Optional<ProtocolTemplate> protocolTemplateEntity = this.protocolTemplateService.getProtocolTemplateById(
+        createdProtocolTemplateId);
 
     if (protocolTemplateEntity.isEmpty()) {
       //TODO handle this gracefully
@@ -123,7 +127,7 @@ public class AddProtocolTemplateEndpoint {
 
   private Set<ProtocolTemplateLinkedStepTemplate> createProtocolStepTemplates(
       ProtocolTemplate protocolTemplate, LinkedHashSet<StepTemplate> stepTemplates,
-  String modifiedBy) {
+      String modifiedBy) {
     AtomicInteger ordinalIndex = new AtomicInteger(0);
     return stepTemplates.stream()
         .map(stepTemplate -> ProtocolTemplateLinkedStepTemplate.builder()

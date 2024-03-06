@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper;
 
-import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.UpdateProtocolTemplateEndpoint;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AddProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.UpdateProtocolTemplateDetailsDto;

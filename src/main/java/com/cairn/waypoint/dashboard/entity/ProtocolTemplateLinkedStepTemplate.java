@@ -35,7 +35,8 @@ public class ProtocolTemplateLinkedStepTemplate extends BaseEntity {
   public boolean equals(Object o) {
     if (!(o instanceof ProtocolTemplateLinkedStepTemplate)) {
       return false;
-    } else if (!((ProtocolTemplateLinkedStepTemplate) o).getProtocolTemplate().getId().equals(this.protocolTemplate.getId())) {
+    } else if (!((ProtocolTemplateLinkedStepTemplate) o).getProtocolTemplate().getId()
+        .equals(this.protocolTemplate.getId())) {
       return false;
     } else {
       return ((ProtocolTemplateLinkedStepTemplate) o).getStepTemplate().getId()

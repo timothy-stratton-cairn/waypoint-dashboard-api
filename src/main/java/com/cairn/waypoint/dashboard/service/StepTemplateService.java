@@ -36,7 +36,8 @@ public class StepTemplateService {
     return this.stepTemplateRepository.findByName(name);
   }
 
-  public LinkedHashSet<StepTemplate> getStepTemplateEntitiesFromIdCollection(Set<Long> stepTemplateIdList) {
+  public LinkedHashSet<StepTemplate> getStepTemplateEntitiesFromIdCollection(
+      Set<Long> stepTemplateIdList) {
     return stepTemplateIdList.stream()
         .map(stepTemplateId -> this.stepTemplateRepository.findById(stepTemplateId)
             .orElseThrow(

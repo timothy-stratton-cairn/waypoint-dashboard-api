@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class StepTemplateDetailsDto {
+
   private Long id;
   private String name;
   private String description;

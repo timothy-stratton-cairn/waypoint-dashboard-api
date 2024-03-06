@@ -82,6 +82,7 @@ databaseChangeLog:
               `modified_by` varchar(255) DEFAULT NULL,
               `name` varchar(255) DEFAULT NULL,
               `description` varchar(255) DEFAULT NULL,
+              `comment` varchar(255) DEFAULT NULL,
               `protocol_template_id` bigint DEFAULT NULL,
               `active` bit(1) DEFAULT NULL,
               PRIMARY KEY (`id`),

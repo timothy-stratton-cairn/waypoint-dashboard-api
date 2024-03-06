@@ -17,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false, exclude = "parentProtocol")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "protocol_step")
