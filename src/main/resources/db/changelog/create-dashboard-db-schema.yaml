@@ -182,9 +182,9 @@ databaseChangeLog:
               `name` varchar(255) DEFAULT NULL,
               `description` varchar(255) DEFAULT NULL,
               `notes` varchar(255) DEFAULT NULL,
+              `ordinal_index` int NOT NULL,
               `step_template_id` bigint NOT NULL,
               `linked_step_task_id` bigint DEFAULT NULL,
-              `next_protocol_step_id` bigint DEFAULT NULL,
               `parent_protocol_id` bigint NOT NULL,
               `step_status_id` bigint DEFAULT NULL,
               `active` bit(1) DEFAULT NULL,
@@ -193,7 +193,6 @@ databaseChangeLog:
               KEY `FKsuie9h1b5jwc3lx3kjd3n0ns5` (`parent_protocol_id`),
               CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r7i5` FOREIGN KEY (`step_status_id`) REFERENCES `protocol_step_status` (`id`),
               CONSTRAINT `FKbyta9ws8xsvjgdqc9dqx94c5` FOREIGN KEY (`linked_step_task_id`) REFERENCES `protocol_step_task` (`id`),
-              CONSTRAINT `FKip5yi3w1e5embpvgygpmte0ln` FOREIGN KEY (`next_protocol_step_id`) REFERENCES `protocol_step` (`id`),
               CONSTRAINT `FKm1b5qn5t96nc5ermsf3uhhhxj` FOREIGN KEY (`step_template_id`) REFERENCES `protocol_step_template` (`id`),
               CONSTRAINT `FKsuie9h1b5jwc3lx3kjd3n0ns5` FOREIGN KEY (`parent_protocol_id`) REFERENCES `protocol` (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

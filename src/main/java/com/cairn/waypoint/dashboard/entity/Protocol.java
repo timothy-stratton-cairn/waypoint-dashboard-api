@@ -6,6 +6,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,7 @@ public class Protocol extends BaseEntity {
   private ProtocolTemplate protocolTemplate;
 
 
+  @OrderBy("ordinalIndex ASC")
   @JoinColumn(name = "parent_protocol_id")
   @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<ProtocolStep> protocolSteps;

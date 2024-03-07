@@ -17,9 +17,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,6 +52,7 @@ public class AddProtocolEndpoint {
     this.accountService = accountService;
   }
 
+  @Transactional
   @PostMapping(PATH)
   @PreAuthorize("hasAuthority('SCOPE_protocol.create')")
   @Operation(
@@ -78,8 +81,13 @@ public class AddProtocolEndpoint {
       Principal principal) {
     Optional<AccountDetailsDto> accountDetailsDtoOptional;
     Optional<ProtocolTemplate> protocolTemplateOptional;
-
-    if ((accountDetailsDtoOptional = this.accountService.getAccountDetails(
+    if (this.protocolService.getByProtocolTemplateIdAndUserId(
+        addProtocolDetailsDto.getProtocolTemplateId(),
+        addProtocolDetailsDto.getAssociatedAccountId()).isPresent()) {
+      return generateFailureResponse("Account [" +
+          addProtocolDetailsDto.getAssociatedAccountId() + "] already associated with Protocol Template [" +
+          addProtocolDetailsDto.getProtocolTemplateId() + "]", HttpStatus.CONFLICT);
+    } else if ((accountDetailsDtoOptional = this.accountService.getAccountDetails(
         addProtocolDetailsDto.getAssociatedAccountId())).isEmpty()) {
       return generateFailureResponse("Account with ID [" +
               addProtocolDetailsDto.getAssociatedAccountId() + "] does not exists",
@@ -90,47 +98,14 @@ public class AddProtocolEndpoint {
               addProtocolDetailsDto.getProtocolTemplateId() + "] does not exists",
           HttpStatus.NOT_FOUND);
     } else {
-      Protocol protocolToBeCreated = ProtocolMapper.INSTANCE.protocolTemplateToProtocol(
-          protocolTemplateOptional.get());
+      Protocol protocolToBeCreated = setupProtocolToBeCreated(protocolTemplateOptional.get(),
+          addProtocolDetailsDto.getComment(), principal.getName());
 
-      protocolToBeCreated.setModifiedBy(principal.getName());
-      protocolToBeCreated.setProtocolTemplate(protocolTemplateOptional.get());
-      protocolToBeCreated.setComment(addProtocolDetailsDto.getComment());
+      protocolToBeCreated.setProtocolSteps(setupProtocolSteps(protocolTemplateOptional.get(),
+          principal.getName()));
 
-      Set<ProtocolStep> protocolSteps = protocolTemplateOptional.get().getProtocolTemplateSteps()
-          .stream()
-          .map(stepTemplateLink -> {
-            ProtocolStep protocolStep = ProtocolMapper.INSTANCE.protocolStepTemplateToProtocolStep(
-                stepTemplateLink.getStepTemplate());
-            protocolStep.setModifiedBy(principal.getName());
-            protocolStep.setTemplate(stepTemplateLink.getStepTemplate());
-
-            return protocolStep;
-          })
-          .collect(Collectors.toSet());
-
-      protocolToBeCreated.setProtocolSteps(protocolSteps);
-
-      Set<ProtocolUser> protocolUsers = new HashSet<>();
-
-      protocolUsers.add(ProtocolUser.builder()
-          .modifiedBy(principal.getName())
-          .userId(addProtocolDetailsDto.getAssociatedAccountId())
-          .build());
-
-      protocolUsers.add(ProtocolUser.builder()
-          .modifiedBy(principal.getName())
-          .userId(accountDetailsDtoOptional.get().getCoClient().getId())
-          .build());
-
-      accountDetailsDtoOptional.get().getDependents().stream()
-          .map(dependentAccountDetails -> ProtocolUser.builder()
-              .modifiedBy(principal.getName())
-              .userId(dependentAccountDetails.getId())
-              .build())
-          .forEach(protocolUsers::add);
-
-      protocolToBeCreated.setAssociatedUsers(protocolUsers);
+      protocolToBeCreated.setAssociatedUsers(setupProtocolUsers(addProtocolDetailsDto,
+          principal.getName(), accountDetailsDtoOptional.get()));
 
       Protocol createdProtocol = this.protocolService.saveProtocol(protocolToBeCreated);
 
@@ -139,6 +114,55 @@ public class AddProtocolEndpoint {
               + "] was created successfully and assigned to Account with ID [" +
               addProtocolDetailsDto.getAssociatedAccountId() + "]");
     }
+  }
+
+  private Protocol setupProtocolToBeCreated(ProtocolTemplate protocolTemplate, String protocolComment, String modifiedBy) {
+    Protocol protocolToBeCreated = ProtocolMapper.INSTANCE.protocolTemplateToProtocol(
+        protocolTemplate);
+
+    protocolToBeCreated.setModifiedBy(modifiedBy);
+    protocolToBeCreated.setProtocolTemplate(protocolTemplate);
+    protocolToBeCreated.setComment(protocolComment);
+
+    return protocolToBeCreated;
+  }
+
+  private Set<ProtocolStep> setupProtocolSteps(ProtocolTemplate protocolTemplate, String modifiedBy) {
+    return protocolTemplate.getProtocolTemplateSteps()
+        .stream()
+        .map(stepTemplateLink -> {
+          ProtocolStep protocolStep = ProtocolMapper.INSTANCE.protocolStepTemplateToProtocolStep(
+              stepTemplateLink.getStepTemplate());
+          protocolStep.setModifiedBy(modifiedBy);
+          protocolStep.setTemplate(stepTemplateLink.getStepTemplate());
+          protocolStep.setOrdinalIndex(stepTemplateLink.getOrdinalIndex());
+
+          return protocolStep;
+        })
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
+
+  private Set<ProtocolUser> setupProtocolUsers(AddProtocolDetailsDto addProtocolDetailsDto, String modifiedBy, AccountDetailsDto accountDetailsDto) {
+    Set<ProtocolUser> protocolUsers = new HashSet<>();
+
+    protocolUsers.add(ProtocolUser.builder()
+        .modifiedBy(modifiedBy)
+        .userId(addProtocolDetailsDto.getAssociatedAccountId())
+        .build());
+
+    protocolUsers.add(ProtocolUser.builder()
+        .modifiedBy(modifiedBy)
+        .userId(accountDetailsDto.getCoClient().getId())
+        .build());
+
+    accountDetailsDto.getDependents().stream()
+        .map(dependentAccountDetails -> ProtocolUser.builder()
+            .modifiedBy(modifiedBy)
+            .userId(dependentAccountDetails.getId())
+            .build())
+        .forEach(protocolUsers::add);
+
+    return protocolUsers;
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {

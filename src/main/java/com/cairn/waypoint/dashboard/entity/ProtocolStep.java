@@ -26,6 +26,7 @@ public class ProtocolStep extends BaseEntity {
   private String name;
   private String description;
   private String notes;
+  private Integer ordinalIndex;
 
   @JoinColumn(name = "step_status_id")
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
@@ -48,8 +49,4 @@ public class ProtocolStep extends BaseEntity {
   @JoinColumn(name = "parent_protocol_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Protocol parentProtocol;
-
-  @JoinColumn(name = "next_protocol_step_id")
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private ProtocolStep nextProtocolStep;
 }

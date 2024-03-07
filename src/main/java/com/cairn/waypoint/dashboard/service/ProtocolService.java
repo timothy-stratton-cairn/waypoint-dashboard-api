@@ -7,13 +7,17 @@ import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolStepRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolUserRepository;
+import jakarta.transaction.Transactional;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
+@Transactional
 public class ProtocolService {
 
   private final ProtocolRepository protocolRepository;
@@ -36,6 +40,15 @@ public class ProtocolService {
     return this.protocolRepository.findById(id);
   }
 
+  public Optional<Protocol> getByProtocolTemplateIdAndUserId(Long protocolTemplateId, Long userId) {
+    return this.protocolRepository.findByAssociatedUsers_UserId(userId).stream()
+        .filter(protocol -> protocol.getProtocolTemplate()
+            .getId()
+            .equals(protocolTemplateId))
+        .findFirst();
+  }
+
+  @Transactional
   public Protocol saveProtocol(Protocol protocolToBeCreated) {
     //Save the Protocol
     Set<ProtocolStep> protocolSteps = protocolToBeCreated.getProtocolSteps();
@@ -46,18 +59,18 @@ public class ProtocolService {
     Protocol createdProtocol = this.protocolRepository.save(protocolToBeCreated);
 
     //Save the Protocol Steps
-    protocolSteps.forEach(protocolStep -> protocolStep.setParentProtocol(createdProtocol));
-
-    Set<ProtocolStep> createdProtocolSteps = new HashSet<>(
-        this.protocolStepRepository.saveAll(protocolSteps));
+    Set<ProtocolStep> createdProtocolSteps = protocolSteps.stream()
+        .peek(protocolStep -> protocolStep.setParentProtocol(createdProtocol))
+        .map(this.protocolStepRepository::saveAndFlush)
+        .collect(Collectors.toCollection(LinkedHashSet::new));
     createdProtocol.setProtocolSteps(createdProtocolSteps);
 
-    //Save the Protocol User associations
-    protocolUsers.forEach(protocolUser -> protocolUser.setProtocol(createdProtocol));
-
-    Set<ProtocolUser> createdProtocolUsers = new HashSet<>(
-        this.protocolUserRepository.saveAll(protocolUsers));
-    protocolToBeCreated.setAssociatedUsers(createdProtocolUsers);
+    //Save the Protocol-User associations
+    Set<ProtocolUser> createdProtocolUsers = protocolUsers.stream()
+        .peek(protocolUser -> protocolUser.setProtocol(createdProtocol))
+        .map(this.protocolUserRepository::saveAndFlush)
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+    createdProtocol.setAssociatedUsers(createdProtocolUsers);
 
     //Safeguard for any hanging entities
     return this.protocolRepository.saveAndFlush(createdProtocol);

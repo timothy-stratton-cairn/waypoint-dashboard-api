@@ -1,8 +1,10 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
@@ -14,6 +16,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,6 +79,16 @@ public class GetProtocolByIdEndpoint {
                     .userIds(
                         returnedProtocol.getAssociatedUsers().stream().map(ProtocolUser::getUserId)
                             .toList())
+                    .build()
+            )
+            .associatedSteps(
+                AssociatedStepsListDto.builder()
+                    .steps(returnedProtocol.getProtocolSteps().stream()
+                        .map(protocolStep -> ProtocolStepDto.builder()
+                            .id(protocolStep.getId())
+                            .name(protocolStep.getName())
+                            .build())
+                        .collect(Collectors.toList()))
                     .build()
             )
             .build()
