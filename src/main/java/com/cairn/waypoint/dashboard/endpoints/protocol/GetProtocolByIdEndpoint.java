@@ -79,8 +79,7 @@ public class GetProtocolByIdEndpoint {
                     .userIds(
                         returnedProtocol.getAssociatedUsers().stream().map(ProtocolUser::getUserId)
                             .toList())
-                    .build()
-            )
+                    .build())
             .associatedSteps(
                 AssociatedStepsListDto.builder()
                     .steps(returnedProtocol.getProtocolSteps().stream()
@@ -89,10 +88,8 @@ public class GetProtocolByIdEndpoint {
                             .name(protocolStep.getName())
                             .build())
                         .collect(Collectors.toList()))
-                    .build()
-            )
-            .build()
-    );
+                    .build())
+            .build());
   }
 
   public ResponseEntity<ErrorMessage> generateFailureResponse(Long protocolId) {

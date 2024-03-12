@@ -1,6 +1,8 @@
 package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AssociatedStepTemplatesListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolStepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,8 +77,16 @@ public class GetProtocolTemplateByIdEndpoint {
             .id(returnedProtocolTemplate.getId())
             .name(returnedProtocolTemplate.getName())
             .description(returnedProtocolTemplate.getDescription())
-            .build()
-    );
+            .associatedSteps(AssociatedStepTemplatesListDto.builder()
+                .steps(returnedProtocolTemplate.getProtocolTemplateSteps().stream()
+                    .map(protocolStepTemplate -> ProtocolStepTemplateDto.builder()
+                        .id(protocolStepTemplate.getStepTemplate().getId())
+                        .name(protocolStepTemplate.getStepTemplate().getName())
+                        .description(protocolStepTemplate.getStepTemplate().getDescription())
+                        .build())
+                    .collect(Collectors.toList()))
+                .build())
+            .build());
   }
 
   public ResponseEntity<ErrorMessage> generateFailureResponse(Long protocolTemplateId) {

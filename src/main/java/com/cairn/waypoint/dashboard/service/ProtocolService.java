@@ -8,7 +8,6 @@ import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolStepRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolUserRepository;
 import jakarta.transaction.Transactional;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;

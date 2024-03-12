@@ -45,4 +45,8 @@ public class StepTemplateService {
                     "Step Template with ID [" + stepTemplateId + "] not found")))
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
+
+  public List<StepTemplate> saveStepTemplateList(List<StepTemplate> stepTemplates) {
+    return this.stepTemplateRepository.saveAllAndFlush(stepTemplates);
+  }
 }

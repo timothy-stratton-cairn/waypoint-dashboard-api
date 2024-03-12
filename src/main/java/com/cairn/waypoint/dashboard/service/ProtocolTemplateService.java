@@ -31,4 +31,8 @@ public class ProtocolTemplateService {
   public Optional<ProtocolTemplate> findProtocolTemplateByName(String name) {
     return this.protocolTemplateRepository.findByName(name);
   }
+
+  public List<ProtocolTemplate> saveProtocolTemplateList(List<ProtocolTemplate> protocolTemplates) {
+    return this.protocolTemplateRepository.saveAllAndFlush(protocolTemplates);
+  }
 }

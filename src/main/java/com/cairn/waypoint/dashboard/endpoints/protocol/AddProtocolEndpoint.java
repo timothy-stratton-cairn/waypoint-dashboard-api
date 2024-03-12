@@ -85,7 +85,8 @@ public class AddProtocolEndpoint {
         addProtocolDetailsDto.getProtocolTemplateId(),
         addProtocolDetailsDto.getAssociatedAccountId()).isPresent()) {
       return generateFailureResponse("Account [" +
-          addProtocolDetailsDto.getAssociatedAccountId() + "] already associated with Protocol Template [" +
+          addProtocolDetailsDto.getAssociatedAccountId()
+          + "] already associated with Protocol Template [" +
           addProtocolDetailsDto.getProtocolTemplateId() + "]", HttpStatus.CONFLICT);
     } else if ((accountDetailsDtoOptional = this.accountService.getAccountDetails(
         addProtocolDetailsDto.getAssociatedAccountId())).isEmpty()) {
@@ -116,7 +117,8 @@ public class AddProtocolEndpoint {
     }
   }
 
-  private Protocol setupProtocolToBeCreated(ProtocolTemplate protocolTemplate, String protocolComment, String modifiedBy) {
+  private Protocol setupProtocolToBeCreated(ProtocolTemplate protocolTemplate,
+      String protocolComment, String modifiedBy) {
     Protocol protocolToBeCreated = ProtocolMapper.INSTANCE.protocolTemplateToProtocol(
         protocolTemplate);
 
@@ -127,7 +129,8 @@ public class AddProtocolEndpoint {
     return protocolToBeCreated;
   }
 
-  private Set<ProtocolStep> setupProtocolSteps(ProtocolTemplate protocolTemplate, String modifiedBy) {
+  private Set<ProtocolStep> setupProtocolSteps(ProtocolTemplate protocolTemplate,
+      String modifiedBy) {
     return protocolTemplate.getProtocolTemplateSteps()
         .stream()
         .map(stepTemplateLink -> {
@@ -142,7 +145,8 @@ public class AddProtocolEndpoint {
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  private Set<ProtocolUser> setupProtocolUsers(AddProtocolDetailsDto addProtocolDetailsDto, String modifiedBy, AccountDetailsDto accountDetailsDto) {
+  private Set<ProtocolUser> setupProtocolUsers(AddProtocolDetailsDto addProtocolDetailsDto,
+      String modifiedBy, AccountDetailsDto accountDetailsDto) {
     Set<ProtocolUser> protocolUsers = new HashSet<>();
 
     protocolUsers.add(ProtocolUser.builder()
@@ -154,13 +158,6 @@ public class AddProtocolEndpoint {
         .modifiedBy(modifiedBy)
         .userId(accountDetailsDto.getCoClient().getId())
         .build());
-
-    accountDetailsDto.getDependents().stream()
-        .map(dependentAccountDetails -> ProtocolUser.builder()
-            .modifiedBy(modifiedBy)
-            .userId(dependentAccountDetails.getId())
-            .build())
-        .forEach(protocolUsers::add);
 
     return protocolUsers;
   }
