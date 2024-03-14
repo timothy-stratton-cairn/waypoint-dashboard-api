@@ -13,4 +13,5 @@ public class StepTemplateDetailsDto {
   private String description;
   private StepTaskDetailsDto linkedStepTask;
   private HomeworkTemplateDetailsDto linkedHomeworkTemplate;
+  private StepTemplateCategoryDetailsDto stepTemplateCategory;
 }

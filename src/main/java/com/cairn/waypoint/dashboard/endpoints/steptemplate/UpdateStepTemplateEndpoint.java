@@ -6,9 +6,11 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMa
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTask;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.entity.TemplateCategory;
 import com.cairn.waypoint.dashboard.service.HomeworkTemplateService;
 import com.cairn.waypoint.dashboard.service.StepTaskService;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
+import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
 import com.cairn.waypoint.dashboard.utility.BeanUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -38,12 +40,15 @@ public class UpdateStepTemplateEndpoint {
   private final StepTemplateService stepTemplateService;
   private final StepTaskService stepTaskService;
   private final HomeworkTemplateService homeworkTemplateService;
+  private final TemplateCategoryService templateCategoryService;
 
   public UpdateStepTemplateEndpoint(StepTemplateService stepTemplateService,
-      StepTaskService stepTaskService, HomeworkTemplateService homeworkTemplateService) {
+      StepTaskService stepTaskService, HomeworkTemplateService homeworkTemplateService,
+      TemplateCategoryService templateCategoryService) {
     this.stepTemplateService = stepTemplateService;
     this.stepTaskService = stepTaskService;
     this.homeworkTemplateService = homeworkTemplateService;
+    this.templateCategoryService = templateCategoryService;
   }
 
   @PatchMapping(PATH)
@@ -82,6 +87,7 @@ public class UpdateStepTemplateEndpoint {
 
     Optional<StepTask> linkedStepTask = Optional.empty();
     Optional<HomeworkTemplate> linkedHomeworkTemplate = Optional.empty();
+    Optional<TemplateCategory> stepTemplateCategory = Optional.empty();
 
     if (stepTemplateToBeUpdated.isEmpty()) {
       return generateFailureResponse("Step Template with ID [" +
@@ -106,10 +112,16 @@ public class UpdateStepTemplateEndpoint {
       return generateFailureResponse("Homework Template with ID [" +
               updateStepTemplateDetailsDto.getLinkedHomeworkTemplateId() + "] not found",
           HttpStatus.NOT_FOUND);
+    } else if (updateStepTemplateDetailsDto.getStepTemplateCategoryId() != null &&
+        (stepTemplateCategory = this.templateCategoryService.getTemplateCategoryById(
+            updateStepTemplateDetailsDto.getStepTemplateCategoryId())).isEmpty()) {
+      return generateFailureResponse("Step Template Category with ID [" +
+              updateStepTemplateDetailsDto.getStepTemplateCategoryId() + "] not found",
+          HttpStatus.NOT_FOUND);
     } else {
       Long createdStepTemplateId = updateStepTemplate(updateStepTemplateDetailsDto,
           principal.getName(), linkedStepTask.orElse(null),
-          linkedHomeworkTemplate.orElse(null), stepTemplateToBeUpdated.get());
+          linkedHomeworkTemplate.orElse(null), stepTemplateCategory.orElse(null), stepTemplateToBeUpdated.get());
 
       log.info("Step Task [{}] updated successfully with ID [{}]",
           updateStepTemplateDetailsDto.getName(),
@@ -122,7 +134,7 @@ public class UpdateStepTemplateEndpoint {
 
   private Long updateStepTemplate(UpdateStepTemplateDetailsDto addStepTemplateDetailsDto,
       String modifiedBy, StepTask linkedStepTask, HomeworkTemplate linkedHomeworkTemplate,
-      StepTemplate targetStepTemplate) {
+      TemplateCategory templateCategory, StepTemplate targetStepTemplate) {
 
     StepTemplate updatedStepTemplate = StepTemplateMapper.INSTANCE
         .toEntity(addStepTemplateDetailsDto);
@@ -130,6 +142,7 @@ public class UpdateStepTemplateEndpoint {
     updatedStepTemplate.setModifiedBy(modifiedBy);
     updatedStepTemplate.setLinkedTask(linkedStepTask);
     updatedStepTemplate.setLinkedHomeworkTemplate(linkedHomeworkTemplate);
+    updatedStepTemplate.setCategory(templateCategory);
 
     BeanUtils.copyPropertiesIgnoreNulls(updatedStepTemplate, targetStepTemplate);
 

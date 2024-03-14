@@ -8,6 +8,7 @@ import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
+import com.cairn.waypoint.dashboard.entity.StepCategory;
 import com.cairn.waypoint.dashboard.service.AccountService;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
@@ -139,6 +140,9 @@ public class AddProtocolEndpoint {
           protocolStep.setModifiedBy(modifiedBy);
           protocolStep.setTemplate(stepTemplateLink.getStepTemplate());
           protocolStep.setOrdinalIndex(stepTemplateLink.getOrdinalIndex());
+          protocolStep.setCategory(StepCategory.builder()
+                  .templateCategory(stepTemplateLink.getStepTemplate().getCategory())
+                  .build());
 
           return protocolStep;
         })

@@ -47,6 +47,10 @@ public class ProtocolService {
         .findFirst();
   }
 
+  public List<Protocol> getByUserId(Long userId) {
+    return this.protocolRepository.findByAssociatedUsers_UserId(userId);
+  }
+
   @Transactional
   public Protocol saveProtocol(Protocol protocolToBeCreated) {
     //Save the Protocol

@@ -29,6 +29,10 @@ public class StepTemplate extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private StepTask linkedTask;
 
+  @JoinColumn(name = "protocol_step_template_category_id")
+  @OneToOne(fetch = FetchType.LAZY)
+  private TemplateCategory category;
+
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   @JoinTable(name = "step_template_homework_template",
       joinColumns = @JoinColumn(name = "protocol_step_template_id", referencedColumnName = "id"),

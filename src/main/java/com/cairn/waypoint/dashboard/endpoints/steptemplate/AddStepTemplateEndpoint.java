@@ -6,9 +6,11 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMa
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTask;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.entity.TemplateCategory;
 import com.cairn.waypoint.dashboard.service.HomeworkTemplateService;
 import com.cairn.waypoint.dashboard.service.StepTaskService;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
+import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,12 +38,15 @@ public class AddStepTemplateEndpoint {
   private final StepTemplateService stepTemplateService;
   private final StepTaskService stepTaskService;
   private final HomeworkTemplateService homeworkTemplateService;
+  private final TemplateCategoryService templateCategoryService;
 
   public AddStepTemplateEndpoint(StepTemplateService stepTemplateService,
-      StepTaskService stepTaskService, HomeworkTemplateService homeworkTemplateService) {
+      StepTaskService stepTaskService, HomeworkTemplateService homeworkTemplateService,
+      TemplateCategoryService templateCategoryService) {
     this.stepTemplateService = stepTemplateService;
     this.stepTaskService = stepTaskService;
     this.homeworkTemplateService = homeworkTemplateService;
+    this.templateCategoryService = templateCategoryService;
   }
 
   @PostMapping(PATH)
@@ -75,6 +80,7 @@ public class AddStepTemplateEndpoint {
 
     Optional<StepTask> linkedStepTask = Optional.empty();
     Optional<HomeworkTemplate> linkedHomeworkTemplate = Optional.empty();
+    Optional<TemplateCategory> stepTemplateCategory = Optional.empty();
 
     if (this.stepTemplateService.findStepTemplateByName(addStepTemplateDetailsDto.getName())
         .isPresent()) {
@@ -92,10 +98,16 @@ public class AddStepTemplateEndpoint {
       return generateFailureResponse("Homework Template with ID [" +
               addStepTemplateDetailsDto.getLinkedHomeworkTemplateId() + "] not found",
           HttpStatus.NOT_FOUND);
+    } else if (addStepTemplateDetailsDto.getStepTemplateCategoryId() != null &&
+        (stepTemplateCategory = this.templateCategoryService.getTemplateCategoryById(
+            addStepTemplateDetailsDto.getStepTemplateCategoryId())).isEmpty()) {
+      return generateFailureResponse("Step Template Category with ID [" +
+              addStepTemplateDetailsDto.getStepTemplateCategoryId() + "] not found",
+          HttpStatus.NOT_FOUND);
     } else {
       Long createdStepTemplateId = createStepTemplate(addStepTemplateDetailsDto,
           principal.getName(), linkedStepTask.orElse(null),
-          linkedHomeworkTemplate.orElse(null));
+          linkedHomeworkTemplate.orElse(null), stepTemplateCategory.orElse(null));
 
       log.info("Step Task [{}] created successfully with ID [{}]",
           addStepTemplateDetailsDto.getName(),
@@ -107,7 +119,8 @@ public class AddStepTemplateEndpoint {
   }
 
   private Long createStepTemplate(AddStepTemplateDetailsDto addStepTemplateDetailsDto,
-      String modifiedBy, StepTask linkedStepTask, HomeworkTemplate linkedHomeworkTemplate) {
+      String modifiedBy, StepTask linkedStepTask, HomeworkTemplate linkedHomeworkTemplate,
+      TemplateCategory templateCategory) {
 
     StepTemplate stepTemplateToCreate = StepTemplateMapper.INSTANCE
         .toEntity(addStepTemplateDetailsDto);
@@ -115,6 +128,7 @@ public class AddStepTemplateEndpoint {
     stepTemplateToCreate.setModifiedBy(modifiedBy);
     stepTemplateToCreate.setLinkedTask(linkedStepTask);
     stepTemplateToCreate.setLinkedHomeworkTemplate(linkedHomeworkTemplate);
+    stepTemplateToCreate.setCategory(templateCategory);
 
     return this.stepTemplateService.saveStepTemplate(stepTemplateToCreate);
   }

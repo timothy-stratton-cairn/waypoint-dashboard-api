@@ -110,6 +110,12 @@
       <groupId>org.springdoc</groupId>
       <version>1.7.0</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-exec</artifactId>
+      <version>1.4.0</version>
+    </dependency>
   </dependencies>
   <groupId>com.cairn.waypoint.dashboard</groupId>
 

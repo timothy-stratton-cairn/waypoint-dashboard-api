@@ -15,4 +15,5 @@ public class UpdateStepTemplateDetailsDto {
   private String description;
   private Long linkedStepTaskId;
   private Long linkedHomeworkTemplateId;
+  private Long stepTemplateCategoryId;
 }

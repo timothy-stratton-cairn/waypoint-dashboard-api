@@ -32,6 +32,10 @@ public class ProtocolStep extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private StepStatus status;
 
+  @JoinColumn(name = "step_category_id")
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private StepCategory category;
+
   @JoinColumn(name = "step_template_id", nullable = false)
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private StepTemplate template;
