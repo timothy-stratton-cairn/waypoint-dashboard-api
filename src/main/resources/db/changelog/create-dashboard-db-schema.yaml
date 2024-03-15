@@ -86,7 +86,6 @@ databaseChangeLog:
               `protocol_template_id` bigint DEFAULT NULL,
               `active` bit(1) DEFAULT NULL,
               PRIMARY KEY (`id`),
-              UNIQUE KEY `UK_c71yad2gt4564bjwo059g752l` (`name`),
               CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r735` FOREIGN KEY (`protocol_template_id`) REFERENCES `protocol_template` (`id`)
               ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -189,7 +188,6 @@ databaseChangeLog:
               `step_status_id` bigint DEFAULT NULL,
               `active` bit(1) DEFAULT NULL,
               PRIMARY KEY (`id`),
-              UNIQUE KEY `UK_c71yadhy8i564bjwo059g723l` (`name`),
               KEY `FKsuie9h1b5jwc3lx3kjd3n0ns5` (`parent_protocol_id`),
               CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r7i5` FOREIGN KEY (`step_status_id`) REFERENCES `protocol_step_status` (`id`),
               CONSTRAINT `FKbyta9ws8xsvjgdqc9dqx94c5` FOREIGN KEY (`linked_step_task_id`) REFERENCES `protocol_step_task` (`id`),
@@ -216,7 +214,6 @@ databaseChangeLog:
               `homework_template_id` bigint NOT NULL,
               `active` bit(1) DEFAULT NULL,
               PRIMARY KEY (`id`),
-              UNIQUE KEY `UK_c71yadhy8i564bjwot25g752l` (`name`),
               CONSTRAINT `FKsumwaex33g39yqw3i5rvjyh3u` FOREIGN KEY (`homework_template_id`) REFERENCES `homework_template` (`id`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 

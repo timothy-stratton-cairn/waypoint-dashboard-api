@@ -1,7 +1,10 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AccountProtocolDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AccountProtocolListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,9 +55,26 @@ public class GetAllProtocolsForAccountEndpoint {
         AccountProtocolListDto.builder()
             .protocols(
                 this.protocolService.getByUserId(accountId).stream()
-                    .map(ProtocolMapper.INSTANCE::toAccountProtocolDto)
+                    .map(protocol ->
+                        AccountProtocolDto.builder()
+                            .id(protocol.getId())
+                            .name(protocol.getName())
+                            .completionPercentage(
+                                ProtocolCalculationService.getProtocolCompletionPercentage(
+                                    protocol))
+                            .associatedSteps(
+                                AssociatedStepsListDto.builder()
+                                    .steps(protocol.getProtocolSteps().stream()
+                                        .map(protocolStep -> ProtocolStepDto.builder()
+                                            .id(protocolStep.getId())
+                                            .name(protocolStep.getName())
+                                            .status(
+                                                protocolStep.getStatus().getInstance().getName())
+                                            .build())
+                                        .collect(Collectors.toList()))
+                                    .build())
+                            .build())
                     .toList())
-            .build()
-    );
+            .build());
   }
 }

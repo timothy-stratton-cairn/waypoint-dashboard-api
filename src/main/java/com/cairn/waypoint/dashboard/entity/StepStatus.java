@@ -2,6 +2,7 @@ package com.cairn.waypoint.dashboard.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,4 +20,5 @@ public class StepStatus extends BaseEntity {
 
   private String name;
   private String description;
+  private BigDecimal weight;
 }

@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/2024-03-13-add-step-template-category-column-to-protocol-step-template-table.yaml
   - include:
       file: db/changelog/2024-03-13-add-step-template-categories.yaml
+  - include:
+      file: db/changelog/2024-03-15-add-step-statuses.yaml

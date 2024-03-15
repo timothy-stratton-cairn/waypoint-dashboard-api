@@ -1,7 +1,8 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
+import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,7 +50,12 @@ public class GetAllProtocolsEndpoint {
         ProtocolListDto.builder()
             .protocols(
                 this.protocolService.getAllProtocols().stream()
-                    .map(ProtocolMapper.INSTANCE::toDto)
+                    .map(protocol -> ProtocolDto.builder()
+                        .id(protocol.getId())
+                        .name(protocol.getName())
+                        .completionPercentage(
+                            ProtocolCalculationService.getProtocolCompletionPercentage(protocol))
+                        .build())
                     .toList())
             .build()
     );

@@ -47,6 +47,10 @@ public class ProtocolService {
         .findFirst();
   }
 
+  public List<Protocol> getByProtocolTemplateId(Long protocolTemplateId) {
+    return this.protocolRepository.findByProtocolTemplate_Id(protocolTemplateId);
+  }
+
   public List<Protocol> getByUserId(Long userId) {
     return this.protocolRepository.findByAssociatedUsers_UserId(userId);
   }

@@ -9,4 +9,5 @@ public class ProtocolStepDto {
 
   private Long id;
   private String name;
+  private String status;
 }

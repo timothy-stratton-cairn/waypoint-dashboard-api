@@ -1,6 +1,10 @@
 package com.cairn.waypoint.dashboard.entity;
 
+import com.cairn.waypoint.dashboard.entity.converter.StepStatusConverter;
+import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -28,12 +32,12 @@ public class ProtocolStep extends BaseEntity {
   private String notes;
   private Integer ordinalIndex;
 
-  @JoinColumn(name = "step_status_id")
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private StepStatus status;
+  @Column(name = "step_status_id")
+  @Convert(converter = StepStatusConverter.class)
+  private StepStatusEnum status;
 
   @JoinColumn(name = "step_category_id")
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private StepCategory category;
 
   @JoinColumn(name = "step_template_id", nullable = false)

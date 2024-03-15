@@ -9,6 +9,7 @@ import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
+import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.AccountService;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
@@ -80,6 +81,10 @@ public class AddProtocolEndpoint {
   public ResponseEntity<?> addProtocolTemplate(
       @RequestBody AddProtocolDetailsDto addProtocolDetailsDto,
       Principal principal) {
+    log.info("User [{}] is associating Protocol Template with ID [{}] with Account ID [{}]",
+        principal.getName(), addProtocolDetailsDto.getProtocolTemplateId(),
+        addProtocolDetailsDto.getAssociatedAccountId());
+
     Optional<AccountDetailsDto> accountDetailsDtoOptional;
     Optional<ProtocolTemplate> protocolTemplateOptional;
     if (this.protocolService.getByProtocolTemplateIdAndUserId(
@@ -111,6 +116,9 @@ public class AddProtocolEndpoint {
 
       Protocol createdProtocol = this.protocolService.saveProtocol(protocolToBeCreated);
 
+      log.info("Protocol Template with ID [{}] was successfully associated with Account ID [{}]",
+          addProtocolDetailsDto.getProtocolTemplateId(),
+          addProtocolDetailsDto.getAssociatedAccountId());
       return ResponseEntity.status(HttpStatus.CREATED)
           .body("Protocol [" + createdProtocol.getName()
               + "] was created successfully and assigned to Account with ID [" +
@@ -141,8 +149,10 @@ public class AddProtocolEndpoint {
           protocolStep.setTemplate(stepTemplateLink.getStepTemplate());
           protocolStep.setOrdinalIndex(stepTemplateLink.getOrdinalIndex());
           protocolStep.setCategory(StepCategory.builder()
+              .modifiedBy(modifiedBy)
               .templateCategory(stepTemplateLink.getStepTemplate().getCategory())
               .build());
+          protocolStep.setStatus(StepStatusEnum.TODO);
 
           return protocolStep;
         })
@@ -158,10 +168,12 @@ public class AddProtocolEndpoint {
         .userId(addProtocolDetailsDto.getAssociatedAccountId())
         .build());
 
-    protocolUsers.add(ProtocolUser.builder()
-        .modifiedBy(modifiedBy)
-        .userId(accountDetailsDto.getCoClient().getId())
-        .build());
+    if (accountDetailsDto.getCoClient() != null) {
+      protocolUsers.add(ProtocolUser.builder()
+          .modifiedBy(modifiedBy)
+          .userId(accountDetailsDto.getCoClient().getId())
+          .build());
+    }
 
     return protocolUsers;
   }

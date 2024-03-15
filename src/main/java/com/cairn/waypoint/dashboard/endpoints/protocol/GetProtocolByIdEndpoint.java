@@ -5,6 +5,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDt
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
@@ -74,6 +75,8 @@ public class GetProtocolByIdEndpoint {
         ProtocolDetailsDto.builder()
             .id(returnedProtocol.getId())
             .name(returnedProtocol.getName())
+            .completionPercentage(
+                ProtocolCalculationService.getProtocolCompletionPercentage(returnedProtocol))
             .associatedUsers(
                 AssociatedUsersListDto.builder()
                     .userIds(
@@ -86,6 +89,7 @@ public class GetProtocolByIdEndpoint {
                         .map(protocolStep -> ProtocolStepDto.builder()
                             .id(protocolStep.getId())
                             .name(protocolStep.getName())
+                            .status(protocolStep.getStatus().getInstance().getName())
                             .build())
                         .collect(Collectors.toList()))
                     .build())
