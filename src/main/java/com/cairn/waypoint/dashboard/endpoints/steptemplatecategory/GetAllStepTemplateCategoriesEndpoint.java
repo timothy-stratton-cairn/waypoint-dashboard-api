@@ -1,10 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplatecategory;
 
-import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateListDto;
-import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMapper;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.TemplateCategoryListDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.mapper.TemplateCategoryMapper;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
 import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,10 +30,10 @@ public class GetAllStepTemplateCategoriesEndpoint {
   }
 
   @GetMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.step.template.category.read')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.step.template.category.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Retrieves all step template categories.",
-      description = "Retrieves all step template categories. Requires the `protocol.step.template.category.read` permission.",
+      description = "Retrieves all step template categories. Requires the `protocol.step.template.category.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",

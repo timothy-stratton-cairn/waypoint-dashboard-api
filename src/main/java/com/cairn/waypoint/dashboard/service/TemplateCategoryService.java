@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TemplateCategoryService {
+
   private TemplateCategoryRepository templateCategoryRepository;
 
   public TemplateCategoryService(TemplateCategoryRepository templateCategoryRepository) {

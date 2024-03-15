@@ -39,10 +39,10 @@ public class GetProtocolByIdEndpoint {
   }
 
   @GetMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.read')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Retrieves a protocol by it's ID.",
-      description = "Retrieves a protocol by it's ID. Requires the `protocol.read` permission.",
+      description = "Retrieves a protocol by it's ID. Requires the `protocol.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",

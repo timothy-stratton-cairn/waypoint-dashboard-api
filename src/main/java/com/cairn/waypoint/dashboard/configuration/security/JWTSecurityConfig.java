@@ -19,7 +19,6 @@ public class JWTSecurityConfig {
         .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("/v3/api-docs/**").permitAll()
-            .requestMatchers("/ops/**").permitAll()
             .anyRequest().authenticated()
         )
         .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));

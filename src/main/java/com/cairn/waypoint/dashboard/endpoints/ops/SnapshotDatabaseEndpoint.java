@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.endpoints.ops;
 
-import com.zaxxer.hikari.HikariDataSource;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -10,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.sql.SQLException;
 import java.time.Duration;
 import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +36,7 @@ public class SnapshotDatabaseEndpoint {
   }
 
   @PostMapping(PATH)
-  @PreAuthorize("permitAll()")
+  @PreAuthorize("hasAuthority('SCOPE_admin.full')")
   public ResponseEntity<?> resetDatabase() {
     try {
       Path sqlFile = Paths.get("C:\\Users\\tstra\\Desktop\\db.sql");
@@ -48,7 +46,8 @@ public class SnapshotDatabaseEndpoint {
 
       // stdOut
       OutputStream stdOut = new BufferedOutputStream(
-          Files.newOutputStream(sqlFile, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
+          Files.newOutputStream(sqlFile, StandardOpenOption.CREATE,
+              StandardOpenOption.TRUNCATE_EXISTING));
 
       ExecuteWatchdog watchdog = ExecuteWatchdog.builder().setTimeout(Duration.ofMinutes(5L)).get();
 
@@ -66,11 +65,12 @@ public class SnapshotDatabaseEndpoint {
       // Synchronous execution. Blocking until the execution of the child process is complete.
       int exitCode = defaultExecutor.execute(commandLine);
 
-      if(defaultExecutor.isFailure(exitCode) && watchdog.killedProcess()) {
+      if (defaultExecutor.isFailure(exitCode) && watchdog.killedProcess()) {
         log.error("timeout...");
       }
 
-      log.info("SQL data export completed: exitCode=[{}], sqlFile=[{}]", exitCode, sqlFile.toString());
+      log.info("SQL data export completed: exitCode=[{}], sqlFile=[{}]", exitCode,
+          sqlFile.toString());
 
       return ResponseEntity.ok().build();
     } catch (IOException e) {

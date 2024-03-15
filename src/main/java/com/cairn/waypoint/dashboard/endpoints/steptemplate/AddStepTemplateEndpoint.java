@@ -50,13 +50,13 @@ public class AddStepTemplateEndpoint {
   }
 
   @PostMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.step.template.create')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.step.template.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to create new step template,"
           + " linking the provided step tasks and homework templates to the newly created step template.",
       description = "Allows a user to create new step template,"
           + " linking the provided step tasks and homework templates to the newly created step template."
-          + " Requires the `protocol.step.template.create` permission.",
+          + " Requires the `protocol.step.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "201",

@@ -37,7 +37,7 @@ public class ResetDatabaseEndpoint {
 
   @Transactional
   @PostMapping(PATH)
-  @PreAuthorize("permitAll()")
+  @PreAuthorize("hasAuthority('SCOPE_admin.full')")
   public ResponseEntity<?> resetDatabase() {
     try {
       log.info("Attempting to reset the database");

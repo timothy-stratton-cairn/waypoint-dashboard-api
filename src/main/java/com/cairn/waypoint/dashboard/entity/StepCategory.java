@@ -20,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Table(name = "protocol_step_category")
 public class StepCategory extends BaseEntity {
+
   @JoinColumn(name = "protocol_step_template_category_id")
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private TemplateCategory templateCategory;

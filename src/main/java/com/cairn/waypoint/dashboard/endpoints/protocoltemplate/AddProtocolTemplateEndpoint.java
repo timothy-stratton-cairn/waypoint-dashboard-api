@@ -47,13 +47,13 @@ public class AddProtocolTemplateEndpoint {
   }
 
   @PostMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.template.create')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.template.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to create new protocol template, "
           + "linking the provided protocol step templates to the newly created protocol template.",
       description = "Allows a user to create new protocol template,"
           + " linking the provided protocol step templates to the newly created protocol template."
-          + " Requires the `protocol.template.create` permission.",
+          + " Requires the `protocol.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "201",

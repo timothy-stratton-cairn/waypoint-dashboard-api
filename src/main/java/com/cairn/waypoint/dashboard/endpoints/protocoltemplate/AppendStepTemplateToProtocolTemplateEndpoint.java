@@ -33,20 +33,21 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
   private final ProtocolTemplateService protocolTemplateService;
   private final StepTemplateService stepTemplateService;
 
-  public AppendStepTemplateToProtocolTemplateEndpoint(ProtocolTemplateService protocolTemplateService,
+  public AppendStepTemplateToProtocolTemplateEndpoint(
+      ProtocolTemplateService protocolTemplateService,
       StepTemplateService stepTemplateService) {
     this.protocolTemplateService = protocolTemplateService;
     this.stepTemplateService = stepTemplateService;
   }
 
   @PatchMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.template.update')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.template.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to add a step template to a protocol template,"
           + " keeping all other details the same.",
       description = "Allows a user to add a step template to a protocol template, "
           + "keeping all other details the same."
-          + " Requires the `protocol.template.update` permission.",
+          + " Requires the `protocol.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
@@ -65,7 +66,8 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> updateProtocolTemplate(@PathVariable Long protocolTemplateId,
       @PathVariable Long stepTemplateId, Principal principal) {
-    log.info("User [{}] is attempting to update a Protocol Template with id [{}] by appending Step Template with ID [{}]",
+    log.info(
+        "User [{}] is attempting to update a Protocol Template with id [{}] by appending Step Template with ID [{}]",
         principal.getName(), protocolTemplateId, stepTemplateId);
 
     Optional<ProtocolTemplate> protocolTemplateToBeUpdated = this.protocolTemplateService.getProtocolTemplateById(
@@ -84,17 +86,20 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
       StepTemplate stepTemplate = stepTemplateToBeAppended.get();
 
       ProtocolTemplateLinkedStepTemplate protocolTemplateLinkedStepTemplate = ProtocolTemplateLinkedStepTemplate.builder()
-              .protocolTemplate(protocolTemplate)
-              .stepTemplate(stepTemplate)
-              .ordinalIndex(protocolTemplate.getProtocolTemplateSteps().size())
-              .build();
+          .protocolTemplate(protocolTemplate)
+          .stepTemplate(stepTemplate)
+          .ordinalIndex(protocolTemplate.getProtocolTemplateSteps().size())
+          .build();
 
       protocolTemplate.getProtocolTemplateSteps().add(protocolTemplateLinkedStepTemplate);
 
-      Long updatedProtocolTemplateId = protocolTemplateService.saveProtocolTemplate(protocolTemplate);
+      Long updatedProtocolTemplateId = protocolTemplateService.saveProtocolTemplate(
+          protocolTemplate);
 
-      log.info("Protocol Template with ID [{}] and name [{}] updated successfully with Step Template [{}] ",
-          updatedProtocolTemplateId, protocolTemplateToBeUpdated.get().getName(), stepTemplate.getId());
+      log.info(
+          "Protocol Template with ID [{}] and name [{}] updated successfully with Step Template [{}] ",
+          updatedProtocolTemplateId, protocolTemplateToBeUpdated.get().getName(),
+          stepTemplate.getId());
       return ResponseEntity.status(HttpStatus.OK)
           .body("Protocol Template with ID [" + protocolTemplateId + "] and name ["
               + protocolTemplateToBeUpdated.get().getName() + "] updated successfully");

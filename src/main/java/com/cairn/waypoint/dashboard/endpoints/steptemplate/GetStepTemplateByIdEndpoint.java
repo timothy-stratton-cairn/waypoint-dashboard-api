@@ -37,10 +37,10 @@ public class GetStepTemplateByIdEndpoint {
   }
 
   @GetMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.step.template.read')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.step.template.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Retrieves a step Template by it's ID.",
-      description = "Retrieves a step Template by it's ID. Requires the `protocol.step.template.read` permission.",
+      description = "Retrieves a step Template by it's ID. Requires the `protocol.step.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",

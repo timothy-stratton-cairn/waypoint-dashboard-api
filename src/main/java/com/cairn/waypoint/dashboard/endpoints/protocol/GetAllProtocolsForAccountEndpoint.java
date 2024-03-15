@@ -1,7 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AccountProtocolListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,10 +31,10 @@ public class GetAllProtocolsForAccountEndpoint {
   }
 
   @GetMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.read')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Retrieves all protocols assigned to the provided account.",
-      description = "Retrieves all protocols assigned to the provided account. Requires the `protocol.read` permission.",
+      description = "Retrieves all protocols assigned to the provided account. Requires the `protocol.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",

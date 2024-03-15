@@ -52,13 +52,13 @@ public class UpdateStepTemplateEndpoint {
   }
 
   @PatchMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.step.template.update')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.step.template.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to update a step template, "
           + "updating properties and the provided protocol step templates to associated step template.",
       description = "Allows a user to update a step Template, "
           + "updating properties and the provided protocol step templates to associated step template."
-          + " Requires the `protocol.step.template.update` permission.",
+          + " Requires the `protocol.step.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
@@ -121,7 +121,8 @@ public class UpdateStepTemplateEndpoint {
     } else {
       Long createdStepTemplateId = updateStepTemplate(updateStepTemplateDetailsDto,
           principal.getName(), linkedStepTask.orElse(null),
-          linkedHomeworkTemplate.orElse(null), stepTemplateCategory.orElse(null), stepTemplateToBeUpdated.get());
+          linkedHomeworkTemplate.orElse(null), stepTemplateCategory.orElse(null),
+          stepTemplateToBeUpdated.get());
 
       log.info("Step Task [{}] updated successfully with ID [{}]",
           updateStepTemplateDetailsDto.getName(),

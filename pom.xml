@@ -112,8 +112,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
       <artifactId>commons-exec</artifactId>
+      <groupId>org.apache.commons</groupId>
       <version>1.4.0</version>
     </dependency>
   </dependencies>

@@ -55,13 +55,13 @@ public class AddProtocolEndpoint {
 
   @Transactional
   @PostMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.create')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to create new protocol, "
           + "linking the provided user account to the newly created protocol.",
       description = "Allows a user to create new protocol,"
           + " linking the provided user account to the newly created protocol."
-          + " Requires the `protocol.create` permission.",
+          + " Requires the `protocol.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "201",
@@ -141,8 +141,8 @@ public class AddProtocolEndpoint {
           protocolStep.setTemplate(stepTemplateLink.getStepTemplate());
           protocolStep.setOrdinalIndex(stepTemplateLink.getOrdinalIndex());
           protocolStep.setCategory(StepCategory.builder()
-                  .templateCategory(stepTemplateLink.getStepTemplate().getCategory())
-                  .build());
+              .templateCategory(stepTemplateLink.getStepTemplate().getCategory())
+              .build());
 
           return protocolStep;
         })

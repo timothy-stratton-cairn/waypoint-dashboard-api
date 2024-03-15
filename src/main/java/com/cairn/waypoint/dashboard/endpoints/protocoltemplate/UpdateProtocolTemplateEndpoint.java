@@ -53,13 +53,13 @@ public class UpdateProtocolTemplateEndpoint {
   }
 
   @PatchMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.template.update')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.template.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to update a protocol template, "
           + "updating properties and the provided protocol step templates to associated protocol template.",
       description = "Allows a user to update a protocol template, "
           + "updating properties and the provided protocol step templates to associated protocol template."
-          + " Requires the `protocol.template.update` permission.",
+          + " Requires the `protocol.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",

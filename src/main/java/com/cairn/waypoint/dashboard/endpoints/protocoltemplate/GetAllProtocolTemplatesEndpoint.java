@@ -31,10 +31,10 @@ public class GetAllProtocolTemplatesEndpoint {
   }
 
   @GetMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.template.read')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.template.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Retrieves all protocol templates.",
-      description = "Retrieves all protocol templates. Requires the `protocol.template.read` permission.",
+      description = "Retrieves all protocol templates. Requires the `protocol.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",

@@ -30,28 +30,29 @@ public class PrimeDatabaseEndpoint {
 
   private final StepTemplateService stepTemplateService;
   private final ProtocolTemplateService protocolTemplateService;
-  private List<StepTemplate> stepTemplates;
-  private List<ProtocolTemplate> protocolTemplates;
-
   private final TemplateCategory gatherDataCategory;
   private final TemplateCategory runAnalysisCategory;
   private final TemplateCategory craftRecommendationsCategory;
   private final TemplateCategory shareEducationCategory;
+  private List<StepTemplate> stepTemplates;
+  private List<ProtocolTemplate> protocolTemplates;
 
   public PrimeDatabaseEndpoint(StepTemplateService stepTemplateService,
-      ProtocolTemplateService protocolTemplateService, TemplateCategoryService templateCategoryService) {
+      ProtocolTemplateService protocolTemplateService,
+      TemplateCategoryService templateCategoryService) {
     this.stepTemplateService = stepTemplateService;
     this.protocolTemplateService = protocolTemplateService;
 
     gatherDataCategory = templateCategoryService.findByName("Gather Data").get();
     runAnalysisCategory = templateCategoryService.findByName("Run Analysis").get();
-    craftRecommendationsCategory = templateCategoryService.findByName("Craft Recommendations").get();
+    craftRecommendationsCategory = templateCategoryService.findByName("Craft Recommendations")
+        .get();
     shareEducationCategory = templateCategoryService.findByName("Share Education").get();
   }
 
   @Transactional
   @PostMapping(PATH)
-  @PreAuthorize("permitAll()")
+  @PreAuthorize("hasAuthority('SCOPE_admin.full')")
   public ResponseEntity<?> primeDatabase() {
     try {
       log.info("Attempting to Prime the Database with some standard Protocol Templates");

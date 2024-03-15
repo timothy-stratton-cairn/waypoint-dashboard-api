@@ -15,6 +15,7 @@ public interface ProtocolMapper {
   ProtocolMapper INSTANCE = Mappers.getMapper(ProtocolMapper.class);
 
   ProtocolDto toDto(Protocol protocol);
+
   AccountProtocolDto toAccountProtocolDto(Protocol protocol);
 
   Protocol protocolTemplateToProtocol(ProtocolTemplate protocolTemplate);

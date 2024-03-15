@@ -37,10 +37,10 @@ public class GetProtocolTemplateByIdEndpoint {
   }
 
   @GetMapping(PATH)
-  @PreAuthorize("hasAuthority('SCOPE_protocol.template.read')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.template.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Retrieves a protocol template by it's ID.",
-      description = "Retrieves a protocol template by it's ID. Requires the `protocol.template.read` permission.",
+      description = "Retrieves a protocol template by it's ID. Requires the `protocol.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
