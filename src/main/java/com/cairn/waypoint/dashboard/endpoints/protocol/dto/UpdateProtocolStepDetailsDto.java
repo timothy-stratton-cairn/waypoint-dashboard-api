@@ -5,12 +5,8 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ProtocolStepDto {
-
+public class UpdateProtocolStepDetailsDto {
   private Long id;
-  private String name;
-  private String description;
   private String notes;
   private String status;
-  private String category;
 }

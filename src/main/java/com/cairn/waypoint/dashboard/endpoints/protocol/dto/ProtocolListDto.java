@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol.dto;
 
+import java.util.Comparator;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
@@ -13,5 +14,15 @@ public class ProtocolListDto {
 
   public Integer getNumOfProtocols() {
     return protocols.size();
+  }
+
+  public List<ProtocolDto> getProtocols() {
+    Comparator<ProtocolDto> needsAttentionComparator = Comparator.comparing(ProtocolDto::getNeedsAttention).reversed();
+    Comparator<ProtocolDto> lastStatusUpdateTimestamp = Comparator.comparing(ProtocolDto::getLastStatusUpdateTimestamp);
+
+    return protocols.stream()
+        .sorted(lastStatusUpdateTimestamp)
+        .sorted(needsAttentionComparator)
+        .toList();
   }
 }

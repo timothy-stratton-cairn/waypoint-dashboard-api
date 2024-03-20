@@ -107,7 +107,7 @@ public class GetStepTemplateByIdEndpoint {
             .description(returnedStepTemplate.getDescription())
             .linkedStepTask(stepTaskDetailsDto)
             .linkedHomeworkTemplate(homeworkTemplateDetailsDto)
-            .stepTemplateCategory(categoryDetailsDto)
+            .category(categoryDetailsDto)
             .build()
     );
   }

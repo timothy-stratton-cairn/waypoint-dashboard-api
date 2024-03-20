@@ -9,4 +9,6 @@ public class StepTemplateDto {
 
   private Long id;
   private String name;
+  private String description;
+  private StepTemplateCategoryDetailsDto category;
 }

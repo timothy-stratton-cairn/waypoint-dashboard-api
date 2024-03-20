@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AssociatedStepTemplatesListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolStepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.StepTemplateCategoryDto;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,6 +84,11 @@ public class GetProtocolTemplateByIdEndpoint {
                         .id(protocolStepTemplate.getStepTemplate().getId())
                         .name(protocolStepTemplate.getStepTemplate().getName())
                         .description(protocolStepTemplate.getStepTemplate().getDescription())
+                        .category(StepTemplateCategoryDto.builder()
+                            .id(protocolStepTemplate.getStepTemplate().getCategory().getId())
+                            .name(protocolStepTemplate.getStepTemplate().getCategory().getName())
+                            .description(protocolStepTemplate.getStepTemplate().getCategory().getDescription())
+                            .build())
                         .build())
                     .collect(Collectors.toList()))
                 .build())

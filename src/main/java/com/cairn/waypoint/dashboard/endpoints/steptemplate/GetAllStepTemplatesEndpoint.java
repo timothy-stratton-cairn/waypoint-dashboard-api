@@ -1,5 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateListDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMapper;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
@@ -49,7 +51,16 @@ public class GetAllStepTemplatesEndpoint {
         StepTemplateListDto.builder()
             .stepTemplates(
                 this.stepTemplateService.getAllStepTemplates().stream()
-                    .map(StepTemplateMapper.INSTANCE::toDto)
+                    .map(stepTemplate -> StepTemplateDto.builder()
+                        .id(stepTemplate.getId())
+                        .name(stepTemplate.getName())
+                        .description(stepTemplate.getDescription())
+                        .category(StepTemplateCategoryDetailsDto.builder()
+                            .id(stepTemplate.getCategory().getId())
+                            .name(stepTemplate.getCategory().getName())
+                            .description(stepTemplate.getCategory().getDescription())
+                            .build())
+                        .build())
                     .toList())
             .build()
     );

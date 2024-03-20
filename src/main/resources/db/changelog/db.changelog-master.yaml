@@ -7,3 +7,7 @@ databaseChangeLog:
       file: db/changelog/2024-03-13-add-step-template-categories.yaml
   - include:
       file: db/changelog/2024-03-15-add-step-statuses.yaml
+  - include:
+      file: db/changelog/2024-03-19-add-step-category-parent-categories-column.yaml
+  - include:
+      file: db/changelog/2024-03-19-update-protocol-table.yaml

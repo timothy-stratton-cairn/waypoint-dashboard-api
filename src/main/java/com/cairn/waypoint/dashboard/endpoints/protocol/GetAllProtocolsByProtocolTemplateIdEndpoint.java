@@ -1,10 +1,14 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolByProtocolTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolsByProtocolTemplateListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
+import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,26 +22,27 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @Tag(name = "Protocol")
-public class GetAllProtocolsEndpoint {
+public class GetAllProtocolsByProtocolTemplateIdEndpoint {
 
-  public static final String PATH = "/api/protocol";
+  public static final String PATH = "/api/protocol/protocol-template/{protocolTemplateId}";
 
   private final ProtocolService protocolService;
 
-  public GetAllProtocolsEndpoint(ProtocolService protocolService) {
+  public GetAllProtocolsByProtocolTemplateIdEndpoint(ProtocolService protocolService) {
     this.protocolService = protocolService;
   }
 
   @GetMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
-      summary = "Retrieves all protocols.",
-      description = "Retrieves all protocols. Requires the `protocol.full` permission.",
+      summary = "Retrieves all protocols by the provided protocol template ID.",
+      description = "Retrieves all protocols by the provided protocol template ID. Requires the `protocol.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
@@ -47,13 +52,13 @@ public class GetAllProtocolsEndpoint {
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})})
-  public ResponseEntity<ProtocolListDto> getAllProtocols(Principal principal) {
-    log.info("User [{}] is Retrieving All Protocols", principal.getName());
+  public ResponseEntity<ProtocolsByProtocolTemplateListDto> getAllProtocolsByProtocolTemplateId(@PathVariable Long protocolTemplateId, Principal principal) {
+    log.info("User [{}] is Retrieving All Protocols By Protocol Template with ID [{}]", principal.getName(), protocolTemplateId);
     return ResponseEntity.ok(
-        ProtocolListDto.builder()
+        ProtocolsByProtocolTemplateListDto.builder()
             .protocols(
-                this.protocolService.getAllProtocols().stream()
-                    .map(protocol -> ProtocolDto.builder()
+                this.protocolService.getByProtocolTemplateId(protocolTemplateId).stream()
+                    .map(protocol -> ProtocolByProtocolTemplateDto.builder()
                         .id(protocol.getId())
                         .name(protocol.getName())
                         .description(protocol.getDescription())
@@ -62,6 +67,12 @@ public class GetAllProtocolsEndpoint {
                         .lastStatusUpdateTimestamp(protocol.getLastStatusUpdateTimestamp())
                         .completionPercentage(
                             ProtocolCalculationService.getProtocolCompletionPercentage(protocol))
+                        .associatedUsers(
+                            AssociatedUsersListDto.builder()
+                                .userIds(
+                                    protocol.getAssociatedUsers().stream().map(ProtocolUser::getUserId)
+                                        .toList())
+                                .build())
                         .associatedSteps(AssociatedStepsListDto.builder()
                             .steps(protocol.getProtocolSteps().stream()
                                 .map(protocolStep -> ProtocolStepDto.builder()

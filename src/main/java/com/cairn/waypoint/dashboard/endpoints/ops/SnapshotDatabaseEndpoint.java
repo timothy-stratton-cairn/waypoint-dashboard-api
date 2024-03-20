@@ -1,5 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.ops;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,6 +39,9 @@ public class SnapshotDatabaseEndpoint {
 
   @PostMapping(PATH)
   @PreAuthorize("hasAuthority('SCOPE_admin.full')")
+  @Operation(
+      summary = "Allows a user to take a snapshot of the dashboard database",
+      security = @SecurityRequirement(name = "oAuth2JwtBearer"))
   public ResponseEntity<?> resetDatabase() {
     try {
       Path sqlFile = Paths.get("C:\\Users\\tstra\\Desktop\\db.sql");

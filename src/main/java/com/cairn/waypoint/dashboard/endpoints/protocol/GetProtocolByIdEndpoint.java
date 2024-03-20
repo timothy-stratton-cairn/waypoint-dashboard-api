@@ -75,6 +75,10 @@ public class GetProtocolByIdEndpoint {
         ProtocolDetailsDto.builder()
             .id(returnedProtocol.getId())
             .name(returnedProtocol.getName())
+            .description(returnedProtocol.getDescription())
+            .comment(returnedProtocol.getComment())
+            .needsAttention(returnedProtocol.getMarkedForAttention())
+            .lastStatusUpdateTimestamp(returnedProtocol.getLastStatusUpdateTimestamp())
             .completionPercentage(
                 ProtocolCalculationService.getProtocolCompletionPercentage(returnedProtocol))
             .associatedUsers(
@@ -89,7 +93,10 @@ public class GetProtocolByIdEndpoint {
                         .map(protocolStep -> ProtocolStepDto.builder()
                             .id(protocolStep.getId())
                             .name(protocolStep.getName())
+                            .description(protocolStep.getDescription())
+                            .notes(protocolStep.getNotes())
                             .status(protocolStep.getStatus().getInstance().getName())
+                            .category(protocolStep.getCategory().getTemplateCategory().getName())
                             .build())
                         .collect(Collectors.toList()))
                     .build())

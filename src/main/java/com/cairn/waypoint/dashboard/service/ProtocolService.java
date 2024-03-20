@@ -31,7 +31,7 @@ public class ProtocolService {
     this.protocolUserRepository = protocolUserRepository;
   }
 
-  public List<Protocol> getAllProtocols() {
+  public List<Protocol>  getAllProtocols() {
     return this.protocolRepository.findAll();
   }
 
@@ -81,5 +81,9 @@ public class ProtocolService {
 
     //Safeguard for any hanging entities
     return this.protocolRepository.saveAndFlush(createdProtocol);
+  }
+
+  public Protocol updateProtocol(Protocol protocolToBeUpdated) {
+    return this.protocolRepository.save(protocolToBeUpdated);
   }
 }

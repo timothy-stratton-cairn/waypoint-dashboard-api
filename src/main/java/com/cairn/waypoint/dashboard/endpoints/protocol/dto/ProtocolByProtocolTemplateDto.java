@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ProtocolDto {
+public class ProtocolByProtocolTemplateDto {
 
   private Long id;
   private String name;
@@ -22,5 +22,6 @@ public class ProtocolDto {
 
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage;
+  private AssociatedUsersListDto associatedUsers;
   private AssociatedStepsListDto associatedSteps;
 }

@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.ops;
 
+import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
@@ -7,6 +8,11 @@ import com.cairn.waypoint.dashboard.entity.TemplateCategory;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
 import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.util.LinkedHashSet;
@@ -53,6 +59,9 @@ public class PrimeDatabaseEndpoint {
   @Transactional
   @PostMapping(PATH)
   @PreAuthorize("hasAuthority('SCOPE_admin.full')")
+  @Operation(
+      summary = "Allows a user to prime the dashboard database with test data",
+      security = @SecurityRequirement(name = "oAuth2JwtBearer"))
   public ResponseEntity<?> primeDatabase() {
     try {
       log.info("Attempting to Prime the Database with some standard Protocol Templates");

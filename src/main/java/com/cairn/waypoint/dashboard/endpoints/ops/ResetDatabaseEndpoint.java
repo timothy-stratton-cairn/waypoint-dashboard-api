@@ -1,5 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.ops;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.sql.SQLException;
@@ -38,6 +40,9 @@ public class ResetDatabaseEndpoint {
   @Transactional
   @PostMapping(PATH)
   @PreAuthorize("hasAuthority('SCOPE_admin.full')")
+  @Operation(
+      summary = "Allows a user to reset the dashboard database, clearing all data",
+      security = @SecurityRequirement(name = "oAuth2JwtBearer"))
   public ResponseEntity<?> resetDatabase() {
     try {
       log.info("Attempting to reset the database");

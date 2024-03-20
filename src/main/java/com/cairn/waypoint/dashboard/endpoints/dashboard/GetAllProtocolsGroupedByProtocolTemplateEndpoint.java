@@ -1,6 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.dashboard;
 
 import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.GlobalProtocolViewDto;
+import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.GlobalProtocolViewListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
 import com.cairn.waypoint.dashboard.entity.Protocol;
@@ -27,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "Protocol")
+@Tag(name = "Dashboard")
 public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
 
   public static final String PATH = "/api/dashboard/protocol";
@@ -55,7 +56,7 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})})
-  public ResponseEntity<List<GlobalProtocolViewDto>> getAllProtocols(Principal principal) {
+  public ResponseEntity<GlobalProtocolViewListDto> getAllProtocols(Principal principal) {
     log.info("User [{}] is Retrieving All Protocols for the Dashboard View", principal.getName());
 
     List<ProtocolTemplate> protocolTemplates = this.protocolTemplateService.getAllProtocolTemplates();
@@ -98,7 +99,9 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
         });
 
     return ResponseEntity.ok(
-        globalProtocolViewDtos
+        GlobalProtocolViewListDto.builder()
+            .protocols(globalProtocolViewDtos)
+            .build()
     );
   }
 

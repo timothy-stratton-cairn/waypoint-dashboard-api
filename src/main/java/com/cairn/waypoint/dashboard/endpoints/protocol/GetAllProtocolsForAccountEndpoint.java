@@ -59,6 +59,10 @@ public class GetAllProtocolsForAccountEndpoint {
                         AccountProtocolDto.builder()
                             .id(protocol.getId())
                             .name(protocol.getName())
+                            .description(protocol.getDescription())
+                            .comment(protocol.getComment())
+                            .needsAttention(protocol.getMarkedForAttention())
+                            .lastStatusUpdateTimestamp(protocol.getLastStatusUpdateTimestamp())
                             .completionPercentage(
                                 ProtocolCalculationService.getProtocolCompletionPercentage(
                                     protocol))
@@ -68,8 +72,11 @@ public class GetAllProtocolsForAccountEndpoint {
                                         .map(protocolStep -> ProtocolStepDto.builder()
                                             .id(protocolStep.getId())
                                             .name(protocolStep.getName())
+                                            .description(protocolStep.getDescription())
+                                            .notes(protocolStep.getNotes())
                                             .status(
                                                 protocolStep.getStatus().getInstance().getName())
+                                            .category(protocolStep.getCategory().getTemplateCategory().getName())
                                             .build())
                                         .collect(Collectors.toList()))
                                     .build())

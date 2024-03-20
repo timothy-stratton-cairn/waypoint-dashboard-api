@@ -134,6 +134,8 @@ public class AddProtocolEndpoint {
     protocolToBeCreated.setModifiedBy(modifiedBy);
     protocolToBeCreated.setProtocolTemplate(protocolTemplate);
     protocolToBeCreated.setComment(protocolComment);
+    protocolToBeCreated.setMarkedForAttention(Boolean.FALSE);
+    protocolToBeCreated.setLastStatusUpdateTimestamp(LocalDateTime.now());
 
     return protocolToBeCreated;
   }
