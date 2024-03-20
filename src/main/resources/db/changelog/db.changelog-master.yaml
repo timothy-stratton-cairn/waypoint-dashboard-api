@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/2024-03-19-add-step-category-parent-categories-column.yaml
   - include:
       file: db/changelog/2024-03-19-update-protocol-table.yaml
+  - include:
+      file: db/changelog/2024-03-20-modify-description-notes-and-comment-columns.yaml

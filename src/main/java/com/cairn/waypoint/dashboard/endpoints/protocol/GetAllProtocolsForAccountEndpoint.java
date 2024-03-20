@@ -76,7 +76,9 @@ public class GetAllProtocolsForAccountEndpoint {
                                             .notes(protocolStep.getNotes())
                                             .status(
                                                 protocolStep.getStatus().getInstance().getName())
-                                            .category(protocolStep.getCategory().getTemplateCategory().getName())
+                                            .category(
+                                                protocolStep.getCategory().getTemplateCategory()
+                                                    .getName())
                                             .build())
                                         .collect(Collectors.toList()))
                                     .build())

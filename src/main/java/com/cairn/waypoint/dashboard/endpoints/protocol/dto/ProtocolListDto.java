@@ -17,8 +17,10 @@ public class ProtocolListDto {
   }
 
   public List<ProtocolDto> getProtocols() {
-    Comparator<ProtocolDto> needsAttentionComparator = Comparator.comparing(ProtocolDto::getNeedsAttention).reversed();
-    Comparator<ProtocolDto> lastStatusUpdateTimestamp = Comparator.comparing(ProtocolDto::getLastStatusUpdateTimestamp);
+    Comparator<ProtocolDto> needsAttentionComparator = Comparator.comparing(
+        ProtocolDto::getNeedsAttention).reversed();
+    Comparator<ProtocolDto> lastStatusUpdateTimestamp = Comparator.comparing(
+        ProtocolDto::getLastStatusUpdateTimestamp);
 
     return protocols.stream()
         .sorted(lastStatusUpdateTimestamp)

@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class GlobalProtocolViewListDto {
+
   private List<GlobalProtocolViewDto> protocols;
   private Integer numOfProtocols;
 

@@ -17,8 +17,10 @@ public class AccountProtocolListDto {
   }
 
   public List<AccountProtocolDto> getProtocols() {
-    Comparator<AccountProtocolDto> needsAttentionComparator = Comparator.comparing(AccountProtocolDto::getNeedsAttention).reversed();
-    Comparator<AccountProtocolDto> lastStatusUpdateTimestamp = Comparator.comparing(AccountProtocolDto::getLastStatusUpdateTimestamp);
+    Comparator<AccountProtocolDto> needsAttentionComparator = Comparator.comparing(
+        AccountProtocolDto::getNeedsAttention).reversed();
+    Comparator<AccountProtocolDto> lastStatusUpdateTimestamp = Comparator.comparing(
+        AccountProtocolDto::getLastStatusUpdateTimestamp);
 
     return protocols.stream()
         .sorted(lastStatusUpdateTimestamp)

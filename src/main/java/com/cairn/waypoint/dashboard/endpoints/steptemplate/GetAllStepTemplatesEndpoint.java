@@ -3,7 +3,6 @@ package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateListDto;
-import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMapper;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

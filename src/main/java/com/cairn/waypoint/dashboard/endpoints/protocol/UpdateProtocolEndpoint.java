@@ -40,7 +40,8 @@ public class UpdateProtocolEndpoint {
   private final ProtocolService protocolService;
   private final ProtocolStepService protocolStepService;
 
-  public UpdateProtocolEndpoint(ProtocolService protocolService, ProtocolStepService protocolStepService) {
+  public UpdateProtocolEndpoint(ProtocolService protocolService,
+      ProtocolStepService protocolStepService) {
     this.protocolService = protocolService;
     this.protocolStepService = protocolStepService;
   }
@@ -74,11 +75,13 @@ public class UpdateProtocolEndpoint {
       return generateFailureResponse("Protocol with ID [" +
           protocolId + "] not found", HttpStatus.NOT_FOUND);
     } else {
-      return updateProtocol(optionalProtocolToUpdate.get(), updateProtocolDetailsDto, principal.getName());
+      return updateProtocol(optionalProtocolToUpdate.get(), updateProtocolDetailsDto,
+          principal.getName());
     }
   }
 
-  private ResponseEntity<?> updateProtocol(Protocol protocolToUpdate, UpdateProtocolDetailsDto updateProtocolDetailsDto, String modifiedBy) {
+  private ResponseEntity<?> updateProtocol(Protocol protocolToUpdate,
+      UpdateProtocolDetailsDto updateProtocolDetailsDto, String modifiedBy) {
     Protocol updatedProtocol = this.protocolService.updateProtocol(
         setUpdatedProtocolProperties(protocolToUpdate, updateProtocolDetailsDto, modifiedBy));
 
@@ -95,7 +98,8 @@ public class UpdateProtocolEndpoint {
               updatedProtocolStep.getId() + "] not found associated with Protocol with ID [" +
               updatedProtocol.getId() + "]", HttpStatus.NOT_FOUND);
         } else {
-          updatedProtocol = updateProtocolStep(updatedProtocol, optionalProtocolStepToUpdate.get(), updatedProtocolStep, modifiedBy,
+          updatedProtocol = updateProtocolStep(updatedProtocol, optionalProtocolStepToUpdate.get(),
+              updatedProtocolStep, modifiedBy,
               updatedProtocol);
         }
       }
@@ -106,7 +110,8 @@ public class UpdateProtocolEndpoint {
             + updatedProtocol.getName() + "] updated successfully");
   }
 
-  private Protocol setUpdatedProtocolProperties(Protocol protocolToUpdate, UpdateProtocolDetailsDto updateProtocolDetailsDto, String modifiedBy) {
+  private Protocol setUpdatedProtocolProperties(Protocol protocolToUpdate,
+      UpdateProtocolDetailsDto updateProtocolDetailsDto, String modifiedBy) {
     protocolToUpdate.setModifiedBy(modifiedBy);
 
     if (updateProtocolDetailsDto.getComment() != null) {
@@ -120,7 +125,9 @@ public class UpdateProtocolEndpoint {
     return protocolToUpdate;
   }
 
-  private Protocol updateProtocolStep(Protocol updatedProtocol, ProtocolStep protocolStepToUpdate, UpdateProtocolStepDetailsDto updatedProtocolStep, String modifiedBy, Protocol protocolToUpdate) {
+  private Protocol updateProtocolStep(Protocol updatedProtocol, ProtocolStep protocolStepToUpdate,
+      UpdateProtocolStepDetailsDto updatedProtocolStep, String modifiedBy,
+      Protocol protocolToUpdate) {
     protocolStepToUpdate.setModifiedBy(modifiedBy);
     if (updatedProtocolStep.getNotes() != null) {
       protocolStepToUpdate.setNotes(updatedProtocolStep.getNotes());
@@ -136,7 +143,8 @@ public class UpdateProtocolEndpoint {
     }
     Long protocolStepId = this.protocolStepService.saveProtocolStep(protocolStepToUpdate);
 
-    log.info("Updated Protocol Step with ID [{}] on Protocol with ID [{}]", protocolStepId, protocolToUpdate.getId());
+    log.info("Updated Protocol Step with ID [{}] on Protocol with ID [{}]", protocolStepId,
+        protocolToUpdate.getId());
 
     return updatedProtocol;
   }

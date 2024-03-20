@@ -3,7 +3,6 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolByProtocolTemplateDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolsByProtocolTemplateListDto;
@@ -52,8 +51,10 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})})
-  public ResponseEntity<ProtocolsByProtocolTemplateListDto> getAllProtocolsByProtocolTemplateId(@PathVariable Long protocolTemplateId, Principal principal) {
-    log.info("User [{}] is Retrieving All Protocols By Protocol Template with ID [{}]", principal.getName(), protocolTemplateId);
+  public ResponseEntity<ProtocolsByProtocolTemplateListDto> getAllProtocolsByProtocolTemplateId(
+      @PathVariable Long protocolTemplateId, Principal principal) {
+    log.info("User [{}] is Retrieving All Protocols By Protocol Template with ID [{}]",
+        principal.getName(), protocolTemplateId);
     return ResponseEntity.ok(
         ProtocolsByProtocolTemplateListDto.builder()
             .protocols(
@@ -70,7 +71,8 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                         .associatedUsers(
                             AssociatedUsersListDto.builder()
                                 .userIds(
-                                    protocol.getAssociatedUsers().stream().map(ProtocolUser::getUserId)
+                                    protocol.getAssociatedUsers().stream()
+                                        .map(ProtocolUser::getUserId)
                                         .toList())
                                 .build())
                         .associatedSteps(AssociatedStepsListDto.builder()
@@ -81,7 +83,8 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                                     .description(protocolStep.getDescription())
                                     .notes(protocolStep.getNotes())
                                     .status(protocolStep.getStatus().getInstance().getName())
-                                    .category(protocolStep.getCategory().getTemplateCategory().getName())
+                                    .category(
+                                        protocolStep.getCategory().getTemplateCategory().getName())
                                     .build())
                                 .collect(Collectors.toList()))
                             .build())

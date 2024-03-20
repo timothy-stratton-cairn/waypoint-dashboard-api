@@ -31,7 +31,7 @@ public class ProtocolService {
     this.protocolUserRepository = protocolUserRepository;
   }
 
-  public List<Protocol>  getAllProtocols() {
+  public List<Protocol> getAllProtocols() {
     return this.protocolRepository.findAll();
   }
 
