@@ -7,7 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 public enum StepStatusEnum {
   TODO, IN_PROGRESS, DONE;
 
-  protected StepStatus instance;
+  private StepStatus instance;
 
   public StepStatus getInstance() {
     if (this.instance == null) {

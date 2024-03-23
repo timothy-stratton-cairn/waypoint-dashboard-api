@@ -117,7 +117,8 @@ public class UpdateProtocolEndpoint {
     protocolToUpdate.setModifiedBy(modifiedBy);
 
     if (updateProtocolDetailsDto.getComment() != null) {
-      protocolToUpdate.getComments().forEach(protocolCommentary -> protocolCommentary.setActive(Boolean.FALSE));
+      protocolToUpdate.getComments()
+          .forEach(protocolCommentary -> protocolCommentary.setActive(Boolean.FALSE));
       protocolToUpdate.getComments().add(ProtocolCommentary.builder()
           .modifiedBy(modifiedBy)
           .originalCommenter(modifiedBy)
@@ -138,7 +139,8 @@ public class UpdateProtocolEndpoint {
       Protocol protocolToUpdate) {
     protocolStepToUpdate.setModifiedBy(modifiedBy);
     if (updatedProtocolStep.getNotes() != null) {
-      protocolStepToUpdate.getNotes().forEach(protocolStepNote -> protocolStepNote.setActive(Boolean.FALSE));
+      protocolStepToUpdate.getNotes()
+          .forEach(protocolStepNote -> protocolStepNote.setActive(Boolean.FALSE));
       protocolStepToUpdate.getNotes().add(ProtocolStepNote.builder()
           .modifiedBy(modifiedBy)
           .originalCommenter(modifiedBy)

@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -30,12 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class SnapshotDatabaseEndpoint {
 
   public static final String PATH = "/ops/snapshot-database";
-
-  private final DataSource dataSource;
-
-  public SnapshotDatabaseEndpoint(DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
 
   @PostMapping(PATH)
   @PreAuthorize("hasAuthority('SCOPE_admin.full')")
@@ -75,7 +68,7 @@ public class SnapshotDatabaseEndpoint {
       }
 
       log.info("SQL data export completed: exitCode=[{}], sqlFile=[{}]", exitCode,
-          sqlFile.toString());
+          sqlFile);
 
       return ResponseEntity.ok().build();
     } catch (IOException e) {

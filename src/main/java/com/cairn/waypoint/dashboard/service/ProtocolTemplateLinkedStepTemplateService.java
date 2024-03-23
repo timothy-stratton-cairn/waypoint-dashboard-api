@@ -17,9 +17,9 @@ public class ProtocolTemplateLinkedStepTemplateService {
 
   public void deleteCollectionOfProtocolTemplateLinkedStepTemplates(
       Collection<ProtocolTemplateLinkedStepTemplate> protocolTemplateLinkedStepTemplates) {
-    protocolTemplateLinkedStepTemplates.forEach(protocolTemplateLinkedStepTemplate -> {
-      protocolTemplateLinkedStepTemplate.setActive(Boolean.FALSE);
-    });
+    protocolTemplateLinkedStepTemplates.forEach(
+        protocolTemplateLinkedStepTemplate -> protocolTemplateLinkedStepTemplate.setActive(
+            Boolean.FALSE));
 
     this.protocolTemplateLinkedStepTemplateRepository.saveAllAndFlush(
         protocolTemplateLinkedStepTemplates);
