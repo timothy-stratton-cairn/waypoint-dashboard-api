@@ -2,8 +2,10 @@ package com.cairn.waypoint.dashboard.service;
 
 
 import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
+import com.cairn.waypoint.dashboard.repository.ProtocolCommentaryRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolStepRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolUserRepository;
@@ -22,13 +24,16 @@ public class ProtocolService {
   private final ProtocolRepository protocolRepository;
   private final ProtocolStepRepository protocolStepRepository;
   private final ProtocolUserRepository protocolUserRepository;
+  private final ProtocolCommentaryRepository protocolCommentaryRepository;
 
   public ProtocolService(ProtocolRepository protocolRepository,
       ProtocolStepRepository protocolStepRepository,
-      ProtocolUserRepository protocolUserRepository) {
+      ProtocolUserRepository protocolUserRepository,
+      ProtocolCommentaryRepository protocolCommentaryRepository) {
     this.protocolRepository = protocolRepository;
     this.protocolStepRepository = protocolStepRepository;
     this.protocolUserRepository = protocolUserRepository;
+    this.protocolCommentaryRepository = protocolCommentaryRepository;
   }
 
   public List<Protocol> getAllProtocols() {
@@ -62,6 +67,8 @@ public class ProtocolService {
     protocolToBeCreated.setProtocolSteps(null);
     Set<ProtocolUser> protocolUsers = protocolToBeCreated.getAssociatedUsers();
     protocolToBeCreated.setAssociatedUsers(null);
+    Set<ProtocolCommentary> protocolComments = protocolToBeCreated.getComments();
+    protocolToBeCreated.setComments(null);
 
     Protocol createdProtocol = this.protocolRepository.save(protocolToBeCreated);
 
@@ -78,6 +85,13 @@ public class ProtocolService {
         .map(this.protocolUserRepository::saveAndFlush)
         .collect(Collectors.toCollection(LinkedHashSet::new));
     createdProtocol.setAssociatedUsers(createdProtocolUsers);
+
+    //Save the Protocol Commentary
+    Set<ProtocolCommentary> createdProtocolComments = protocolComments.stream()
+        .peek(protocolComment -> protocolComment.setProtocol(createdProtocol))
+        .map(this.protocolCommentaryRepository::saveAndFlush)
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+    createdProtocol.setComments(createdProtocolComments);
 
     //Safeguard for any hanging entities
     return this.protocolRepository.saveAndFlush(createdProtocol);

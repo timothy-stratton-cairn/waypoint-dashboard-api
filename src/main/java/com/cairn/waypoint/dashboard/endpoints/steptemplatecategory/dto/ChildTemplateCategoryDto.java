@@ -5,10 +5,9 @@ import lombok.Data;
 
 @Data
 @Builder
-public class TemplateCategoryDto {
+public class ChildTemplateCategoryDto {
 
   private Long id;
   private String name;
   private String description;
-  private ChildTemplateCategoryListDto childCategories;
 }

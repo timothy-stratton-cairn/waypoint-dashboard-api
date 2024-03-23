@@ -10,8 +10,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +23,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = false, exclude = "parentProtocol")
+@EqualsAndHashCode(callSuper = false, exclude = {"parentProtocol", "notes"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "protocol_step")
@@ -29,7 +31,11 @@ public class ProtocolStep extends BaseEntity {
 
   private String name;
   private String description;
-  private String notes;
+
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocolStep", cascade = {CascadeType.MERGE,
+      CascadeType.PERSIST})
+  private Set<ProtocolStepNote> notes;
+
   private Integer ordinalIndex;
 
   @Column(name = "step_status_id")

@@ -5,6 +5,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AddProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
@@ -106,13 +107,16 @@ public class AddProtocolEndpoint {
           HttpStatus.NOT_FOUND);
     } else {
       Protocol protocolToBeCreated = setupProtocolToBeCreated(protocolTemplateOptional.get(),
-          addProtocolDetailsDto.getComment(), principal.getName());
+          principal.getName());
 
       protocolToBeCreated.setProtocolSteps(setupProtocolSteps(protocolTemplateOptional.get(),
           principal.getName()));
 
       protocolToBeCreated.setAssociatedUsers(setupProtocolUsers(addProtocolDetailsDto,
           principal.getName(), accountDetailsDtoOptional.get()));
+
+      protocolToBeCreated.setComments(
+          setupProtocolComment(addProtocolDetailsDto, principal.getName()));
 
       Protocol createdProtocol = this.protocolService.saveProtocol(protocolToBeCreated);
 
@@ -126,14 +130,21 @@ public class AddProtocolEndpoint {
     }
   }
 
-  private Protocol setupProtocolToBeCreated(ProtocolTemplate protocolTemplate,
-      String protocolComment, String modifiedBy) {
+  private Set<ProtocolCommentary> setupProtocolComment(AddProtocolDetailsDto addProtocolDetailsDto,
+      String modifiedBy) {
+    return Set.of(ProtocolCommentary.builder()
+        .modifiedBy(modifiedBy)
+        .originalCommenter(modifiedBy)
+        .comment(addProtocolDetailsDto.getComment())
+        .build());
+  }
+
+  private Protocol setupProtocolToBeCreated(ProtocolTemplate protocolTemplate, String modifiedBy) {
     Protocol protocolToBeCreated = ProtocolMapper.INSTANCE.protocolTemplateToProtocol(
         protocolTemplate);
 
     protocolToBeCreated.setModifiedBy(modifiedBy);
     protocolToBeCreated.setProtocolTemplate(protocolTemplate);
-    protocolToBeCreated.setComment(protocolComment);
     protocolToBeCreated.setMarkedForAttention(Boolean.FALSE);
     protocolToBeCreated.setLastStatusUpdateTimestamp(LocalDateTime.now());
 

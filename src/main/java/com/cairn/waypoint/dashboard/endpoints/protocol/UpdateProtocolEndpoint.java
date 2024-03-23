@@ -5,7 +5,9 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.UpdateProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.UpdateProtocolStepDetailsDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
+import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
 import com.cairn.waypoint.dashboard.service.ProtocolStepService;
@@ -115,7 +117,13 @@ public class UpdateProtocolEndpoint {
     protocolToUpdate.setModifiedBy(modifiedBy);
 
     if (updateProtocolDetailsDto.getComment() != null) {
-      protocolToUpdate.setComment(updateProtocolDetailsDto.getComment());
+      protocolToUpdate.getComments().forEach(protocolCommentary -> protocolCommentary.setActive(Boolean.FALSE));
+      protocolToUpdate.getComments().add(ProtocolCommentary.builder()
+          .modifiedBy(modifiedBy)
+          .originalCommenter(modifiedBy)
+          .comment(updateProtocolDetailsDto.getComment())
+          .protocol(protocolToUpdate)
+          .build());
     }
 
     if (updateProtocolDetailsDto.getMarkForAttention() != null) {
@@ -130,7 +138,13 @@ public class UpdateProtocolEndpoint {
       Protocol protocolToUpdate) {
     protocolStepToUpdate.setModifiedBy(modifiedBy);
     if (updatedProtocolStep.getNotes() != null) {
-      protocolStepToUpdate.setNotes(updatedProtocolStep.getNotes());
+      protocolStepToUpdate.getNotes().forEach(protocolStepNote -> protocolStepNote.setActive(Boolean.FALSE));
+      protocolStepToUpdate.getNotes().add(ProtocolStepNote.builder()
+          .modifiedBy(modifiedBy)
+          .originalCommenter(modifiedBy)
+          .note(updatedProtocolStep.getNotes())
+          .protocolStep(protocolStepToUpdate)
+          .build());
     }
 
     if (updatedProtocolStep.getStatus() != null) {

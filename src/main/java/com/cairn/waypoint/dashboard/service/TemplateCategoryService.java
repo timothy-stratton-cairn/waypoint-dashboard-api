@@ -15,8 +15,8 @@ public class TemplateCategoryService {
     this.templateCategoryRepository = templateCategoryRepository;
   }
 
-  public List<TemplateCategory> getAllTemplateCategories() {
-    return this.templateCategoryRepository.findAll();
+  public List<TemplateCategory> getAllParentTemplateCategories() {
+    return this.templateCategoryRepository.findByParentCategoryIsNull();
   }
 
   public Optional<TemplateCategory> getTemplateCategoryById(Long stepTemplateCategoryId) {

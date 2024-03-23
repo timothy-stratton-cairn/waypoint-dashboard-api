@@ -49,4 +49,8 @@ public class StepTemplateService {
   public List<StepTemplate> saveStepTemplateList(List<StepTemplate> stepTemplates) {
     return this.stepTemplateRepository.saveAllAndFlush(stepTemplates);
   }
+
+  public List<StepTemplate> getAllStepTemplatesByTemplateCategoryId(Long templateCategoryId) {
+    return this.stepTemplateRepository.findByCategory_Id(templateCategoryId);
+  }
 }

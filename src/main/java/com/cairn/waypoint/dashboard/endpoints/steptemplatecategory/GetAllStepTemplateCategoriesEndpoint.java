@@ -1,7 +1,9 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplatecategory;
 
+import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.ChildTemplateCategoryDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.ChildTemplateCategoryListDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.TemplateCategoryDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.TemplateCategoryListDto;
-import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.mapper.TemplateCategoryMapper;
 import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -48,8 +50,21 @@ public class GetAllStepTemplateCategoriesEndpoint {
     return ResponseEntity.ok(
         TemplateCategoryListDto.builder()
             .templateCategories(
-                this.templateCategoryService.getAllTemplateCategories().stream()
-                    .map(TemplateCategoryMapper.INSTANCE::toDto)
+                this.templateCategoryService.getAllParentTemplateCategories().stream()
+                    .map(category -> TemplateCategoryDto.builder()
+                        .id(category.getId())
+                        .name(category.getName())
+                        .description(category.getDescription())
+                        .childCategories(ChildTemplateCategoryListDto.builder()
+                            .templateCategories(category.getChildCategories().stream()
+                                .map(childCategory -> ChildTemplateCategoryDto.builder()
+                                    .id(childCategory.getId())
+                                    .name(childCategory.getName())
+                                    .description(childCategory.getDescription())
+                                    .build())
+                                .toList())
+                            .build())
+                        .build())
                     .toList())
             .build()
     );

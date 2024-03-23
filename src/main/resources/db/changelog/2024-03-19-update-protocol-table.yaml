@@ -8,6 +8,6 @@ databaseChangeLog:
       changes:
         - sql:
             dbms: 'h2, mysql'
-            sql: ALTER TABLE protocol 
+            sql: ALTER TABLE protocol
               ADD COLUMN `attention` bit(1) DEFAULT NULL AFTER `comment`,
               ADD COLUMN `last_status_update_timestamp` timestamp DEFAULT NULL AFTER `attention`;

@@ -3,8 +3,12 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
@@ -76,7 +80,15 @@ public class GetProtocolByIdEndpoint {
             .id(returnedProtocol.getId())
             .name(returnedProtocol.getName())
             .description(returnedProtocol.getDescription())
-            .comment(returnedProtocol.getComment())
+            .protocolComments(ProtocolCommentListDto.builder()
+                .comments(returnedProtocol.getComments().stream()
+                    .map(protocolComment -> ProtocolCommentDto.builder()
+                        .takenAt(protocolComment.getCreated())
+                        .takenBy(protocolComment.getOriginalCommenter())
+                        .comment(protocolComment.getComment())
+                        .build())
+                    .toList())
+                .build())
             .needsAttention(returnedProtocol.getMarkedForAttention())
             .lastStatusUpdateTimestamp(returnedProtocol.getLastStatusUpdateTimestamp())
             .completionPercentage(
@@ -94,7 +106,15 @@ public class GetProtocolByIdEndpoint {
                             .id(protocolStep.getId())
                             .name(protocolStep.getName())
                             .description(protocolStep.getDescription())
-                            .notes(protocolStep.getNotes())
+                            .stepNotes(ProtocolStepNoteListDto.builder()
+                                .notes(protocolStep.getNotes().stream()
+                                    .map(protocolStepNote -> ProtocolStepNoteDto.builder()
+                                        .takenAt(protocolStepNote.getCreated())
+                                        .takenBy(protocolStepNote.getOriginalCommenter())
+                                        .note(protocolStepNote.getNote())
+                                        .build())
+                                    .toList())
+                                .build())
                             .status(protocolStep.getStatus().getInstance().getName())
                             .category(protocolStep.getCategory().getTemplateCategory().getName())
                             .build())

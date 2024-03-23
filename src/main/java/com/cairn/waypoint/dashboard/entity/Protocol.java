@@ -21,7 +21,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "comments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "protocol")
@@ -30,7 +30,10 @@ public class Protocol extends BaseEntity {
 
   private String name;
   private String description;
-  private String comment;
+
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocol", cascade = {CascadeType.MERGE,
+      CascadeType.PERSIST})
+  private Set<ProtocolCommentary> comments;
 
   @Column(name = "attention")
   private Boolean markedForAttention;

@@ -10,7 +10,7 @@ public class ProtocolStepDto {
   private Long id;
   private String name;
   private String description;
-  private String notes;
   private String status;
   private String category;
+  private ProtocolStepNoteListDto stepNotes;
 }

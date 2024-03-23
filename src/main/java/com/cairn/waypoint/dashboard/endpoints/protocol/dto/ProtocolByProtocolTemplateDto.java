@@ -15,13 +15,13 @@ public class ProtocolByProtocolTemplateDto {
   private Long id;
   private String name;
   private String description;
-  private String comment;
   private Boolean needsAttention;
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastStatusUpdateTimestamp;
 
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage;
+  private ProtocolCommentListDto protocolComments;
   private AssociatedUsersListDto associatedUsers;
   private AssociatedStepsListDto associatedSteps;
 }

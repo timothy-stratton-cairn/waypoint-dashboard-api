@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AppendProtocolCommentaryDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.service.ProtocolService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -71,8 +72,12 @@ public class AppendCommentOnProtocolEndpoint {
     } else {
       Protocol protocolToUpdate = optionalProtocolToUpdate.get();
 
-      protocolToUpdate.setComment(protocolToUpdate.getComment() +
-          " " + appendProtocolCommentaryDto.getComment());
+      protocolToUpdate.getComments().add(ProtocolCommentary.builder()
+          .modifiedBy(principal.getName())
+          .originalCommenter(principal.getName())
+          .comment(appendProtocolCommentaryDto.getComment())
+          .protocol(protocolToUpdate)
+          .build());
 
       Protocol updatedProtocol = this.protocolService.updateProtocol(protocolToUpdate);
 
