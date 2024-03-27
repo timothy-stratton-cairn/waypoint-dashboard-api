@@ -80,6 +80,8 @@ public class GetProtocolByIdEndpoint {
             .id(returnedProtocol.getId())
             .name(returnedProtocol.getName())
             .description(returnedProtocol.getDescription())
+            .goal(returnedProtocol.getGoal())
+            .goalProgress(returnedProtocol.getGoalProgress())
             .protocolComments(ProtocolCommentListDto.builder()
                 .comments(returnedProtocol.getComments().stream()
                     .map(protocolComment -> ProtocolCommentDto.builder()

@@ -67,6 +67,8 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                         .id(protocol.getId())
                         .name(protocol.getName())
                         .description(protocol.getDescription())
+                        .goal(protocol.getGoal())
+                        .goalProgress(protocol.getGoalProgress())
                         .protocolComments(ProtocolCommentListDto.builder()
                             .comments(protocol.getComments().stream()
                                 .map(protocolComment -> ProtocolCommentDto.builder()

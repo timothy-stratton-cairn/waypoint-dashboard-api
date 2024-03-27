@@ -15,6 +15,8 @@ public class ProtocolByProtocolTemplateDto {
   private Long id;
   private String name;
   private String description;
+  private String goal;
+  private String goalProgress;
   private Boolean needsAttention;
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastStatusUpdateTimestamp;

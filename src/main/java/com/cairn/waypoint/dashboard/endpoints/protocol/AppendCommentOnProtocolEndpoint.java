@@ -70,14 +70,8 @@ public class AppendCommentOnProtocolEndpoint {
       return generateFailureResponse("Protocol with ID [" +
           protocolId + "] not found", HttpStatus.NOT_FOUND);
     } else {
-      Protocol protocolToUpdate = optionalProtocolToUpdate.get();
-
-      protocolToUpdate.getComments().add(ProtocolCommentary.builder()
-          .modifiedBy(principal.getName())
-          .originalCommenter(principal.getName())
-          .comment(appendProtocolCommentaryDto.getComment())
-          .protocol(protocolToUpdate)
-          .build());
+      Protocol protocolToUpdate = updateProtocolFields(optionalProtocolToUpdate.get(),
+          appendProtocolCommentaryDto, principal.getName());
 
       Protocol updatedProtocol = this.protocolService.updateProtocol(protocolToUpdate);
 
@@ -85,8 +79,38 @@ public class AppendCommentOnProtocolEndpoint {
 
       return ResponseEntity.ok("Protocol with ID [" +
           updatedProtocol.getId() + "] updated successfully with commentary [" +
-          appendProtocolCommentaryDto.getComment() + "]");
+          appendProtocolCommentaryDto.getComment() + "] and goal progress [" +
+          appendProtocolCommentaryDto.getGoalProgress() + "]");
     }
+  }
+
+  private Protocol updateProtocolFields(Protocol protocolToUpdate,
+      AppendProtocolCommentaryDto appendProtocolCommentaryDto, String modifiedBy) {
+
+    if (appendProtocolCommentaryDto.getComment() != null) {
+      protocolToUpdate.getComments().add(ProtocolCommentary.builder()
+          .modifiedBy(modifiedBy)
+          .originalCommenter(modifiedBy)
+          .comment(appendProtocolCommentaryDto.getComment())
+          .protocol(protocolToUpdate)
+          .build());
+    }
+
+    if (appendProtocolCommentaryDto.getGoalProgress() != null) {
+      if (protocolToUpdate.getGoalProgress() != null) {
+        protocolToUpdate.getComments().add(ProtocolCommentary.builder()
+            .modifiedBy(modifiedBy)
+            .originalCommenter(modifiedBy)
+            .comment("[DEPRECATED GOAL PROGRESS] " + protocolToUpdate.getGoalProgress())
+            .protocol(protocolToUpdate)
+            .active(Boolean.FALSE)
+            .build());
+      }
+
+      protocolToUpdate.setGoalProgress(appendProtocolCommentaryDto.getGoalProgress());
+    }
+
+    return protocolToUpdate;
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {

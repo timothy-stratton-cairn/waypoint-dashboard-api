@@ -8,6 +8,8 @@ import lombok.Data;
 @Builder
 public class UpdateProtocolDetailsDto {
 
+  private String goal;
+  private String goalProgress;
   private String comment;
   private Boolean markForAttention;
   private List<UpdateProtocolStepDetailsDto> protocolSteps;

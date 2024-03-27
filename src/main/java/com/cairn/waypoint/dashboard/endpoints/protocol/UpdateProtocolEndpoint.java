@@ -131,6 +131,14 @@ public class UpdateProtocolEndpoint {
       protocolToUpdate.setMarkedForAttention(updateProtocolDetailsDto.getMarkForAttention());
     }
 
+    if (updateProtocolDetailsDto.getGoal() != null) {
+      protocolToUpdate.setGoal(updateProtocolDetailsDto.getGoal());
+    }
+
+    if (updateProtocolDetailsDto.getGoalProgress() != null) {
+      protocolToUpdate.setGoalProgress(updateProtocolDetailsDto.getGoalProgress());
+    }
+
     return protocolToUpdate;
   }
 

@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AppendProtocolCommentaryDto {
 
+  private String goalProgress;
   private String comment;
 }

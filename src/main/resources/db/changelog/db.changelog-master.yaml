@@ -15,3 +15,5 @@ databaseChangeLog:
       file: db/changelog/2024-03-20-modify-description-notes-and-comment-columns.yaml
   - include:
       file: db/changelog/2024-03-23-add-notes-and-commentary-tables-with-associations.yaml
+  - include:
+      file: db/changelog/2024-03-27-add-protocol-goal-and-goal-progress-columns.yaml

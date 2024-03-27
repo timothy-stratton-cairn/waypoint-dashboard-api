@@ -31,6 +31,9 @@ public class Protocol extends BaseEntity {
   private String name;
   private String description;
 
+  private String goal;
+  private String goalProgress;
+
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocol", cascade = {CascadeType.MERGE,
       CascadeType.PERSIST})
   private Set<ProtocolCommentary> comments;

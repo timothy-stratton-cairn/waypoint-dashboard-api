@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AddProtocolDetailsDto {
 
   private Long protocolTemplateId;
+  private String goal;
   private String comment;
   private Long associatedAccountId;
 }
