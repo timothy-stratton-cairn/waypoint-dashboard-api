@@ -1,6 +1,6 @@
 package com.cairn.waypoint.dashboard.entity;
 
-import com.cairn.waypoint.dashboard.entity.converter.AbstractObjectConverter;
+import com.cairn.waypoint.dashboard.entity.converter.ClazzConverter;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -20,6 +20,6 @@ import lombok.experimental.SuperBuilder;
 public class QuestionType extends BaseEntity {
 
   private String type;
-  @Convert(converter = AbstractObjectConverter.class)
+  @Convert(converter = ClazzConverter.class)
   private Class<?> typeClassReference;
 }

@@ -21,3 +21,5 @@ databaseChangeLog:
       file: db/changelog/2024-03-28-create-homework-feature-preliminary-database-build-out.yaml
   - include:
       file: db/changelog/2024-03-28-update-homework-template-table-with-new-column.yaml
+  - include:
+      file: db/changelog/2024-03-28-add-homework-question-types-entries.yaml

@@ -68,7 +68,8 @@ public class GetAllAssignedAccountsByProtocolTemplateIdEndpoint {
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> getAllAccountsAssociatedToProtocolTemplateID(
       @PathVariable Long protocolTemplateId, Principal principal) {
-    log.info("User [{}] is Retrieving All Users assigned to Protocols created from Protocol Template with ID [{}]",
+    log.info(
+        "User [{}] is Retrieving All Users assigned to Protocols created from Protocol Template with ID [{}]",
         principal.getName(), protocolTemplateId);
     if (this.protocolTemplateService.getProtocolTemplateById(protocolTemplateId).isEmpty()) {
       return generateFailureResponse("Protocol Template with ID [" +

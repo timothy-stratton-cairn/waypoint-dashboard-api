@@ -2,15 +2,12 @@ package com.cairn.waypoint.dashboard.repository;
 
 import com.cairn.waypoint.dashboard.dto.AccountDetailsDto;
 import com.cairn.waypoint.dashboard.dto.AccountListDto;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Repository
@@ -40,9 +37,9 @@ public class AccountRepository {
 
     return webClient.get()
         .uri(uriBuilder -> uriBuilder
-          .path(PATH)
-          .queryParam("accountId", accountIds)
-          .build())
+            .path(PATH)
+            .queryParam("accountId", accountIds)
+            .build())
         .header("Authorization",
             "Bearer " + ((Jwt) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal()).getTokenValue())

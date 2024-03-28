@@ -20,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Table(name = "homework_question_expected_response")
 public class ExpectedResponse extends BaseEntity {
+
   private String name;
   private String description;
   private Integer ordinalIndex;

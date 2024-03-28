@@ -1,9 +1,7 @@
 package com.cairn.waypoint.dashboard.entity;
 
 import com.cairn.waypoint.dashboard.entity.converter.QuestionTypeConverter;
-import com.cairn.waypoint.dashboard.entity.converter.StepStatusConverter;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
-import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -25,7 +23,8 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true, exclude = {"parentHomeworkTemplate", "expectedHomeworkResponses"})
+@EqualsAndHashCode(callSuper = true, exclude = {"parentHomeworkTemplate",
+    "expectedHomeworkResponses"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "homework_question")

@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol.dto;
 
-import com.cairn.waypoint.dashboard.dto.AccountDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;

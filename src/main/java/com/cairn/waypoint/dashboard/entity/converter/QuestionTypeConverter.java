@@ -1,11 +1,8 @@
 package com.cairn.waypoint.dashboard.entity.converter;
 
 import com.cairn.waypoint.dashboard.entity.QuestionType;
-import com.cairn.waypoint.dashboard.entity.StepStatus;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
-import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.QuestionTypeService;
-import com.cairn.waypoint.dashboard.service.StepStatusService;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import jakarta.persistence.EntityNotFoundException;

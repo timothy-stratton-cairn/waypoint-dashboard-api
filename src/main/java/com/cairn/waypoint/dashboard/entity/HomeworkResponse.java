@@ -31,4 +31,10 @@ public class HomeworkResponse extends BaseEntity {
   @JoinColumn(name = "homework_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Homework homework;
+
+  //usage: new HomeworkResponse().getResponse(QuestionTypeEnum.DATE.getDataType());
+  @SuppressWarnings("unchecked")
+  public <T> T getResponse(T returnType) {
+    return (T) this.homeworkQuestion.getQuestionType().createInstance(this.response);
+  }
 }

@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-question-type-entries
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'String', 'java.lang.String')
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'Integer', 'java.lang.Integer')
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'Float', 'java.lang.Float')
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'Multi-Select-Option', 'java.util.List')
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'Select-Option', 'java.util.List')
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'Date', 'java.time.LocalDate')
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'Datetime', 'java.time.LocalDateTime')
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'Boolean', 'java.lang.Boolean')
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO homework_question_type (`modified_by`, `type`, `type_class_reference`) VALUES ('liquibase', 'File', 'java.io.File')
