@@ -6,6 +6,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -26,9 +28,10 @@ public class HomeworkTemplate extends BaseEntity {
   private String name;
   private String description;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-  @JoinTable(name = "homework_template_homework_question",
-      joinColumns = @JoinColumn(name = "homework_template_id", referencedColumnName = "id"),
-      inverseJoinColumns = @JoinColumn(name = "homework_question_id", referencedColumnName = "id"))
+  private Boolean multiResponse;
+
+  @OrderBy("ordinalIndex ASC")
+  @JoinColumn(name = "parent_homework_template_id")
+  @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<HomeworkQuestion> homeworkQuestions;
 }
