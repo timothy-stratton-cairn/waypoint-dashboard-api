@@ -24,8 +24,8 @@ public class ProtocolTemplateService {
     return this.protocolTemplateRepository.findById(id);
   }
 
-  public Long saveProtocolTemplate(ProtocolTemplate protocolTemplate) {
-    return this.protocolTemplateRepository.save(protocolTemplate).getId();
+  public ProtocolTemplate saveProtocolTemplate(ProtocolTemplate protocolTemplate) {
+    return this.protocolTemplateRepository.save(protocolTemplate);
   }
 
   public Optional<ProtocolTemplate> findProtocolTemplateByName(String name) {

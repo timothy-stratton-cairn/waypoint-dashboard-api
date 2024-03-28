@@ -3,9 +3,11 @@ package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.UpdateProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTemplateMapper;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.service.ProtocolTemplateHelperService;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.service.ProtocolService;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateLinkedStepTemplateService;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
@@ -44,14 +47,21 @@ public class UpdateProtocolTemplateEndpoint {
   private final StepTemplateService stepTemplateService;
   private final ProtocolTemplateLinkedStepTemplateService protocolTemplateLinkedStepTemplateService;
 
+  private final ProtocolTemplateHelperService protocolTemplateHelperService;
+
   public UpdateProtocolTemplateEndpoint(ProtocolTemplateService protocolTemplateService,
       StepTemplateService stepTemplateService,
-      ProtocolTemplateLinkedStepTemplateService protocolTemplateLinkedStepTemplateService) {
+      ProtocolTemplateLinkedStepTemplateService protocolTemplateLinkedStepTemplateService,
+      ProtocolService protocolService) {
     this.protocolTemplateService = protocolTemplateService;
     this.stepTemplateService = stepTemplateService;
     this.protocolTemplateLinkedStepTemplateService = protocolTemplateLinkedStepTemplateService;
+
+    this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
+        protocolService, this.stepTemplateService);
   }
 
+  @Transactional
   @PatchMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.template.full', 'SCOPE_admin.full')")
   @Operation(
@@ -107,11 +117,18 @@ public class UpdateProtocolTemplateEndpoint {
         return generateFailureResponse(e.getMessage(), HttpStatus.NOT_FOUND);
       }
 
-      Long createdProtocolTemplateId = updateProtocolTemplate(updateProtocolTemplateDetailsDto,
+      ProtocolTemplate updatedProtocolTemplate = updateProtocolTemplate(
+          updateProtocolTemplateDetailsDto,
           principal.getName(), stepTemplates, protocolTemplateToBeUpdated.get());
 
+      protocolTemplateHelperService.removeProtocolStepsNotAssociatedWithTheUpdatedProtocolTemplate(
+          updatedProtocolTemplate);
+      protocolTemplateHelperService.addProtocolStepsNotAssociatedWithProtocolsMadeFromTheUpdatedProtocolTemplate(
+          updatedProtocolTemplate,
+          principal.getName());
+
       log.info("Protocol Template with ID [{}] and name [{}] updated successfully ",
-          createdProtocolTemplateId, protocolTemplateToBeUpdated.get().getName());
+          updatedProtocolTemplate.getId(), protocolTemplateToBeUpdated.get().getName());
       return ResponseEntity.status(HttpStatus.OK)
           .body("Protocol Template with ID [" + protocolTemplateId + "] and name ["
               + protocolTemplateToBeUpdated.get().getName() + "] updated successfully");
@@ -129,7 +146,7 @@ public class UpdateProtocolTemplateEndpoint {
     }
   }
 
-  private Long updateProtocolTemplate(
+  private ProtocolTemplate updateProtocolTemplate(
       UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto,
       String modifiedBy, LinkedHashSet<StepTemplate> stepTemplates,
       ProtocolTemplate targetProtocolTemplate) {

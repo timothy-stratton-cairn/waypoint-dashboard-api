@@ -111,7 +111,7 @@ public class AddProtocolTemplateEndpoint {
     protocolTemplateToCreate.setModifiedBy(modifiedBy);
 
     Long createdProtocolTemplateId = this.protocolTemplateService.saveProtocolTemplate(
-        protocolTemplateToCreate);
+        protocolTemplateToCreate).getId();
     Optional<ProtocolTemplate> protocolTemplateEntity = this.protocolTemplateService.getProtocolTemplateById(
         createdProtocolTemplateId);
 
@@ -122,7 +122,7 @@ public class AddProtocolTemplateEndpoint {
 
     protocolTemplateEntity.get().setProtocolTemplateSteps(
         createProtocolStepTemplates(protocolTemplateToCreate, stepTemplates, modifiedBy));
-    return this.protocolTemplateService.saveProtocolTemplate(protocolTemplateToCreate);
+    return this.protocolTemplateService.saveProtocolTemplate(protocolTemplateToCreate).getId();
   }
 
   private Set<ProtocolTemplateLinkedStepTemplate> createProtocolStepTemplates(

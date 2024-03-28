@@ -19,6 +19,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
@@ -27,6 +28,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "protocol_step")
+@SQLRestriction("active=1")
 public class ProtocolStep extends BaseEntity {
 
   private String name;

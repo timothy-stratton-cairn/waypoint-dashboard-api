@@ -1,9 +1,11 @@
 package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.service.ProtocolTemplateHelperService;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.service.ProtocolService;
 import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
 import com.cairn.waypoint.dashboard.service.StepTemplateService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,11 +35,17 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
   private final ProtocolTemplateService protocolTemplateService;
   private final StepTemplateService stepTemplateService;
 
+  private final ProtocolTemplateHelperService protocolTemplateHelperService;
+
   public AppendStepTemplateToProtocolTemplateEndpoint(
       ProtocolTemplateService protocolTemplateService,
-      StepTemplateService stepTemplateService) {
+      StepTemplateService stepTemplateService,
+      ProtocolService protocolService) {
     this.protocolTemplateService = protocolTemplateService;
     this.stepTemplateService = stepTemplateService;
+
+    this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
+        protocolService, this.stepTemplateService);
   }
 
   @PatchMapping(PATH)
@@ -93,12 +101,18 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
 
       protocolTemplate.getProtocolTemplateSteps().add(protocolTemplateLinkedStepTemplate);
 
-      Long updatedProtocolTemplateId = protocolTemplateService.saveProtocolTemplate(
+      ProtocolTemplate updatedProtocolTemplate = protocolTemplateService.saveProtocolTemplate(
           protocolTemplate);
+
+      protocolTemplateHelperService.removeProtocolStepsNotAssociatedWithTheUpdatedProtocolTemplate(
+          updatedProtocolTemplate);
+      protocolTemplateHelperService.addProtocolStepsNotAssociatedWithProtocolsMadeFromTheUpdatedProtocolTemplate(
+          updatedProtocolTemplate,
+          principal.getName());
 
       log.info(
           "Protocol Template with ID [{}] and name [{}] updated successfully with Step Template [{}] ",
-          updatedProtocolTemplateId, protocolTemplateToBeUpdated.get().getName(),
+          updatedProtocolTemplate.getId(), protocolTemplateToBeUpdated.get().getName(),
           stepTemplate.getId());
       return ResponseEntity.status(HttpStatus.OK)
           .body("Protocol Template with ID [" + protocolTemplateId + "] and name ["
