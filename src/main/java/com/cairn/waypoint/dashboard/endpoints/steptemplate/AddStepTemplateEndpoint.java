@@ -69,7 +69,7 @@ public class AddStepTemplateEndpoint {
           @ApiResponse(responseCode = "404", description = "Not Found",
               content = {@Content(mediaType = "application/json",
                   schema = @Schema(implementation = ErrorMessage.class))}),
-          @ApiResponse(responseCode = "409", description = "Not Found",
+          @ApiResponse(responseCode = "409", description = "Conflict",
               content = {@Content(mediaType = "application/json",
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> addStepTemplate(
