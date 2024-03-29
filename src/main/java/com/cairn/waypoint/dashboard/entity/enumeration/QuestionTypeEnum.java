@@ -2,6 +2,7 @@ package com.cairn.waypoint.dashboard.entity.enumeration;
 
 import com.cairn.waypoint.dashboard.entity.QuestionType;
 import com.cairn.waypoint.dashboard.service.QuestionTypeService;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.File;
 import java.time.LocalDate;
@@ -86,4 +87,17 @@ public enum QuestionTypeEnum {
   }
 
   public abstract Object createInstance(String... value);
+
+  @JsonCreator
+  public static QuestionTypeEnum create (String value) {
+    if(value == null) {
+      throw new IllegalArgumentException();
+    }
+    for(QuestionTypeEnum v : values()) {
+      if(value.equals(v.name())) {
+        return v;
+      }
+    }
+    throw new IllegalArgumentException();
+  }
 }
