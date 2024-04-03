@@ -23,6 +23,6 @@ public class QuestionTypeConverter implements AttributeConverter<QuestionTypeEnu
         .findFirst()
         .orElseThrow(EntityNotFoundException::new);
 
-    return QuestionTypeEnum.valueOf(retrievedStatus.getType().toUpperCase().replace(' ', '_'));
+    return QuestionTypeEnum.valueOf(retrievedStatus.getType().toUpperCase().replace(' ', '_').replace('-', '_'));
   }
 }
