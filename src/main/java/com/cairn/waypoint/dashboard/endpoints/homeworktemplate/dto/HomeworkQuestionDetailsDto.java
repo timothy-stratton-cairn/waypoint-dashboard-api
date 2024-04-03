@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto;
 
-import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDetailsDto;
 import lombok.Builder;
 import lombok.Data;
 

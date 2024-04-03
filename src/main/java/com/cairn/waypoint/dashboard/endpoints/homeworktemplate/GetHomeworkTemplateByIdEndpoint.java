@@ -7,10 +7,6 @@ import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkQuest
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkQuestionDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.TriggeredProtocolTemplateDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AssociatedStepTemplatesListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolStepTemplateDto;
-import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.StepTemplateCategoryDto;
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
@@ -25,7 +21,6 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,8 +45,8 @@ public class GetHomeworkTemplateByIdEndpoint {
   @GetMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_homework.template.full', 'SCOPE_admin.full')")
   @Operation(
-      summary = "Retrieves all homework templates.",
-      description = "Retrieves all homework templates. Requires the `homework.template.full` permission.",
+      summary = "Retrieves a homework template by ID.",
+      description = "Retrieves a homework template by ID. Requires the `homework.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
@@ -149,7 +144,8 @@ public class GetHomeworkTemplateByIdEndpoint {
     }
   }
 
-  private TriggeredProtocolTemplateDetailsDto getTriggeredProtocol(ProtocolTemplate protocolTemplate) {
+  private TriggeredProtocolTemplateDetailsDto getTriggeredProtocol(
+      ProtocolTemplate protocolTemplate) {
     if (Objects.isNull(protocolTemplate)) {
       return null;
     } else {
