@@ -51,7 +51,7 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
       responses = {
           @ApiResponse(responseCode = "200",
               content = {@Content(mediaType = "application/json",
-                  schema = @Schema(implementation = ProtocolListDto.class))}),
+                  schema = @Schema(implementation = GlobalProtocolViewListDto.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
