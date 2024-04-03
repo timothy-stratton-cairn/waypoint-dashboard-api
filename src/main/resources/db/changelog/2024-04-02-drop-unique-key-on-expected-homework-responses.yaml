@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-question-type-entries
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE homework_question_expected_response DROP INDEX `UK_c71yadhy25h64bjwo059g7854`;

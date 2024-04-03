@@ -23,8 +23,8 @@ public class HomeworkTemplateService {
     return this.homeworkTemplateRepository.findById(id);
   }
 
-  public Long saveHomeworkTemplate(HomeworkTemplate homeworkTemplate) {
-    return this.homeworkTemplateRepository.save(homeworkTemplate).getId();
+  public HomeworkTemplate saveHomeworkTemplate(HomeworkTemplate homeworkTemplate) {
+    return this.homeworkTemplateRepository.save(homeworkTemplate);
   }
 
   public Optional<HomeworkTemplate> findHomeworkTemplateByName(String name) {

@@ -10,7 +10,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -23,8 +22,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true, exclude = {"parentHomeworkTemplate",
-    "expectedHomeworkResponses"})
+@EqualsAndHashCode(callSuper = true, exclude = "expectedHomeworkResponses")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "homework_question")
@@ -53,10 +51,4 @@ public class HomeworkQuestion extends BaseEntity {
   @JoinColumn(name = "triggered_protocol_template_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private ProtocolTemplate triggeredProtocol;
-
-  private Integer ordinalIndex;
-
-  @JoinColumn(name = "parent_homework_template_id", nullable = false)
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private HomeworkTemplate parentHomeworkTemplate;
 }

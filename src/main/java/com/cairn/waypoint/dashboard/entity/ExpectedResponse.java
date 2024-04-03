@@ -21,8 +21,8 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "homework_question_expected_response")
 public class ExpectedResponse extends BaseEntity {
 
-  private String name;
-  private String description;
+  private String response;
+  private String tooltip;
   private Integer ordinalIndex;
 
   @JoinColumn(name = "parent_homework_question_id", nullable = false)

@@ -67,6 +67,19 @@ public enum QuestionTypeEnum {
 
   private QuestionType instance;
 
+  @JsonCreator
+  public static QuestionTypeEnum create(String value) {
+    if (value == null) {
+      throw new IllegalArgumentException();
+    }
+    for (QuestionTypeEnum v : values()) {
+      if (value.equals(v.name())) {
+        return v;
+      }
+    }
+    throw new IllegalArgumentException();
+  }
+
   public QuestionType getInstance() {
     if (this.instance == null) {
       this.instance = QuestionTypeService.availableTypes.stream()
@@ -87,17 +100,4 @@ public enum QuestionTypeEnum {
   }
 
   public abstract Object createInstance(String... value);
-
-  @JsonCreator
-  public static QuestionTypeEnum create (String value) {
-    if(value == null) {
-      throw new IllegalArgumentException();
-    }
-    for(QuestionTypeEnum v : values()) {
-      if(value.equals(v.name())) {
-        return v;
-      }
-    }
-    throw new IllegalArgumentException();
-  }
 }

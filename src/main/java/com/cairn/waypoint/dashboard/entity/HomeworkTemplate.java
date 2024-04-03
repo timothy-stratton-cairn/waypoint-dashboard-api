@@ -2,10 +2,7 @@ package com.cairn.waypoint.dashboard.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -28,8 +25,7 @@ public class HomeworkTemplate extends BaseEntity {
 
   private Boolean multiResponse;
 
-  @OrderBy("ordinalIndex ASC")
-  @JoinColumn(name = "parent_homework_template_id")
-  @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private Set<HomeworkQuestion> homeworkQuestions;
+  @OneToMany(mappedBy = "homeworkTemplate",
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+  private Set<HomeworkTemplateLinkedHomeworkQuestion> homeworkQuestions;
 }

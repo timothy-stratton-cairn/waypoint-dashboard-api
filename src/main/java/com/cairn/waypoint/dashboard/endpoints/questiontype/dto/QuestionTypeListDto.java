@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class QuestionTypeListDto {
+
   private List<QuestionTypeDto> statuses;
   private Integer numOfStatuses;
 

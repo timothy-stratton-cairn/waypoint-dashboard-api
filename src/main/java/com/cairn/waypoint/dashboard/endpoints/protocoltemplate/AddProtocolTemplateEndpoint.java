@@ -18,7 +18,6 @@ import jakarta.persistence.EntityNotFoundException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -110,19 +109,12 @@ public class AddProtocolTemplateEndpoint {
 
     protocolTemplateToCreate.setModifiedBy(modifiedBy);
 
-    Long createdProtocolTemplateId = this.protocolTemplateService.saveProtocolTemplate(
-        protocolTemplateToCreate).getId();
-    Optional<ProtocolTemplate> protocolTemplateEntity = this.protocolTemplateService.getProtocolTemplateById(
-        createdProtocolTemplateId);
+    ProtocolTemplate createdProtocolTemplate = this.protocolTemplateService.saveProtocolTemplate(
+        protocolTemplateToCreate);
 
-    if (protocolTemplateEntity.isEmpty()) {
-      //TODO handle this gracefully
-      return null;
-    }
-
-    protocolTemplateEntity.get().setProtocolTemplateSteps(
-        createProtocolStepTemplates(protocolTemplateToCreate, stepTemplates, modifiedBy));
-    return this.protocolTemplateService.saveProtocolTemplate(protocolTemplateToCreate).getId();
+    createdProtocolTemplate.setProtocolTemplateSteps(
+        createProtocolStepTemplates(createdProtocolTemplate, stepTemplates, modifiedBy));
+    return this.protocolTemplateService.saveProtocolTemplate(createdProtocolTemplate).getId();
   }
 
   private Set<ProtocolTemplateLinkedStepTemplate> createProtocolStepTemplates(

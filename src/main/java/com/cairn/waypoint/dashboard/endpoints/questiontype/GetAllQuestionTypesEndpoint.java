@@ -2,10 +2,8 @@ package com.cairn.waypoint.dashboard.endpoints.questiontype;
 
 import com.cairn.waypoint.dashboard.endpoints.questiontype.dto.QuestionTypeDto;
 import com.cairn.waypoint.dashboard.endpoints.questiontype.dto.QuestionTypeListDto;
-import com.cairn.waypoint.dashboard.endpoints.stepstatus.dto.StepStatusDto;
 import com.cairn.waypoint.dashboard.endpoints.stepstatus.dto.StepStatusListDto;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
-import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,12 +42,12 @@ public class GetAllQuestionTypesEndpoint {
   public ResponseEntity<QuestionTypeListDto> getAllHomeworkQuestionTypes(Principal principal) {
     log.info("User [{}] is Retrieving All Homework Question Types", principal.getName());
     return ResponseEntity.ok(QuestionTypeListDto.builder()
-            .statuses(Stream.of(QuestionTypeEnum.values())
-                .map(questionTypeEnum -> QuestionTypeDto.builder()
-                    .status(questionTypeEnum.name())
-                    .build())
-                .toList())
-            .build()
+        .statuses(Stream.of(QuestionTypeEnum.values())
+            .map(questionTypeEnum -> QuestionTypeDto.builder()
+                .status(questionTypeEnum.name())
+                .build())
+            .toList())
+        .build()
     );
   }
 

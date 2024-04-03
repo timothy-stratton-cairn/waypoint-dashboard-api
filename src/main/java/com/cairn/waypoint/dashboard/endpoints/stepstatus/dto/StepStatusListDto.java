@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class StepStatusListDto {
+
   private List<StepStatusDto> statuses;
   private Integer numOfStatuses;
 
