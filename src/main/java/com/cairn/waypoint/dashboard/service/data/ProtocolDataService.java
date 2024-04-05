@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 
 import com.cairn.waypoint.dashboard.entity.Protocol;
@@ -19,14 +19,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-public class ProtocolService {
+public class ProtocolDataService {
 
   private final ProtocolRepository protocolRepository;
   private final ProtocolStepRepository protocolStepRepository;
   private final ProtocolUserRepository protocolUserRepository;
   private final ProtocolCommentaryRepository protocolCommentaryRepository;
 
-  public ProtocolService(ProtocolRepository protocolRepository,
+  public ProtocolDataService(ProtocolRepository protocolRepository,
       ProtocolStepRepository protocolStepRepository,
       ProtocolUserRepository protocolUserRepository,
       ProtocolCommentaryRepository protocolCommentaryRepository) {

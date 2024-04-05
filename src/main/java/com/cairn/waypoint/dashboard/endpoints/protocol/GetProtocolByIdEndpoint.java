@@ -9,10 +9,10 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,10 +37,10 @@ public class GetProtocolByIdEndpoint {
 
   public static final String PATH = "/api/protocol/{protocolId}";
 
-  private final ProtocolService protocolService;
+  private final ProtocolDataService protocolDataService;
 
-  public GetProtocolByIdEndpoint(ProtocolService protocolService) {
-    this.protocolService = protocolService;
+  public GetProtocolByIdEndpoint(ProtocolDataService protocolDataService) {
+    this.protocolDataService = protocolDataService;
   }
 
   @GetMapping(PATH)
@@ -65,7 +65,7 @@ public class GetProtocolByIdEndpoint {
     log.info("User [{}] is Retrieving Protocol with ID [{}]", principal.getName(), protocolId);
 
     final ResponseEntity<?>[] response = new ResponseEntity<?>[1];
-    this.protocolService.getProtocolById(protocolId)
+    this.protocolDataService.getProtocolById(protocolId)
         .ifPresentOrElse(
             returnedProtocol -> response[0] = generateSuccessResponse(returnedProtocol),
             () -> response[0] = generateFailureResponse(protocolId)
@@ -94,7 +94,7 @@ public class GetProtocolByIdEndpoint {
             .needsAttention(returnedProtocol.getMarkedForAttention())
             .lastStatusUpdateTimestamp(returnedProtocol.getLastStatusUpdateTimestamp())
             .completionPercentage(
-                ProtocolCalculationService.getProtocolCompletionPercentage(returnedProtocol))
+                ProtocolCalculationHelperService.getProtocolCompletionPercentage(returnedProtocol))
             .associatedUsers(
                 AssociatedUsersListDto.builder()
                     .userIds(

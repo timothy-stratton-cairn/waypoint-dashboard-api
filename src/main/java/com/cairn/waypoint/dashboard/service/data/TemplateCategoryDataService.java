@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.TemplateCategory;
 import com.cairn.waypoint.dashboard.repository.TemplateCategoryRepository;
@@ -7,11 +7,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TemplateCategoryService {
+public class TemplateCategoryDataService {
 
   private final TemplateCategoryRepository templateCategoryRepository;
 
-  public TemplateCategoryService(TemplateCategoryRepository templateCategoryRepository) {
+  public TemplateCategoryDataService(TemplateCategoryRepository templateCategoryRepository) {
     this.templateCategoryRepository = templateCategoryRepository;
   }
 

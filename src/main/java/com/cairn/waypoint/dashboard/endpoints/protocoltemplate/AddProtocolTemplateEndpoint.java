@@ -6,8 +6,8 @@ import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTe
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,13 +36,13 @@ public class AddProtocolTemplateEndpoint {
 
   public static final String PATH = "/api/protocol-template";
 
-  private final ProtocolTemplateService protocolTemplateService;
-  private final StepTemplateService stepTemplateService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
+  private final StepTemplateDataService stepTemplateDataService;
 
-  public AddProtocolTemplateEndpoint(ProtocolTemplateService protocolTemplateService,
-      StepTemplateService stepTemplateService) {
-    this.protocolTemplateService = protocolTemplateService;
-    this.stepTemplateService = stepTemplateService;
+  public AddProtocolTemplateEndpoint(ProtocolTemplateDataService protocolTemplateDataService,
+      StepTemplateDataService stepTemplateDataService) {
+    this.protocolTemplateDataService = protocolTemplateDataService;
+    this.stepTemplateDataService = stepTemplateDataService;
   }
 
   @PostMapping(PATH)
@@ -74,7 +74,7 @@ public class AddProtocolTemplateEndpoint {
     log.info("User [{}] is attempted to create a Protocol Template with name [{}]",
         principal.getName(), addProtocolTemplateDetailsDto.getName());
 
-    if (this.protocolTemplateService.findProtocolTemplateByName(
+    if (this.protocolTemplateDataService.findProtocolTemplateByName(
             addProtocolTemplateDetailsDto.getName())
         .isPresent()) {
       return generateFailureResponse("Protocol Template with name [" +
@@ -82,7 +82,7 @@ public class AddProtocolTemplateEndpoint {
     } else {
       LinkedHashSet<StepTemplate> stepTemplates;
       try {
-        stepTemplates = this.stepTemplateService
+        stepTemplates = this.stepTemplateDataService
             .getStepTemplateEntitiesFromIdCollection(
                 addProtocolTemplateDetailsDto.getAssociatedStepTemplateIds());
       } catch (EntityNotFoundException e) {
@@ -109,12 +109,12 @@ public class AddProtocolTemplateEndpoint {
 
     protocolTemplateToCreate.setModifiedBy(modifiedBy);
 
-    ProtocolTemplate createdProtocolTemplate = this.protocolTemplateService.saveProtocolTemplate(
+    ProtocolTemplate createdProtocolTemplate = this.protocolTemplateDataService.saveProtocolTemplate(
         protocolTemplateToCreate);
 
     createdProtocolTemplate.setProtocolTemplateSteps(
         createProtocolStepTemplates(createdProtocolTemplate, stepTemplates, modifiedBy));
-    return this.protocolTemplateService.saveProtocolTemplate(createdProtocolTemplate).getId();
+    return this.protocolTemplateDataService.saveProtocolTemplate(createdProtocolTemplate).getId();
   }
 
   private Set<ProtocolTemplateLinkedStepTemplate> createProtocolStepTemplates(

@@ -6,7 +6,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolStepT
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.StepTemplateCategoryDto;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,10 +31,10 @@ public class GetProtocolTemplateByIdEndpoint {
 
   public static final String PATH = "/api/protocol-template/{protocolTemplateId}";
 
-  private final ProtocolTemplateService protocolTemplateService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
 
-  public GetProtocolTemplateByIdEndpoint(ProtocolTemplateService protocolTemplateService) {
-    this.protocolTemplateService = protocolTemplateService;
+  public GetProtocolTemplateByIdEndpoint(ProtocolTemplateDataService protocolTemplateDataService) {
+    this.protocolTemplateDataService = protocolTemplateDataService;
   }
 
   @GetMapping(PATH)
@@ -61,7 +61,7 @@ public class GetProtocolTemplateByIdEndpoint {
         protocolTemplateId);
 
     final ResponseEntity<?>[] response = new ResponseEntity<?>[1];
-    this.protocolTemplateService.getProtocolTemplateById(protocolTemplateId)
+    this.protocolTemplateDataService.getProtocolTemplateById(protocolTemplateId)
         .ifPresentOrElse(
             returnedProtocolTemplate -> response[0] = generateSuccessResponse(
                 returnedProtocolTemplate),

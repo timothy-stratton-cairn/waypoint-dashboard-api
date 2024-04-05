@@ -4,9 +4,9 @@ import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.entity.TemplateCategory;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
-import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,8 +30,8 @@ public class PrimeDatabaseEndpoint {
 
   public static final String PATH = "/ops/prime-database";
 
-  private final StepTemplateService stepTemplateService;
-  private final ProtocolTemplateService protocolTemplateService;
+  private final StepTemplateDataService stepTemplateDataService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
   private final TemplateCategory gatherDataCategory;
   private final TemplateCategory runAnalysisCategory;
   private final TemplateCategory craftRecommendationsCategory;
@@ -39,17 +39,17 @@ public class PrimeDatabaseEndpoint {
   private List<StepTemplate> stepTemplates;
   private List<ProtocolTemplate> protocolTemplates;
 
-  public PrimeDatabaseEndpoint(StepTemplateService stepTemplateService,
-      ProtocolTemplateService protocolTemplateService,
-      TemplateCategoryService templateCategoryService) {
-    this.stepTemplateService = stepTemplateService;
-    this.protocolTemplateService = protocolTemplateService;
+  public PrimeDatabaseEndpoint(StepTemplateDataService stepTemplateDataService,
+      ProtocolTemplateDataService protocolTemplateDataService,
+      TemplateCategoryDataService templateCategoryDataService) {
+    this.stepTemplateDataService = stepTemplateDataService;
+    this.protocolTemplateDataService = protocolTemplateDataService;
 
-    gatherDataCategory = templateCategoryService.findByName("Gather Data").get();
-    runAnalysisCategory = templateCategoryService.findByName("Run Analysis").get();
-    craftRecommendationsCategory = templateCategoryService.findByName("Craft Recommendations")
+    gatherDataCategory = templateCategoryDataService.findByName("Gather Data").get();
+    runAnalysisCategory = templateCategoryDataService.findByName("Run Analysis").get();
+    craftRecommendationsCategory = templateCategoryDataService.findByName("Craft Recommendations")
         .get();
-    shareEducationCategory = templateCategoryService.findByName("Share Education").get();
+    shareEducationCategory = templateCategoryDataService.findByName("Share Education").get();
   }
 
   @Transactional
@@ -65,8 +65,8 @@ public class PrimeDatabaseEndpoint {
       stepTemplates = getStepTemplates();
       protocolTemplates = getProtocolTemplates();
 
-      this.stepTemplates = stepTemplateService.saveStepTemplateList(stepTemplates);
-      this.protocolTemplates = protocolTemplateService.saveProtocolTemplateList(protocolTemplates);
+      this.stepTemplates = stepTemplateDataService.saveStepTemplateList(stepTemplates);
+      this.protocolTemplates = protocolTemplateDataService.saveProtocolTemplateList(protocolTemplates);
 
       saveNewClientProtocolTemplate();
       saveJobChangeRetirementProtocolTemplate();
@@ -114,7 +114,7 @@ public class PrimeDatabaseEndpoint {
 
     newClientProtocolTemplate.setProtocolTemplateSteps(protocolSteps);
 
-    this.protocolTemplateService.saveProtocolTemplate(newClientProtocolTemplate);
+    this.protocolTemplateDataService.saveProtocolTemplate(newClientProtocolTemplate);
   }
 
   private void saveJobChangeRetirementProtocolTemplate() {
@@ -171,7 +171,7 @@ public class PrimeDatabaseEndpoint {
 
     jobChangeRetirementProtocolTemplate.setProtocolTemplateSteps(protocolSteps);
 
-    this.protocolTemplateService.saveProtocolTemplate(jobChangeRetirementProtocolTemplate);
+    this.protocolTemplateDataService.saveProtocolTemplate(jobChangeRetirementProtocolTemplate);
   }
 
   private void saveInheritanceCapitalInfluxProtocolTemplate() {
@@ -218,7 +218,7 @@ public class PrimeDatabaseEndpoint {
 
     newInheritanceCapitalInfluxProtocolTemplate.setProtocolTemplateSteps(protocolSteps);
 
-    this.protocolTemplateService.saveProtocolTemplate(newInheritanceCapitalInfluxProtocolTemplate);
+    this.protocolTemplateDataService.saveProtocolTemplate(newInheritanceCapitalInfluxProtocolTemplate);
   }
 
   private void savePrePurchaseHousePurchaseProtocolTemplate() {
@@ -263,7 +263,7 @@ public class PrimeDatabaseEndpoint {
 
     newPrePurchaseHousePurchaseProtocolTemplate.setProtocolTemplateSteps(protocolSteps);
 
-    this.protocolTemplateService.saveProtocolTemplate(newPrePurchaseHousePurchaseProtocolTemplate);
+    this.protocolTemplateDataService.saveProtocolTemplate(newPrePurchaseHousePurchaseProtocolTemplate);
   }
 
   private void savePostPurchaseHousePurchaseProtocolTemplate() {
@@ -308,7 +308,7 @@ public class PrimeDatabaseEndpoint {
 
     newPostPurchaseHousePurchaseProtocolTemplate.setProtocolTemplateSteps(protocolSteps);
 
-    this.protocolTemplateService.saveProtocolTemplate(newPostPurchaseHousePurchaseProtocolTemplate);
+    this.protocolTemplateDataService.saveProtocolTemplate(newPostPurchaseHousePurchaseProtocolTemplate);
   }
 
   private List<StepTemplate> getStepTemplates() {

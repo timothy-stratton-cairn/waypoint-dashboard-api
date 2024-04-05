@@ -2,11 +2,13 @@ package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTaskDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
+import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,10 +32,10 @@ public class GetStepTemplateByIdEndpoint {
 
   public static final String PATH = "/api/protocol-step-template/{stepTemplateId}";
 
-  private final StepTemplateService stepTemplateService;
+  private final StepTemplateDataService stepTemplateDataService;
 
-  public GetStepTemplateByIdEndpoint(StepTemplateService stepTemplateService) {
-    this.stepTemplateService = stepTemplateService;
+  public GetStepTemplateByIdEndpoint(StepTemplateDataService stepTemplateDataService) {
+    this.stepTemplateDataService = stepTemplateDataService;
   }
 
   @GetMapping(PATH)
@@ -60,7 +62,7 @@ public class GetStepTemplateByIdEndpoint {
         stepTemplateId);
 
     final ResponseEntity<?>[] response = new ResponseEntity<?>[1];
-    this.stepTemplateService.getStepTemplateById(stepTemplateId)
+    this.stepTemplateDataService.getStepTemplateById(stepTemplateId)
         .ifPresentOrElse(
             returnedStepTemplate -> response[0] = generateSuccessResponse(
                 returnedStepTemplate),
@@ -74,7 +76,7 @@ public class GetStepTemplateByIdEndpoint {
       StepTemplate returnedStepTemplate) {
 
     StepTaskDetailsDto stepTaskDetailsDto = null;
-    HomeworkTemplateDetailsDto homeworkTemplateDetailsDto = null;
+    HomeworkTemplateDetailsListDto homeworkTemplateDetailsListDto = null;
     StepTemplateCategoryDetailsDto categoryDetailsDto = null;
 
     if (returnedStepTemplate.getLinkedTask() != null) {
@@ -85,11 +87,18 @@ public class GetStepTemplateByIdEndpoint {
           .build();
     }
 
-    if (returnedStepTemplate.getLinkedHomeworkTemplate() != null) {
-      homeworkTemplateDetailsDto = HomeworkTemplateDetailsDto.builder()
-          .id(returnedStepTemplate.getLinkedHomeworkTemplate().getId())
-          .name(returnedStepTemplate.getLinkedHomeworkTemplate().getName())
-          .build();
+    if (returnedStepTemplate.getStepTemplateLinkedHomeworks() != null && !returnedStepTemplate.getStepTemplateLinkedHomeworks().isEmpty()) {
+      homeworkTemplateDetailsListDto = HomeworkTemplateDetailsListDto.builder()
+          .homeworkTemplates(
+              returnedStepTemplate.getStepTemplateLinkedHomeworks().stream()
+                  .map(StepTemplateLinkedHomeworkTemplate::getHomeworkTemplate)
+                  .map(homeworkTemplate -> HomeworkTemplateDetailsDto.builder()
+                      .id(homeworkTemplate.getId())
+                      .name(homeworkTemplate.getName())
+                      .build())
+                  .toList()
+          ).build();
+
     }
 
     if (returnedStepTemplate.getCategory() != null) {
@@ -106,7 +115,7 @@ public class GetStepTemplateByIdEndpoint {
             .name(returnedStepTemplate.getName())
             .description(returnedStepTemplate.getDescription())
             .linkedStepTask(stepTaskDetailsDto)
-            .linkedHomeworkTemplate(homeworkTemplateDetailsDto)
+            .linkedHomeworkTemplates(homeworkTemplateDetailsListDto)
             .category(categoryDetailsDto)
             .build()
     );

@@ -14,20 +14,22 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"homeworkQuestions", "associatedUsers", "associatedProtocolStep"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "homework")
+@SQLRestriction("active=1")
 public class Homework extends BaseEntity {
 
   private String name;
   private String description;
 
-  @OneToMany(mappedBy = "homework")
+  @OneToMany(mappedBy = "homework", cascade = CascadeType.MERGE)
   private Set<HomeworkResponse> homeworkQuestions;
 
   @JoinColumn(name = "homework_template_id", nullable = false)
@@ -40,7 +42,7 @@ public class Homework extends BaseEntity {
       inverseJoinColumns = @JoinColumn(name = "protocol_step_id", referencedColumnName = "id"))
   private ProtocolStep associatedProtocolStep;
 
-  @OneToMany(mappedBy = "homework")
+  @OneToMany(mappedBy = "homework", cascade = CascadeType.MERGE)
   private Set<HomeworkUser> associatedUsers;
 }
 

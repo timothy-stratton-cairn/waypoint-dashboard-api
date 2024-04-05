@@ -7,9 +7,9 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroup
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedAccountsListDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
-import com.cairn.waypoint.dashboard.service.AccountService;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
+import com.cairn.waypoint.dashboard.service.data.AccountDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,16 +37,16 @@ public class GetAllAssignedAccountsByProtocolTemplateIdEndpoint {
 
   public static final String PATH = "/api/protocol/account/protocol-template/{protocolTemplateId}";
 
-  private final ProtocolService protocolService;
-  private final ProtocolTemplateService protocolTemplateService;
-  private final AccountService accountService;
+  private final ProtocolDataService protocolDataService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
+  private final AccountDataService accountDataService;
 
-  public GetAllAssignedAccountsByProtocolTemplateIdEndpoint(ProtocolService protocolService,
-      ProtocolTemplateService protocolTemplateService,
-      AccountService accountService) {
-    this.protocolService = protocolService;
-    this.protocolTemplateService = protocolTemplateService;
-    this.accountService = accountService;
+  public GetAllAssignedAccountsByProtocolTemplateIdEndpoint(ProtocolDataService protocolDataService,
+      ProtocolTemplateDataService protocolTemplateDataService,
+      AccountDataService accountDataService) {
+    this.protocolDataService = protocolDataService;
+    this.protocolTemplateDataService = protocolTemplateDataService;
+    this.accountDataService = accountDataService;
   }
 
   @GetMapping(PATH)
@@ -71,21 +71,21 @@ public class GetAllAssignedAccountsByProtocolTemplateIdEndpoint {
     log.info(
         "User [{}] is Retrieving All Users assigned to Protocols created from Protocol Template with ID [{}]",
         principal.getName(), protocolTemplateId);
-    if (this.protocolTemplateService.getProtocolTemplateById(protocolTemplateId).isEmpty()) {
+    if (this.protocolTemplateDataService.getProtocolTemplateById(protocolTemplateId).isEmpty()) {
       return generateFailureResponse("Protocol Template with ID [" +
           protocolTemplateId + "] not found", HttpStatus.NOT_FOUND);
-    } else if (this.protocolService.getByProtocolTemplateId(protocolTemplateId).isEmpty()) {
+    } else if (this.protocolDataService.getByProtocolTemplateId(protocolTemplateId).isEmpty()) {
       return generateFailureResponse("No protocols created from Protocol Template with ID [" +
           protocolTemplateId + "]", HttpStatus.NOT_FOUND);
     } else {
 
-      List<Long> userIds = this.protocolService.getByProtocolTemplateId(protocolTemplateId).stream()
+      List<Long> userIds = this.protocolDataService.getByProtocolTemplateId(protocolTemplateId).stream()
           .map(Protocol::getAssociatedUsers)
           .flatMap(Set::stream)
           .map(ProtocolUser::getUserId)
           .toList();
 
-      AccountListDto accountListDto = this.accountService.getAccountsById(userIds);
+      AccountListDto accountListDto = this.accountDataService.getAccountsById(userIds);
 
       return ResponseEntity.ok(
           ProtocolTemplateGroupedAccountsListDto.builder()

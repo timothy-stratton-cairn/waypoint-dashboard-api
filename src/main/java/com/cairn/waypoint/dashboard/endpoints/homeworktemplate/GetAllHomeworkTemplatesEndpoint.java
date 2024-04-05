@@ -2,7 +2,7 @@ package com.cairn.waypoint.dashboard.endpoints.homeworktemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateListDto;
-import com.cairn.waypoint.dashboard.service.HomeworkTemplateService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,10 +23,10 @@ public class GetAllHomeworkTemplatesEndpoint {
 
   public static final String PATH = "/api/homework-template";
 
-  private final HomeworkTemplateService homeworkTemplateService;
+  private final HomeworkTemplateDataService homeworkTemplateDataService;
 
-  public GetAllHomeworkTemplatesEndpoint(HomeworkTemplateService homeworkTemplateService) {
-    this.homeworkTemplateService = homeworkTemplateService;
+  public GetAllHomeworkTemplatesEndpoint(HomeworkTemplateDataService homeworkTemplateDataService) {
+    this.homeworkTemplateDataService = homeworkTemplateDataService;
   }
 
   @GetMapping(PATH)
@@ -48,7 +48,7 @@ public class GetAllHomeworkTemplatesEndpoint {
     log.info("User [{}] is Retrieving All Homework Templates", principal.getName());
     return ResponseEntity.ok(
         HomeworkTemplateListDto.builder()
-            .homeworkTemplates(this.homeworkTemplateService.getAllHomeworkTemplates().stream()
+            .homeworkTemplates(this.homeworkTemplateDataService.getAllHomeworkTemplates().stream()
                 .map(homeworkTemplate -> HomeworkTemplateDto.builder()
                     .id(homeworkTemplate.getId())
                     .name(homeworkTemplate.getName())

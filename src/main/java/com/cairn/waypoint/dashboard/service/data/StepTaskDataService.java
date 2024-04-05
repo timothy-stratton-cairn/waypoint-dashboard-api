@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 
 import com.cairn.waypoint.dashboard.entity.StepTask;
@@ -8,11 +8,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StepTaskService {
+public class StepTaskDataService {
 
   private final StepTaskRepository stepTaskRepository;
 
-  public StepTaskService(StepTaskRepository stepTaskRepository) {
+  public StepTaskDataService(StepTaskRepository stepTaskRepository) {
     this.stepTaskRepository = stepTaskRepository;
   }
 

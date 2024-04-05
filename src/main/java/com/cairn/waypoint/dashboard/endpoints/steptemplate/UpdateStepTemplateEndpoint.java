@@ -4,13 +4,21 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.UpdateStepTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMapper;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.StepTask;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.TemplateCategory;
-import com.cairn.waypoint.dashboard.service.HomeworkTemplateService;
-import com.cairn.waypoint.dashboard.service.StepTaskService;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
-import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
+import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
+import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTaskDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
 import com.cairn.waypoint.dashboard.utility.BeanUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,9 +26,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,20 +51,27 @@ public class UpdateStepTemplateEndpoint {
 
   public static final String PATH = "/api/protocol-step-template/{stepTemplateId}";
 
-  private final StepTemplateService stepTemplateService;
-  private final StepTaskService stepTaskService;
-  private final HomeworkTemplateService homeworkTemplateService;
-  private final TemplateCategoryService templateCategoryService;
+  private final StepTemplateDataService stepTemplateDataService;
+  private final StepTaskDataService stepTaskDataService;
+  private final HomeworkTemplateDataService homeworkTemplateDataService;
+  private final TemplateCategoryDataService templateCategoryDataService;
+  private final ProtocolStepDataService protocolStepDataService;
+  private final ProtocolTemplateHelperService protocolTemplateHelperService;
 
-  public UpdateStepTemplateEndpoint(StepTemplateService stepTemplateService,
-      StepTaskService stepTaskService, HomeworkTemplateService homeworkTemplateService,
-      TemplateCategoryService templateCategoryService) {
-    this.stepTemplateService = stepTemplateService;
-    this.stepTaskService = stepTaskService;
-    this.homeworkTemplateService = homeworkTemplateService;
-    this.templateCategoryService = templateCategoryService;
+  public UpdateStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService,
+      StepTaskDataService stepTaskDataService, HomeworkTemplateDataService homeworkTemplateDataService,
+      TemplateCategoryDataService templateCategoryDataService, ProtocolStepDataService protocolStepDataService,
+      ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService) {
+    this.stepTemplateDataService = stepTemplateDataService;
+    this.stepTaskDataService = stepTaskDataService;
+    this.homeworkTemplateDataService = homeworkTemplateDataService;
+    this.templateCategoryDataService = templateCategoryDataService;
+    this.protocolStepDataService = protocolStepDataService;
+
+    protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService, stepTemplateDataService, homeworkDataService);
   }
 
+  @Transactional
   @PatchMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.step.template.full', 'SCOPE_admin.full')")
   @Operation(
@@ -80,13 +101,13 @@ public class UpdateStepTemplateEndpoint {
     log.info("User [{}] is attempted to update a Step Template with ID [{}]",
         principal.getName(), stepTemplateId);
 
-    Optional<StepTemplate> stepTemplateToBeUpdated = this.stepTemplateService.getStepTemplateById(
+    Optional<StepTemplate> stepTemplateToBeUpdated = this.stepTemplateDataService.getStepTemplateById(
         stepTemplateId);
-    Optional<StepTemplate> stepTemplateByName = this.stepTemplateService.findStepTemplateByName(
+    Optional<StepTemplate> stepTemplateByName = this.stepTemplateDataService.findStepTemplateByName(
         updateStepTemplateDetailsDto.getName());
 
     Optional<StepTask> linkedStepTask = Optional.empty();
-    Optional<HomeworkTemplate> linkedHomeworkTemplate = Optional.empty();
+    List<HomeworkTemplate> linkedHomeworkTemplates = new ArrayList<>();
     Optional<TemplateCategory> stepTemplateCategory = Optional.empty();
 
     if (stepTemplateToBeUpdated.isEmpty()) {
@@ -101,19 +122,20 @@ public class UpdateStepTemplateEndpoint {
       return generateFailureResponse("Step Template with name [" +
           updateStepTemplateDetailsDto.getName() + "] already exists", HttpStatus.CONFLICT);
     } else if (updateStepTemplateDetailsDto.getLinkedStepTaskId() != null &&
-        (linkedStepTask = this.stepTaskService.getStepTaskById(
+        (linkedStepTask = this.stepTaskDataService.getStepTaskById(
             updateStepTemplateDetailsDto.getLinkedStepTaskId()))
             .isEmpty()) {
       return generateFailureResponse("Step Task with ID [" +
           updateStepTemplateDetailsDto.getLinkedStepTaskId() + "] not found", HttpStatus.NOT_FOUND);
-    } else if (updateStepTemplateDetailsDto.getLinkedHomeworkTemplateId() != null &&
-        (linkedHomeworkTemplate = this.homeworkTemplateService.getHomeworkTemplateById(
-            updateStepTemplateDetailsDto.getLinkedStepTaskId())).isEmpty()) {
-      return generateFailureResponse("Homework Template with ID [" +
-              updateStepTemplateDetailsDto.getLinkedHomeworkTemplateId() + "] not found",
+    } else if (updateStepTemplateDetailsDto.getLinkedHomeworkTemplateIds() != null &&
+        !updateStepTemplateDetailsDto.getLinkedHomeworkTemplateIds().isEmpty() &&
+        (linkedHomeworkTemplates = this.homeworkTemplateDataService.getHomeworkTemplates(
+            updateStepTemplateDetailsDto.getLinkedHomeworkTemplateIds())).isEmpty()) {
+      return generateFailureResponse("Homework Templates with ID [" +
+              updateStepTemplateDetailsDto.getLinkedHomeworkTemplateIds() + "] not found",
           HttpStatus.NOT_FOUND);
     } else if (updateStepTemplateDetailsDto.getStepTemplateCategoryId() != null &&
-        (stepTemplateCategory = this.templateCategoryService.getTemplateCategoryById(
+        (stepTemplateCategory = this.templateCategoryDataService.getTemplateCategoryById(
             updateStepTemplateDetailsDto.getStepTemplateCategoryId())).isEmpty()) {
       return generateFailureResponse("Step Template Category with ID [" +
               updateStepTemplateDetailsDto.getStepTemplateCategoryId() + "] not found",
@@ -121,7 +143,7 @@ public class UpdateStepTemplateEndpoint {
     } else {
       Long createdStepTemplateId = updateStepTemplate(updateStepTemplateDetailsDto,
           principal.getName(), linkedStepTask.orElse(null),
-          linkedHomeworkTemplate.orElse(null), stepTemplateCategory.orElse(null),
+          linkedHomeworkTemplates, stepTemplateCategory.orElse(null),
           stepTemplateToBeUpdated.get());
 
       log.info("Step Task [{}] updated successfully with ID [{}]",
@@ -134,20 +156,45 @@ public class UpdateStepTemplateEndpoint {
   }
 
   private Long updateStepTemplate(UpdateStepTemplateDetailsDto addStepTemplateDetailsDto,
-      String modifiedBy, StepTask linkedStepTask, HomeworkTemplate linkedHomeworkTemplate,
+      String modifiedBy, StepTask linkedStepTask, List<HomeworkTemplate> linkedHomeworkTemplates,
       TemplateCategory templateCategory, StepTemplate targetStepTemplate) {
 
-    StepTemplate updatedStepTemplate = StepTemplateMapper.INSTANCE
+    StepTemplate stepTemplateToUpdate = StepTemplateMapper.INSTANCE
         .toEntity(addStepTemplateDetailsDto);
 
-    updatedStepTemplate.setModifiedBy(modifiedBy);
-    updatedStepTemplate.setLinkedTask(linkedStepTask);
-    updatedStepTemplate.setLinkedHomeworkTemplate(linkedHomeworkTemplate);
-    updatedStepTemplate.setCategory(templateCategory);
+    stepTemplateToUpdate.setModifiedBy(modifiedBy);
+    stepTemplateToUpdate.setLinkedTask(linkedStepTask); //TODO give the same function as linked homework
+    stepTemplateToUpdate.setCategory(templateCategory);
 
-    BeanUtils.copyPropertiesIgnoreNulls(updatedStepTemplate, targetStepTemplate);
+    BeanUtils.copyPropertiesIgnoreNulls(stepTemplateToUpdate, targetStepTemplate);
 
-    return this.stepTemplateService.saveStepTemplate(targetStepTemplate);
+    StepTemplate updatedStepTemplate = this.stepTemplateDataService.saveStepTemplate(targetStepTemplate);
+
+    if (!linkedHomeworkTemplates.isEmpty()) {
+      updatedStepTemplate.setStepTemplateLinkedHomeworks(linkedHomeworkTemplates.stream()
+          .map(homeworkTemplate -> StepTemplateLinkedHomeworkTemplate.builder()
+              .homeworkTemplate(homeworkTemplate)
+              .stepTemplate(updatedStepTemplate)
+              .build())
+          .collect(Collectors.toSet()));
+
+      this.stepTemplateDataService.saveStepTemplate(updatedStepTemplate);
+
+      List<ProtocolStep> protocolStepsToUpdate = this.protocolStepDataService.getProtocolStepsByStepTemplateId(targetStepTemplate.getId());
+
+      Consumer<Protocol> assignHomeworkToUpdatedHomeworkSteps = (protocolWhoseStepsNeedUpdating) ->
+          this.protocolTemplateHelperService.generateAndSaveClientHomework(protocolWhoseStepsNeedUpdating, modifiedBy);
+
+      protocolStepsToUpdate.stream()
+          .map(ProtocolStep::getParentProtocol)
+          .peek(assignHomeworkToUpdatedHomeworkSteps);
+
+      protocolStepsToUpdate.stream()
+          .filter(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))
+          .peek(protocolStep -> protocolStep.setStatus(StepStatusEnum.IN_PROGRESS))
+          .forEach(this.protocolStepDataService::saveProtocolStep);
+    }
+    return updatedStepTemplate.getId();
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {

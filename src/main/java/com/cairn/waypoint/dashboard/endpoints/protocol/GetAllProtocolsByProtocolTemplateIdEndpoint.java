@@ -10,9 +10,9 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolsByProtocolTemplateListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,10 +35,10 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
 
   public static final String PATH = "/api/protocol/protocol-template/{protocolTemplateId}";
 
-  private final ProtocolService protocolService;
+  private final ProtocolDataService protocolDataService;
 
-  public GetAllProtocolsByProtocolTemplateIdEndpoint(ProtocolService protocolService) {
-    this.protocolService = protocolService;
+  public GetAllProtocolsByProtocolTemplateIdEndpoint(ProtocolDataService protocolDataService) {
+    this.protocolDataService = protocolDataService;
   }
 
   @GetMapping(PATH)
@@ -62,7 +62,7 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
     return ResponseEntity.ok(
         ProtocolsByProtocolTemplateListDto.builder()
             .protocols(
-                this.protocolService.getByProtocolTemplateId(protocolTemplateId).stream()
+                this.protocolDataService.getByProtocolTemplateId(protocolTemplateId).stream()
                     .map(protocol -> ProtocolByProtocolTemplateDto.builder()
                         .id(protocol.getId())
                         .name(protocol.getName())
@@ -81,7 +81,7 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                         .needsAttention(protocol.getMarkedForAttention())
                         .lastStatusUpdateTimestamp(protocol.getLastStatusUpdateTimestamp())
                         .completionPercentage(
-                            ProtocolCalculationService.getProtocolCompletionPercentage(protocol))
+                            ProtocolCalculationHelperService.getProtocolCompletionPercentage(protocol))
                         .associatedUsers(
                             AssociatedUsersListDto.builder()
                                 .userIds(

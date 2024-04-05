@@ -31,3 +31,5 @@ databaseChangeLog:
       file: db/changelog/2024-04-02-activate-homework-question-types-entries.yaml
   - include:
       file: db/changelog/2024-04-02-drop-unique-key-on-expected-homework-responses.yaml
+  - include:
+      file: db/changelog/2024-04-02-update-step-template-linked-homework-template-table.yaml

@@ -4,8 +4,8 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateListDto;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
-import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,13 +29,14 @@ public class GetAllStepTemplatesByTemplateCategoryIdEndpoint {
 
   public static final String PATH = "/api/protocol-step-template/template-category/{templateCategoryId}";
 
-  private final StepTemplateService stepTemplateService;
-  private final TemplateCategoryService templateCategoryService;
+  private final StepTemplateDataService stepTemplateDataService;
+  private final TemplateCategoryDataService templateCategoryDataService;
 
-  public GetAllStepTemplatesByTemplateCategoryIdEndpoint(StepTemplateService stepTemplateService,
-      TemplateCategoryService templateCategoryService) {
-    this.stepTemplateService = stepTemplateService;
-    this.templateCategoryService = templateCategoryService;
+  public GetAllStepTemplatesByTemplateCategoryIdEndpoint(
+      StepTemplateDataService stepTemplateDataService,
+      TemplateCategoryDataService templateCategoryDataService) {
+    this.stepTemplateDataService = stepTemplateDataService;
+    this.templateCategoryDataService = templateCategoryDataService;
   }
 
   @GetMapping(PATH)
@@ -61,14 +62,14 @@ public class GetAllStepTemplatesByTemplateCategoryIdEndpoint {
         "User [{}] is Retrieving All Step Templates associated with Template Category with ID [{}]",
         principal.getName(), templateCategoryId);
 
-    if (this.templateCategoryService.getTemplateCategoryById(templateCategoryId).isEmpty()) {
+    if (this.templateCategoryDataService.getTemplateCategoryById(templateCategoryId).isEmpty()) {
       return generateFailureResponse("Step Template Category with ID [" +
           templateCategoryId + "] does not exist", HttpStatus.NOT_FOUND);
     } else {
       return ResponseEntity.ok(
           StepTemplateListDto.builder()
               .stepTemplates(
-                  this.stepTemplateService.getAllStepTemplatesByTemplateCategoryId(
+                  this.stepTemplateDataService.getAllStepTemplatesByTemplateCategoryId(
                           templateCategoryId).stream()
                       .map(stepTemplate -> StepTemplateDto.builder()
                           .id(stepTemplate.getId())

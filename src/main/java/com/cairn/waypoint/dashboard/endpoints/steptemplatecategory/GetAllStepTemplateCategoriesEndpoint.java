@@ -4,7 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.ChildTemp
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.ChildTemplateCategoryListDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.TemplateCategoryDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.TemplateCategoryListDto;
-import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
+import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,10 +25,11 @@ public class GetAllStepTemplateCategoriesEndpoint {
 
   public static final String PATH = "/api/protocol-step-template-category";
 
-  private final TemplateCategoryService templateCategoryService;
+  private final TemplateCategoryDataService templateCategoryDataService;
 
-  public GetAllStepTemplateCategoriesEndpoint(TemplateCategoryService templateCategoryService) {
-    this.templateCategoryService = templateCategoryService;
+  public GetAllStepTemplateCategoriesEndpoint(
+      TemplateCategoryDataService templateCategoryDataService) {
+    this.templateCategoryDataService = templateCategoryDataService;
   }
 
   @GetMapping(PATH)
@@ -50,7 +51,7 @@ public class GetAllStepTemplateCategoriesEndpoint {
     return ResponseEntity.ok(
         TemplateCategoryListDto.builder()
             .templateCategories(
-                this.templateCategoryService.getAllParentTemplateCategories().stream()
+                this.templateCategoryDataService.getAllParentTemplateCategories().stream()
                     .map(category -> TemplateCategoryDto.builder()
                         .id(category.getId())
                         .name(category.getName())

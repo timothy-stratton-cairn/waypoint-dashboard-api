@@ -2,13 +2,12 @@ package com.cairn.waypoint.dashboard.endpoints.dashboard;
 
 import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.GlobalProtocolViewDto;
 import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.GlobalProtocolViewListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,13 +32,13 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
 
   public static final String PATH = "/api/dashboard/protocol";
 
-  private final ProtocolTemplateService protocolTemplateService;
-  private final ProtocolService protocolService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
+  private final ProtocolDataService protocolDataService;
 
   public GetAllProtocolsGroupedByProtocolTemplateEndpoint(
-      ProtocolTemplateService protocolTemplateService, ProtocolService protocolService) {
-    this.protocolTemplateService = protocolTemplateService;
-    this.protocolService = protocolService;
+      ProtocolTemplateDataService protocolTemplateDataService, ProtocolDataService protocolDataService) {
+    this.protocolTemplateDataService = protocolTemplateDataService;
+    this.protocolDataService = protocolDataService;
   }
 
   @GetMapping(PATH)
@@ -59,13 +58,13 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
   public ResponseEntity<GlobalProtocolViewListDto> getAllProtocols(Principal principal) {
     log.info("User [{}] is Retrieving All Protocols for the Dashboard View", principal.getName());
 
-    List<ProtocolTemplate> protocolTemplates = this.protocolTemplateService.getAllProtocolTemplates();
+    List<ProtocolTemplate> protocolTemplates = this.protocolTemplateDataService.getAllProtocolTemplates();
 
     List<GlobalProtocolViewDto> globalProtocolViewDtos = new ArrayList<>();
 
     protocolTemplates
         .forEach(protocolTemplate -> {
-          List<Protocol> assignedProtocols = this.protocolService.getByProtocolTemplateId(
+          List<Protocol> assignedProtocols = this.protocolDataService.getByProtocolTemplateId(
               protocolTemplate.getId());
 
           if (!assignedProtocols.isEmpty()) {
@@ -86,7 +85,7 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
                         .filter(protocolStep -> protocolStep.getStatus().equals(
                             StepStatusEnum.DONE)).count()).reduce(0L, Long::sum))
                 .completionPercentage(assignedProtocols.stream()
-                    .map(ProtocolCalculationService::getProtocolCompletionPercentage).reduce(
+                    .map(ProtocolCalculationHelperService::getProtocolCompletionPercentage).reduce(
                         BigDecimal.ZERO, BigDecimal::add)
                     .divide(new BigDecimal(assignedProtocols.size()), RoundingMode.HALF_UP))
                 .build());

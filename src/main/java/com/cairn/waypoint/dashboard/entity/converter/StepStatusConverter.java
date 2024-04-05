@@ -2,7 +2,7 @@ package com.cairn.waypoint.dashboard.entity.converter;
 
 import com.cairn.waypoint.dashboard.entity.StepStatus;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
-import com.cairn.waypoint.dashboard.service.StepStatusService;
+import com.cairn.waypoint.dashboard.service.data.StepStatusDataService;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,7 +18,7 @@ public class StepStatusConverter implements AttributeConverter<StepStatusEnum, L
 
   @Override
   public StepStatusEnum convertToEntityAttribute(Long id) {
-    StepStatus retrievedStatus = StepStatusService.availableStatuses.stream()
+    StepStatus retrievedStatus = StepStatusDataService.availableStatuses.stream()
         .filter(stepStatus -> Objects.equals(stepStatus.getId(), id))
         .findFirst()
         .orElseThrow(EntityNotFoundException::new);

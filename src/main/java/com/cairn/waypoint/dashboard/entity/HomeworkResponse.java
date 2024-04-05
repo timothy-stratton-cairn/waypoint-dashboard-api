@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "homeworkQuestion")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "homework_response")

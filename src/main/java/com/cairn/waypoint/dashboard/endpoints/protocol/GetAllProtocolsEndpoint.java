@@ -8,8 +8,8 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.service.ProtocolCalculationService;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,10 +31,10 @@ public class GetAllProtocolsEndpoint {
 
   public static final String PATH = "/api/protocol";
 
-  private final ProtocolService protocolService;
+  private final ProtocolDataService protocolDataService;
 
-  public GetAllProtocolsEndpoint(ProtocolService protocolService) {
-    this.protocolService = protocolService;
+  public GetAllProtocolsEndpoint(ProtocolDataService protocolDataService) {
+    this.protocolDataService = protocolDataService;
   }
 
   @GetMapping(PATH)
@@ -56,7 +56,7 @@ public class GetAllProtocolsEndpoint {
     return ResponseEntity.ok(
         ProtocolListDto.builder()
             .protocols(
-                this.protocolService.getAllProtocols().stream()
+                this.protocolDataService.getAllProtocols().stream()
                     .map(protocol -> ProtocolDto.builder()
                         .id(protocol.getId())
                         .name(protocol.getName())
@@ -75,7 +75,7 @@ public class GetAllProtocolsEndpoint {
                         .needsAttention(protocol.getMarkedForAttention())
                         .lastStatusUpdateTimestamp(protocol.getLastStatusUpdateTimestamp())
                         .completionPercentage(
-                            ProtocolCalculationService.getProtocolCompletionPercentage(protocol))
+                            ProtocolCalculationHelperService.getProtocolCompletionPercentage(protocol))
                         .associatedSteps(AssociatedStepsListDto.builder()
                             .steps(protocol.getProtocolSteps().stream()
                                 .map(protocolStep -> ProtocolStepDto.builder()

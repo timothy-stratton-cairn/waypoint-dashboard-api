@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.StepStatus;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
@@ -8,13 +8,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StepStatusService {
+public class StepStatusDataService {
 
   public static final List<StepStatus> availableStatuses = new ArrayList<>();
 
   @SuppressWarnings({"unused", "UnusedAssignment"})
-  public StepStatusService(StepStatusRepository stepStatusRepository) {
-    StepStatusService.availableStatuses.addAll(stepStatusRepository.findAll());
+  public StepStatusDataService(StepStatusRepository stepStatusRepository) {
+    StepStatusDataService.availableStatuses.addAll(stepStatusRepository.findAll());
 
     //Initialize the Enum
     StepStatusEnum unused = StepStatusEnum.TODO;

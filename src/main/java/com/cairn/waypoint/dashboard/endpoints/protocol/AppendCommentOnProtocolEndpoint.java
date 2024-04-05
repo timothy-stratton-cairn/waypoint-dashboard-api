@@ -5,7 +5,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AppendProtocolComment
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,10 +34,10 @@ public class AppendCommentOnProtocolEndpoint {
 
   public static final String PATH = "/api/protocol/{protocolId}/comment";
 
-  private final ProtocolService protocolService;
+  private final ProtocolDataService protocolDataService;
 
-  public AppendCommentOnProtocolEndpoint(ProtocolService protocolService) {
-    this.protocolService = protocolService;
+  public AppendCommentOnProtocolEndpoint(ProtocolDataService protocolDataService) {
+    this.protocolDataService = protocolDataService;
   }
 
   @Transactional
@@ -64,7 +64,7 @@ public class AppendCommentOnProtocolEndpoint {
     log.info("User [{}] is appending a comment to Protocol with ID [{}]", principal.getName(),
         protocolId);
 
-    Optional<Protocol> optionalProtocolToUpdate = this.protocolService.getProtocolById(protocolId);
+    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(protocolId);
 
     if (optionalProtocolToUpdate.isEmpty()) {
       return generateFailureResponse("Protocol with ID [" +
@@ -73,7 +73,7 @@ public class AppendCommentOnProtocolEndpoint {
       Protocol protocolToUpdate = updateProtocolFields(optionalProtocolToUpdate.get(),
           appendProtocolCommentaryDto, principal.getName());
 
-      Protocol updatedProtocol = this.protocolService.updateProtocol(protocolToUpdate);
+      Protocol updatedProtocol = this.protocolDataService.updateProtocol(protocolToUpdate);
 
       log.info("Protocol with ID [{}] updated with provided commentary", updatedProtocol.getId());
 

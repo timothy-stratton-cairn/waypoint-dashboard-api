@@ -12,14 +12,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "homework")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "homework_user")
+@SQLRestriction("active=1")
 public class HomeworkUser extends BaseEntity {
 
   @JoinColumn(name = "homework_id", nullable = false)

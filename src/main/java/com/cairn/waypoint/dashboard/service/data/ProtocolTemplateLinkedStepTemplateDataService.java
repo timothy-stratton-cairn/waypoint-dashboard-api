@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.repository.ProtocolTemplateLinkedStepTemplateRepository;
@@ -6,11 +6,11 @@ import java.util.Collection;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProtocolTemplateLinkedStepTemplateService {
+public class ProtocolTemplateLinkedStepTemplateDataService {
 
   private final ProtocolTemplateLinkedStepTemplateRepository protocolTemplateLinkedStepTemplateRepository;
 
-  public ProtocolTemplateLinkedStepTemplateService(
+  public ProtocolTemplateLinkedStepTemplateDataService(
       ProtocolTemplateLinkedStepTemplateRepository protocolTemplateLinkedStepTemplateRepository) {
     this.protocolTemplateLinkedStepTemplateRepository = protocolTemplateLinkedStepTemplateRepository;
   }

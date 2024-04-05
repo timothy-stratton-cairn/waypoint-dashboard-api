@@ -1,13 +1,14 @@
 package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.service.ProtocolTemplateHelperService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,20 +33,19 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
 
   public static final String PATH = "/api/protocol-template/{protocolTemplateId}/{stepTemplateId}";
 
-  private final ProtocolTemplateService protocolTemplateService;
-  private final StepTemplateService stepTemplateService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
+  private final StepTemplateDataService stepTemplateDataService;
 
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
 
   public AppendStepTemplateToProtocolTemplateEndpoint(
-      ProtocolTemplateService protocolTemplateService,
-      StepTemplateService stepTemplateService,
-      ProtocolService protocolService) {
-    this.protocolTemplateService = protocolTemplateService;
-    this.stepTemplateService = stepTemplateService;
+      ProtocolTemplateDataService protocolTemplateDataService, StepTemplateDataService stepTemplateDataService,
+      ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService) {
+    this.protocolTemplateDataService = protocolTemplateDataService;
+    this.stepTemplateDataService = stepTemplateDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
-        protocolService, this.stepTemplateService);
+        protocolDataService, stepTemplateDataService, homeworkDataService);
   }
 
   @PatchMapping(PATH)
@@ -78,9 +78,9 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
         "User [{}] is attempting to update a Protocol Template with id [{}] by appending Step Template with ID [{}]",
         principal.getName(), protocolTemplateId, stepTemplateId);
 
-    Optional<ProtocolTemplate> protocolTemplateToBeUpdated = this.protocolTemplateService.getProtocolTemplateById(
+    Optional<ProtocolTemplate> protocolTemplateToBeUpdated = this.protocolTemplateDataService.getProtocolTemplateById(
         protocolTemplateId);
-    Optional<StepTemplate> stepTemplateToBeAppended = this.stepTemplateService.getStepTemplateById(
+    Optional<StepTemplate> stepTemplateToBeAppended = this.stepTemplateDataService.getStepTemplateById(
         stepTemplateId);
 
     if (protocolTemplateToBeUpdated.isEmpty()) {
@@ -101,7 +101,7 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
 
       protocolTemplate.getProtocolTemplateSteps().add(protocolTemplateLinkedStepTemplate);
 
-      ProtocolTemplate updatedProtocolTemplate = protocolTemplateService.saveProtocolTemplate(
+      ProtocolTemplate updatedProtocolTemplate = protocolTemplateDataService.saveProtocolTemplate(
           protocolTemplate);
 
       protocolTemplateHelperService.removeProtocolStepsNotAssociatedWithTheUpdatedProtocolTemplate(

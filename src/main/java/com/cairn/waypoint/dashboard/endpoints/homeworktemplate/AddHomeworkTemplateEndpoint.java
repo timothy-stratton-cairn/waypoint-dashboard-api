@@ -9,10 +9,10 @@ import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
-import com.cairn.waypoint.dashboard.service.ExpectedResponseService;
-import com.cairn.waypoint.dashboard.service.HomeworkQuestionService;
-import com.cairn.waypoint.dashboard.service.HomeworkTemplateService;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
+import com.cairn.waypoint.dashboard.service.data.ExpectedResponseDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -49,21 +49,21 @@ public class AddHomeworkTemplateEndpoint {
 
   public static final String PATH = "/api/homework-template";
 
-  private final HomeworkTemplateService homeworkTemplateService;
-  private final HomeworkQuestionService homeworkQuestionService;
-  private final ExpectedResponseService expectedResponseService;
-  private final ProtocolTemplateService protocolTemplateService;
+  private final HomeworkTemplateDataService homeworkTemplateDataService;
+  private final HomeworkQuestionDataService homeworkQuestionDataService;
+  private final ExpectedResponseDataService expectedResponseDataService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
 
   private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-  public AddHomeworkTemplateEndpoint(HomeworkTemplateService homeworkTemplateService,
-      HomeworkQuestionService homeworkQuestionService,
-      ExpectedResponseService expectedResponseService,
-      ProtocolTemplateService protocolTemplateService) {
-    this.homeworkTemplateService = homeworkTemplateService;
-    this.homeworkQuestionService = homeworkQuestionService;
-    this.expectedResponseService = expectedResponseService;
-    this.protocolTemplateService = protocolTemplateService;
+  public AddHomeworkTemplateEndpoint(HomeworkTemplateDataService homeworkTemplateDataService,
+      HomeworkQuestionDataService homeworkQuestionDataService,
+      ExpectedResponseDataService expectedResponseDataService,
+      ProtocolTemplateDataService protocolTemplateDataService) {
+    this.homeworkTemplateDataService = homeworkTemplateDataService;
+    this.homeworkQuestionDataService = homeworkQuestionDataService;
+    this.expectedResponseDataService = expectedResponseDataService;
+    this.protocolTemplateDataService = protocolTemplateDataService;
   }
 
   @Transactional
@@ -104,7 +104,7 @@ public class AddHomeworkTemplateEndpoint {
       return generateFailureResponse(
           violations.stream().map(ConstraintViolation::getMessage).collect(
               Collectors.joining(", ")), HttpStatus.BAD_REQUEST);
-    } else if (this.homeworkTemplateService.findHomeworkTemplateByName(
+    } else if (this.homeworkTemplateDataService.findHomeworkTemplateByName(
         addHomeworkTemplateDetailsDto.getName()).isPresent()) {
       return generateFailureResponse("Homework Template with name [" +
               addHomeworkTemplateDetailsDto.getName() + "] already exist",
@@ -121,7 +121,7 @@ public class AddHomeworkTemplateEndpoint {
         Optional<ProtocolTemplate> protocolTemplateOptional = Optional.ofNullable(null);
 
         if (addHomeworkQuestionDetailsDto.getTriggeredProtocolId() != null &&
-            (protocolTemplateOptional = this.protocolTemplateService.getProtocolTemplateById(
+            (protocolTemplateOptional = this.protocolTemplateDataService.getProtocolTemplateById(
                 addHomeworkQuestionDetailsDto.getTriggeredProtocolId())).isEmpty()) {
           return generateFailureResponse("Protocol Template with ID [" +
                   addHomeworkQuestionDetailsDto.getTriggeredProtocolId() + "] does not exist",
@@ -147,7 +147,7 @@ public class AddHomeworkTemplateEndpoint {
 
       createdHomeworkTemplate.setHomeworkQuestions(homeworkQuestionSet);
 
-      this.homeworkTemplateService.saveHomeworkTemplate(createdHomeworkTemplate);
+      this.homeworkTemplateDataService.saveHomeworkTemplate(createdHomeworkTemplate);
 
       log.info("Homework Template with ID [{}] was successfully created",
           createdHomeworkTemplate.getId());
@@ -159,7 +159,7 @@ public class AddHomeworkTemplateEndpoint {
 
   private HomeworkTemplate createHomeworkTemplate(
       AddHomeworkTemplateDetailsDto addHomeworkTemplateDetailsDto, String modifiedBy) {
-    return this.homeworkTemplateService.saveHomeworkTemplate(HomeworkTemplate.builder()
+    return this.homeworkTemplateDataService.saveHomeworkTemplate(HomeworkTemplate.builder()
         .modifiedBy(modifiedBy)
         .name(addHomeworkTemplateDetailsDto.getName())
         .description(addHomeworkTemplateDetailsDto.getDescription())
@@ -203,7 +203,7 @@ public class AddHomeworkTemplateEndpoint {
             .tooltip(responseOption.getTooltip())
             .ordinalIndex(responseOrdinalIndices.getAndIncrement())
             .build())
-        .peek(this.expectedResponseService::saveExpectedResponse)
+        .peek(this.expectedResponseDataService::saveExpectedResponse)
         .forEach(expectedResponses::add);
 
     return expectedResponses;
@@ -222,14 +222,14 @@ public class AddHomeworkTemplateEndpoint {
         .triggeredProtocol(protocolTemplate)
         .build();
 
-    return this.homeworkQuestionService.saveHomeworkQuestion(homeworkQuestion);
+    return this.homeworkQuestionDataService.saveHomeworkQuestion(homeworkQuestion);
   }
 
   private void updateExpectedResponsesWithParentHomeworkQuestion(
       List<ExpectedResponse> expectedResponses, HomeworkQuestion homeworkQuestion) {
     expectedResponses.stream()
         .peek(response -> response.setParentHomeworkQuestion(homeworkQuestion))
-        .forEach(this.expectedResponseService::saveExpectedResponse);
+        .forEach(this.expectedResponseDataService::saveExpectedResponse);
   }
 
   private void saveTriggeringExpectedResponse(HomeworkQuestion homeworkQuestion,
@@ -243,7 +243,7 @@ public class AddHomeworkTemplateEndpoint {
             .orElseThrow()
     );
 
-    this.homeworkQuestionService.saveHomeworkQuestion(homeworkQuestion);
+    this.homeworkQuestionDataService.saveHomeworkQuestion(homeworkQuestion);
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {

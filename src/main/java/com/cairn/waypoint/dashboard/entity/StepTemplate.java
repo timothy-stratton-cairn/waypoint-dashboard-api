@@ -4,9 +4,10 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "stepTemplateLinkedHomeworks")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "protocol_step_template")
@@ -33,9 +34,7 @@ public class StepTemplate extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY)
   private TemplateCategory category;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-  @JoinTable(name = "step_template_homework_template",
-      joinColumns = @JoinColumn(name = "protocol_step_template_id", referencedColumnName = "id"),
-      inverseJoinColumns = @JoinColumn(name = "homework_template_id", referencedColumnName = "id"))
-  private HomeworkTemplate linkedHomeworkTemplate;
+  @OneToMany(mappedBy = "stepTemplate",
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+  private Set<StepTemplateLinkedHomeworkTemplate> stepTemplateLinkedHomeworks;
 }

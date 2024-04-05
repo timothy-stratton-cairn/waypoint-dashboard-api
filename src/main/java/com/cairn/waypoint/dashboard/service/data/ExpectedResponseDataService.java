@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
 import com.cairn.waypoint.dashboard.repository.ExpectedResponseRepository;
@@ -7,11 +7,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ExpectedResponseService {
+public class ExpectedResponseDataService {
 
   private final ExpectedResponseRepository expectedResponseRepository;
 
-  public ExpectedResponseService(ExpectedResponseRepository ExpectedResponseRepository) {
+  public ExpectedResponseDataService(ExpectedResponseRepository ExpectedResponseRepository) {
     this.expectedResponseRepository = ExpectedResponseRepository;
   }
 

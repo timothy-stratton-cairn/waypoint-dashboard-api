@@ -11,9 +11,12 @@ import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
-import com.cairn.waypoint.dashboard.service.AccountService;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
+import com.cairn.waypoint.dashboard.service.data.AccountDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,15 +47,21 @@ public class AddProtocolEndpoint {
 
   public static final String PATH = "/api/protocol";
 
-  private final ProtocolService protocolService;
-  private final ProtocolTemplateService protocolTemplateService;
-  private final AccountService accountService;
+  private final ProtocolDataService protocolDataService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
+  private final AccountDataService accountDataService;
 
-  public AddProtocolEndpoint(ProtocolService protocolService, AccountService accountService,
-      ProtocolTemplateService protocolTemplateService) {
-    this.protocolService = protocolService;
-    this.protocolTemplateService = protocolTemplateService;
-    this.accountService = accountService;
+  private final ProtocolTemplateHelperService protocolTemplateHelperService;
+
+  public AddProtocolEndpoint(ProtocolDataService protocolDataService, AccountDataService accountDataService,
+      ProtocolTemplateDataService protocolTemplateDataService, StepTemplateDataService stepTemplateDataService,
+      HomeworkDataService homeworkDataService) {
+    this.protocolDataService = protocolDataService;
+    this.protocolTemplateDataService = protocolTemplateDataService;
+    this.accountDataService = accountDataService;
+
+    this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
+        protocolDataService, stepTemplateDataService, homeworkDataService);
   }
 
   @Transactional
@@ -88,19 +97,19 @@ public class AddProtocolEndpoint {
 
     Optional<AccountDetailsDto> accountDetailsDtoOptional;
     Optional<ProtocolTemplate> protocolTemplateOptional;
-    if (this.protocolService.getByProtocolTemplateIdAndUserId(
+    if (this.protocolDataService.getByProtocolTemplateIdAndUserId(
         addProtocolDetailsDto.getProtocolTemplateId(),
         addProtocolDetailsDto.getAssociatedAccountId()).isPresent()) {
       return generateFailureResponse("Account [" +
           addProtocolDetailsDto.getAssociatedAccountId()
           + "] already associated with Protocol Template [" +
           addProtocolDetailsDto.getProtocolTemplateId() + "]", HttpStatus.CONFLICT);
-    } else if ((accountDetailsDtoOptional = this.accountService.getAccountDetails(
+    } else if ((accountDetailsDtoOptional = this.accountDataService.getAccountDetails(
         addProtocolDetailsDto.getAssociatedAccountId())).isEmpty()) {
       return generateFailureResponse("Account with ID [" +
               addProtocolDetailsDto.getAssociatedAccountId() + "] does not exists",
           HttpStatus.NOT_FOUND);
-    } else if ((protocolTemplateOptional = this.protocolTemplateService.getProtocolTemplateById(
+    } else if ((protocolTemplateOptional = this.protocolTemplateDataService.getProtocolTemplateById(
         addProtocolDetailsDto.getProtocolTemplateId())).isEmpty()) {
       return generateFailureResponse("Protocol Template with ID [" +
               addProtocolDetailsDto.getProtocolTemplateId() + "] does not exists",
@@ -120,7 +129,9 @@ public class AddProtocolEndpoint {
       protocolToBeCreated.setComments(
           setupProtocolComment(addProtocolDetailsDto, principal.getName()));
 
-      Protocol createdProtocol = this.protocolService.saveProtocol(protocolToBeCreated);
+      Protocol createdProtocol = this.protocolDataService.saveProtocol(protocolToBeCreated);
+
+      protocolTemplateHelperService.generateAndSaveClientHomework(createdProtocol, principal.getName());
 
       log.info("Protocol Template with ID [{}] was successfully associated with Account ID [{}]",
           addProtocolDetailsDto.getProtocolTemplateId(),

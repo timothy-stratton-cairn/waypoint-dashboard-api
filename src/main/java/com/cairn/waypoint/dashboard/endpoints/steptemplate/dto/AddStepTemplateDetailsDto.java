@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplate.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,6 @@ public class AddStepTemplateDetailsDto {
   private String name;
   private String description;
   private Long linkedStepTaskId;
-  private Long linkedHomeworkTemplateId;
+  private List<Long> linkedHomeworkTemplateIds;
   private Long stepTemplateCategoryId;
 }

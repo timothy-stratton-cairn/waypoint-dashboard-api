@@ -10,7 +10,7 @@ import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.TriggeredProt
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
-import com.cairn.waypoint.dashboard.service.HomeworkTemplateService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,10 +36,10 @@ public class GetHomeworkTemplateByIdEndpoint {
 
   public static final String PATH = "/api/homework-template/{homeworkTemplateId}";
 
-  private final HomeworkTemplateService homeworkTemplateService;
+  private final HomeworkTemplateDataService homeworkTemplateDataService;
 
-  public GetHomeworkTemplateByIdEndpoint(HomeworkTemplateService homeworkTemplateService) {
-    this.homeworkTemplateService = homeworkTemplateService;
+  public GetHomeworkTemplateByIdEndpoint(HomeworkTemplateDataService homeworkTemplateDataService) {
+    this.homeworkTemplateDataService = homeworkTemplateDataService;
   }
 
   @GetMapping(PATH)
@@ -66,7 +66,7 @@ public class GetHomeworkTemplateByIdEndpoint {
         homeworkTemplateId);
 
     final ResponseEntity<?>[] response = new ResponseEntity<?>[1];
-    this.homeworkTemplateService.getHomeworkTemplateById(homeworkTemplateId)
+    this.homeworkTemplateDataService.getHomeworkTemplateById(homeworkTemplateId)
         .ifPresentOrElse(
             returnedHomeworkTemplate -> response[0] = generateSuccessResponse(
                 returnedHomeworkTemplate),

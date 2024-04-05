@@ -1,7 +1,7 @@
 package com.cairn.waypoint.dashboard.entity.enumeration;
 
 import com.cairn.waypoint.dashboard.entity.StepStatus;
-import com.cairn.waypoint.dashboard.service.StepStatusService;
+import com.cairn.waypoint.dashboard.service.data.StepStatusDataService;
 import jakarta.persistence.EntityNotFoundException;
 
 public enum StepStatusEnum {
@@ -11,7 +11,7 @@ public enum StepStatusEnum {
 
   public StepStatus getInstance() {
     if (this.instance == null) {
-      this.instance = StepStatusService.availableStatuses.stream()
+      this.instance = StepStatusDataService.availableStatuses.stream()
           .filter(stepStatus ->
               stepStatus.getName().toUpperCase().replace(' ', '_')
                   .equals(this.name()))

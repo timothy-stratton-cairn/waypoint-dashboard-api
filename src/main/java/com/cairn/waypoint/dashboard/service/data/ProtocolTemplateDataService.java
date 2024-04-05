@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
@@ -8,11 +8,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProtocolTemplateService {
+public class ProtocolTemplateDataService {
 
   private final ProtocolTemplateRepository protocolTemplateRepository;
 
-  public ProtocolTemplateService(ProtocolTemplateRepository protocolTemplateRepository) {
+  public ProtocolTemplateDataService(ProtocolTemplateRepository protocolTemplateRepository) {
     this.protocolTemplateRepository = protocolTemplateRepository;
   }
 

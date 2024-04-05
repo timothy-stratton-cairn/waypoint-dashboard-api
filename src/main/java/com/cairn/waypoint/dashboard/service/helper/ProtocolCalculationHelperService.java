@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.endpoints.protocol.service;
+package com.cairn.waypoint.dashboard.service.helper;
 
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
@@ -7,7 +7,7 @@ import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class ProtocolCalculationService {
+public class ProtocolCalculationHelperService {
 
   public static BigDecimal getProtocolCompletionPercentage(Protocol returnedProtocol) {
     return returnedProtocol.getProtocolSteps().stream()

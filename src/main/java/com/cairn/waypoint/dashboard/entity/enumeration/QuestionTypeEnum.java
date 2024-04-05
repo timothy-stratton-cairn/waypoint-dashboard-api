@@ -1,7 +1,7 @@
 package com.cairn.waypoint.dashboard.entity.enumeration;
 
 import com.cairn.waypoint.dashboard.entity.QuestionType;
-import com.cairn.waypoint.dashboard.service.QuestionTypeService;
+import com.cairn.waypoint.dashboard.service.data.QuestionTypeDataService;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.EntityNotFoundException;
 import java.io.File;
@@ -82,7 +82,7 @@ public enum QuestionTypeEnum {
 
   public QuestionType getInstance() {
     if (this.instance == null) {
-      this.instance = QuestionTypeService.availableTypes.stream()
+      this.instance = QuestionTypeDataService.availableTypes.stream()
           .filter(questionType ->
               questionType.getType().toUpperCase()
                   .replace(' ', '_')

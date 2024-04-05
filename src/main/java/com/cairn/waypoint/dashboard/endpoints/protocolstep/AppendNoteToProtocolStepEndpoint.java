@@ -5,8 +5,8 @@ import com.cairn.waypoint.dashboard.endpoints.protocolstep.dto.AppendProtocolSte
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
-import com.cairn.waypoint.dashboard.service.ProtocolStepService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,13 +34,13 @@ public class AppendNoteToProtocolStepEndpoint {
 
   public static final String PATH = "/api/protocol/{protocolId}/protocol-step/{protocolStepId}/note";
 
-  private final ProtocolService protocolService;
-  private final ProtocolStepService protocolStepService;
+  private final ProtocolDataService protocolDataService;
+  private final ProtocolStepDataService protocolStepDataService;
 
-  public AppendNoteToProtocolStepEndpoint(ProtocolService protocolService,
-      ProtocolStepService protocolStepService) {
-    this.protocolService = protocolService;
-    this.protocolStepService = protocolStepService;
+  public AppendNoteToProtocolStepEndpoint(ProtocolDataService protocolDataService,
+      ProtocolStepDataService protocolStepDataService) {
+    this.protocolDataService = protocolDataService;
+    this.protocolStepDataService = protocolStepDataService;
   }
 
   @Transactional
@@ -68,8 +68,8 @@ public class AppendNoteToProtocolStepEndpoint {
     log.info("User [{}] is appending a note to Protocol Step with ID [{}] on Protocol with ID [{}]",
         principal.getName(), protocolStepId, protocolId);
 
-    Optional<Protocol> optionalProtocolToUpdate = this.protocolService.getProtocolById(protocolId);
-    Optional<ProtocolStep> optionalProtocolStepToUpdate = this.protocolStepService.getProtocolStepById(
+    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(protocolId);
+    Optional<ProtocolStep> optionalProtocolStepToUpdate = this.protocolStepDataService.getProtocolStepById(
         protocolStepId);
 
     if (optionalProtocolToUpdate.isEmpty()) {
@@ -93,7 +93,7 @@ public class AppendNoteToProtocolStepEndpoint {
           .protocolStep(protocolStepToUpdate)
           .build());
 
-      Long updatedProtocolStepId = this.protocolStepService.saveProtocolStep(protocolStepToUpdate);
+      Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(protocolStepToUpdate);
 
       log.info("Protocol Step with ID [{}] on Protocol with ID [{}] updated with provided note",
           updatedProtocolStepId, protocolId);

@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.QuestionType;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
@@ -8,13 +8,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class QuestionTypeService {
+public class QuestionTypeDataService {
 
   public static final List<QuestionType> availableTypes = new ArrayList<>();
 
   @SuppressWarnings({"unused", "UnusedAssignment"})
-  public QuestionTypeService(QuestionTypeRepository questionTypeRepository) {
-    QuestionTypeService.availableTypes.addAll(questionTypeRepository.findAll());
+  public QuestionTypeDataService(QuestionTypeRepository questionTypeRepository) {
+    QuestionTypeDataService.availableTypes.addAll(questionTypeRepository.findAll());
 
     //Initialize the Enum
     QuestionTypeEnum unused = QuestionTypeEnum.STRING;

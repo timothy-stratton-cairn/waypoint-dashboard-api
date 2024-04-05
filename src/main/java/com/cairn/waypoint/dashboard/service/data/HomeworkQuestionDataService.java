@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
@@ -7,11 +7,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HomeworkQuestionService {
+public class HomeworkQuestionDataService {
 
   private final HomeworkQuestionRepository homeworkQuestionRepository;
 
-  public HomeworkQuestionService(HomeworkQuestionRepository homeworkQuestionRepository) {
+  public HomeworkQuestionDataService(HomeworkQuestionRepository homeworkQuestionRepository) {
     this.homeworkQuestionRepository = homeworkQuestionRepository;
   }
 

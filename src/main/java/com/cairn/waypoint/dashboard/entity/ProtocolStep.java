@@ -24,7 +24,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = false, exclude = {"parentProtocol", "notes"})
+@EqualsAndHashCode(callSuper = false, exclude = {"parentProtocol", "notes", "linkedHomework"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "protocol_step")

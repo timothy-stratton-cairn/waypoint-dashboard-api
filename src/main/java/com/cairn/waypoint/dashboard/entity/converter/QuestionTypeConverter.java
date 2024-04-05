@@ -2,7 +2,7 @@ package com.cairn.waypoint.dashboard.entity.converter;
 
 import com.cairn.waypoint.dashboard.entity.QuestionType;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
-import com.cairn.waypoint.dashboard.service.QuestionTypeService;
+import com.cairn.waypoint.dashboard.service.data.QuestionTypeDataService;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,7 +18,7 @@ public class QuestionTypeConverter implements AttributeConverter<QuestionTypeEnu
 
   @Override
   public QuestionTypeEnum convertToEntityAttribute(Long id) {
-    QuestionType retrievedStatus = QuestionTypeService.availableTypes.stream()
+    QuestionType retrievedStatus = QuestionTypeDataService.availableTypes.stream()
         .filter(questionType -> Objects.equals(questionType.getId(), id))
         .findFirst()
         .orElseThrow(EntityNotFoundException::new);

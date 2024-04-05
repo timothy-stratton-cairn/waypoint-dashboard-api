@@ -3,7 +3,7 @@ package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateListDto;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,10 +24,10 @@ public class GetAllStepTemplatesEndpoint {
 
   public static final String PATH = "/api/protocol-step-template";
 
-  private final StepTemplateService stepTemplateService;
+  private final StepTemplateDataService stepTemplateDataService;
 
-  public GetAllStepTemplatesEndpoint(StepTemplateService stepTemplateService) {
-    this.stepTemplateService = stepTemplateService;
+  public GetAllStepTemplatesEndpoint(StepTemplateDataService stepTemplateDataService) {
+    this.stepTemplateDataService = stepTemplateDataService;
   }
 
   @GetMapping(PATH)
@@ -49,7 +49,7 @@ public class GetAllStepTemplatesEndpoint {
     return ResponseEntity.ok(
         StepTemplateListDto.builder()
             .stepTemplates(
-                this.stepTemplateService.getAllStepTemplates().stream()
+                this.stepTemplateDataService.getAllStepTemplates().stream()
                     .map(stepTemplate -> StepTemplateDto.builder()
                         .id(stepTemplate.getId())
                         .name(stepTemplate.getName())

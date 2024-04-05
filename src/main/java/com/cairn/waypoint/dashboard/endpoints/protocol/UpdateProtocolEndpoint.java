@@ -9,8 +9,8 @@ import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
-import com.cairn.waypoint.dashboard.service.ProtocolStepService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,13 +39,13 @@ public class UpdateProtocolEndpoint {
 
   public static final String PATH = "/api/protocol/{protocolId}";
 
-  private final ProtocolService protocolService;
-  private final ProtocolStepService protocolStepService;
+  private final ProtocolDataService protocolDataService;
+  private final ProtocolStepDataService protocolStepDataService;
 
-  public UpdateProtocolEndpoint(ProtocolService protocolService,
-      ProtocolStepService protocolStepService) {
-    this.protocolService = protocolService;
-    this.protocolStepService = protocolStepService;
+  public UpdateProtocolEndpoint(ProtocolDataService protocolDataService,
+      ProtocolStepDataService protocolStepDataService) {
+    this.protocolDataService = protocolDataService;
+    this.protocolStepDataService = protocolStepDataService;
   }
 
   @Transactional
@@ -71,7 +71,7 @@ public class UpdateProtocolEndpoint {
       @RequestBody UpdateProtocolDetailsDto updateProtocolDetailsDto, Principal principal) {
     log.info("User [{}] is updating Protocol with ID [{}]", principal.getName(), protocolId);
 
-    Optional<Protocol> optionalProtocolToUpdate = this.protocolService.getProtocolById(protocolId);
+    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(protocolId);
 
     if (optionalProtocolToUpdate.isEmpty()) {
       return generateFailureResponse("Protocol with ID [" +
@@ -84,7 +84,7 @@ public class UpdateProtocolEndpoint {
 
   private ResponseEntity<?> updateProtocol(Protocol protocolToUpdate,
       UpdateProtocolDetailsDto updateProtocolDetailsDto, String modifiedBy) {
-    Protocol updatedProtocol = this.protocolService.updateProtocol(
+    Protocol updatedProtocol = this.protocolDataService.updateProtocol(
         setUpdatedProtocolProperties(protocolToUpdate, updateProtocolDetailsDto, modifiedBy));
 
     if (updateProtocolDetailsDto.getProtocolSteps() != null) {
@@ -163,9 +163,9 @@ public class UpdateProtocolEndpoint {
       //Since a Protocol Step was updated we should update the last update timestamp
       updatedProtocol.setLastStatusUpdateTimestamp(LocalDateTime.now());
 
-      updatedProtocol = this.protocolService.updateProtocol(updatedProtocol);
+      updatedProtocol = this.protocolDataService.updateProtocol(updatedProtocol);
     }
-    Long protocolStepId = this.protocolStepService.saveProtocolStep(protocolStepToUpdate);
+    Long protocolStepId = this.protocolStepDataService.saveProtocolStep(protocolStepToUpdate);
 
     log.info("Updated Protocol Step with ID [{}] on Protocol with ID [{}]", protocolStepId,
         protocolToUpdate.getId());

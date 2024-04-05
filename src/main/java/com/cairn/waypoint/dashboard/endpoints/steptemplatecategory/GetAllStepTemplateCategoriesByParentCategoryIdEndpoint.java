@@ -4,7 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.ChildTemplateCategoryDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.ChildTemplateCategoryListDto;
 import com.cairn.waypoint.dashboard.entity.TemplateCategory;
-import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
+import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,11 +29,11 @@ public class GetAllStepTemplateCategoriesByParentCategoryIdEndpoint {
 
   public static final String PATH = "/api/protocol-step-template-category/{templateCategoryId}/children";
 
-  private final TemplateCategoryService templateCategoryService;
+  private final TemplateCategoryDataService templateCategoryDataService;
 
   public GetAllStepTemplateCategoriesByParentCategoryIdEndpoint(
-      TemplateCategoryService templateCategoryService) {
-    this.templateCategoryService = templateCategoryService;
+      TemplateCategoryDataService templateCategoryDataService) {
+    this.templateCategoryDataService = templateCategoryDataService;
   }
 
   @GetMapping(PATH)
@@ -61,7 +61,7 @@ public class GetAllStepTemplateCategoriesByParentCategoryIdEndpoint {
 
     Optional<TemplateCategory> optionalParentTemplateCategory;
 
-    if ((optionalParentTemplateCategory = this.templateCategoryService.getTemplateCategoryById(
+    if ((optionalParentTemplateCategory = this.templateCategoryDataService.getTemplateCategoryById(
         templateCategoryId)).isEmpty()) {
       return generateFailureResponse("Step Template Category with ID [" +
           templateCategoryId + "] does not exist", HttpStatus.NOT_FOUND);

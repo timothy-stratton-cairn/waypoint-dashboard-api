@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.dto.AccountDetailsDto;
 import com.cairn.waypoint.dashboard.dto.AccountListDto;
@@ -8,11 +8,11 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AccountService {
+public class AccountDataService {
 
   private final AccountRepository accountRepository;
 
-  public AccountService(AccountRepository accountRepository) {
+  public AccountDataService(AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
   }
 

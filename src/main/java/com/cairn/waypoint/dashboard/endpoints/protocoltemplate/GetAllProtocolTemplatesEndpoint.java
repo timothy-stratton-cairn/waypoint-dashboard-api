@@ -3,7 +3,7 @@ package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTemplateMapper;
-import com.cairn.waypoint.dashboard.service.ProtocolTemplateService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,10 +24,10 @@ public class GetAllProtocolTemplatesEndpoint {
 
   public static final String PATH = "/api/protocol-template";
 
-  private final ProtocolTemplateService protocolTemplateService;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
 
-  public GetAllProtocolTemplatesEndpoint(ProtocolTemplateService protocolTemplateService) {
-    this.protocolTemplateService = protocolTemplateService;
+  public GetAllProtocolTemplatesEndpoint(ProtocolTemplateDataService protocolTemplateDataService) {
+    this.protocolTemplateDataService = protocolTemplateDataService;
   }
 
   @GetMapping(PATH)
@@ -49,7 +49,7 @@ public class GetAllProtocolTemplatesEndpoint {
     return ResponseEntity.ok(
         ProtocolTemplateListDto.builder()
             .protocolTemplates(
-                this.protocolTemplateService.getAllProtocolTemplates().stream()
+                this.protocolTemplateDataService.getAllProtocolTemplates().stream()
                     .map(ProtocolTemplateMapper.INSTANCE::toDto)
                     .toList())
             .build()

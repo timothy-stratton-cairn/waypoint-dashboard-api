@@ -6,11 +6,12 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMa
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTask;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.TemplateCategory;
-import com.cairn.waypoint.dashboard.service.HomeworkTemplateService;
-import com.cairn.waypoint.dashboard.service.StepTaskService;
-import com.cairn.waypoint.dashboard.service.StepTemplateService;
-import com.cairn.waypoint.dashboard.service.TemplateCategoryService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTaskDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +20,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,18 +39,18 @@ public class AddStepTemplateEndpoint {
 
   public static final String PATH = "/api/protocol-step-template";
 
-  private final StepTemplateService stepTemplateService;
-  private final StepTaskService stepTaskService;
-  private final HomeworkTemplateService homeworkTemplateService;
-  private final TemplateCategoryService templateCategoryService;
+  private final StepTemplateDataService stepTemplateDataService;
+  private final StepTaskDataService stepTaskDataService;
+  private final HomeworkTemplateDataService homeworkTemplateDataService;
+  private final TemplateCategoryDataService templateCategoryDataService;
 
-  public AddStepTemplateEndpoint(StepTemplateService stepTemplateService,
-      StepTaskService stepTaskService, HomeworkTemplateService homeworkTemplateService,
-      TemplateCategoryService templateCategoryService) {
-    this.stepTemplateService = stepTemplateService;
-    this.stepTaskService = stepTaskService;
-    this.homeworkTemplateService = homeworkTemplateService;
-    this.templateCategoryService = templateCategoryService;
+  public AddStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService,
+      StepTaskDataService stepTaskDataService, HomeworkTemplateDataService homeworkTemplateDataService,
+      TemplateCategoryDataService templateCategoryDataService) {
+    this.stepTemplateDataService = stepTemplateDataService;
+    this.stepTaskDataService = stepTaskDataService;
+    this.homeworkTemplateDataService = homeworkTemplateDataService;
+    this.templateCategoryDataService = templateCategoryDataService;
   }
 
   @PostMapping(PATH)
@@ -79,27 +83,27 @@ public class AddStepTemplateEndpoint {
         principal.getName(), addStepTemplateDetailsDto.getName());
 
     Optional<StepTask> linkedStepTask = Optional.empty();
-    Optional<HomeworkTemplate> linkedHomeworkTemplate = Optional.empty();
+    List<HomeworkTemplate> linkedHomeworkTemplates = new ArrayList<>();
     Optional<TemplateCategory> stepTemplateCategory = Optional.empty();
 
-    if (this.stepTemplateService.findStepTemplateByName(addStepTemplateDetailsDto.getName())
+    if (this.stepTemplateDataService.findStepTemplateByName(addStepTemplateDetailsDto.getName())
         .isPresent()) {
       return generateFailureResponse("Step Template with name [" +
           addStepTemplateDetailsDto.getName() + "] already exists", HttpStatus.CONFLICT);
     } else if (addStepTemplateDetailsDto.getLinkedStepTaskId() != null &&
-        (linkedStepTask = this.stepTaskService.getStepTaskById(
+        (linkedStepTask = this.stepTaskDataService.getStepTaskById(
             addStepTemplateDetailsDto.getLinkedStepTaskId()))
             .isEmpty()) {
       return generateFailureResponse("Step Task with ID [" +
           addStepTemplateDetailsDto.getLinkedStepTaskId() + "] not found", HttpStatus.NOT_FOUND);
-    } else if (addStepTemplateDetailsDto.getLinkedHomeworkTemplateId() != null &&
-        (linkedHomeworkTemplate = this.homeworkTemplateService.getHomeworkTemplateById(
-            addStepTemplateDetailsDto.getLinkedStepTaskId())).isEmpty()) {
-      return generateFailureResponse("Homework Template with ID [" +
-              addStepTemplateDetailsDto.getLinkedHomeworkTemplateId() + "] not found",
+    } else if (addStepTemplateDetailsDto.getLinkedHomeworkTemplateIds() != null &&
+        (linkedHomeworkTemplates = this.homeworkTemplateDataService.getHomeworkTemplates(
+            addStepTemplateDetailsDto.getLinkedHomeworkTemplateIds())).isEmpty()) {
+      return generateFailureResponse("Homework Templates with ID [" +
+              addStepTemplateDetailsDto.getLinkedHomeworkTemplateIds() + "] not found",
           HttpStatus.NOT_FOUND);
     } else if (addStepTemplateDetailsDto.getStepTemplateCategoryId() != null &&
-        (stepTemplateCategory = this.templateCategoryService.getTemplateCategoryById(
+        (stepTemplateCategory = this.templateCategoryDataService.getTemplateCategoryById(
             addStepTemplateDetailsDto.getStepTemplateCategoryId())).isEmpty()) {
       return generateFailureResponse("Step Template Category with ID [" +
               addStepTemplateDetailsDto.getStepTemplateCategoryId() + "] not found",
@@ -107,7 +111,7 @@ public class AddStepTemplateEndpoint {
     } else {
       Long createdStepTemplateId = createStepTemplate(addStepTemplateDetailsDto,
           principal.getName(), linkedStepTask.orElse(null),
-          linkedHomeworkTemplate.orElse(null), stepTemplateCategory.orElse(null));
+          linkedHomeworkTemplates, stepTemplateCategory.orElse(null));
 
       log.info("Step Task [{}] created successfully with ID [{}]",
           addStepTemplateDetailsDto.getName(),
@@ -119,7 +123,7 @@ public class AddStepTemplateEndpoint {
   }
 
   private Long createStepTemplate(AddStepTemplateDetailsDto addStepTemplateDetailsDto,
-      String modifiedBy, StepTask linkedStepTask, HomeworkTemplate linkedHomeworkTemplate,
+      String modifiedBy, StepTask linkedStepTask, List<HomeworkTemplate> linkedHomeworkTemplates,
       TemplateCategory templateCategory) {
 
     StepTemplate stepTemplateToCreate = StepTemplateMapper.INSTANCE
@@ -127,10 +131,22 @@ public class AddStepTemplateEndpoint {
 
     stepTemplateToCreate.setModifiedBy(modifiedBy);
     stepTemplateToCreate.setLinkedTask(linkedStepTask);
-    stepTemplateToCreate.setLinkedHomeworkTemplate(linkedHomeworkTemplate);
     stepTemplateToCreate.setCategory(templateCategory);
 
-    return this.stepTemplateService.saveStepTemplate(stepTemplateToCreate);
+    StepTemplate createdStepTemplate = this.stepTemplateDataService.saveStepTemplate(stepTemplateToCreate);
+
+    if (!linkedHomeworkTemplates.isEmpty()) {
+      createdStepTemplate.setStepTemplateLinkedHomeworks(linkedHomeworkTemplates.stream()
+          .map(homeworkTemplate -> StepTemplateLinkedHomeworkTemplate.builder()
+              .homeworkTemplate(homeworkTemplate)
+              .stepTemplate(createdStepTemplate)
+              .build())
+          .collect(Collectors.toSet()));
+
+      return this.stepTemplateDataService.saveStepTemplate(createdStepTemplate).getId();
+    } else {
+      return createdStepTemplate.getId();
+    }
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {

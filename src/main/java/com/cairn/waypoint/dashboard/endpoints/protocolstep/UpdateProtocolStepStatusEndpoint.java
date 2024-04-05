@@ -4,8 +4,8 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocolstep.dto.UpdateProtocolStepStatusDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-import com.cairn.waypoint.dashboard.service.ProtocolService;
-import com.cairn.waypoint.dashboard.service.ProtocolStepService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -33,13 +33,13 @@ public class UpdateProtocolStepStatusEndpoint {
 
   public static final String PATH = "/api/protocol/{protocolId}/protocol-step/{protocolStepId}/status";
 
-  private final ProtocolService protocolService;
-  private final ProtocolStepService protocolStepService;
+  private final ProtocolDataService protocolDataService;
+  private final ProtocolStepDataService protocolStepDataService;
 
-  public UpdateProtocolStepStatusEndpoint(ProtocolService protocolService,
-      ProtocolStepService protocolStepService) {
-    this.protocolService = protocolService;
-    this.protocolStepService = protocolStepService;
+  public UpdateProtocolStepStatusEndpoint(ProtocolDataService protocolDataService,
+      ProtocolStepDataService protocolStepDataService) {
+    this.protocolDataService = protocolDataService;
+    this.protocolStepDataService = protocolStepDataService;
   }
 
   @Transactional
@@ -68,8 +68,8 @@ public class UpdateProtocolStepStatusEndpoint {
         "User [{}] is updating the status of Protocol Step with ID [{}] on Protocol with ID [{}] to [{}]",
         principal.getName(), protocolStepId, protocolId, updateProtocolStepStatusDto.getStatus());
 
-    Optional<Protocol> optionalProtocolToUpdate = this.protocolService.getProtocolById(protocolId);
-    Optional<ProtocolStep> optionalProtocolStepToUpdate = this.protocolStepService.getProtocolStepById(
+    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(protocolId);
+    Optional<ProtocolStep> optionalProtocolStepToUpdate = this.protocolStepDataService.getProtocolStepById(
         protocolStepId);
 
     if (optionalProtocolToUpdate.isEmpty()) {
@@ -88,7 +88,7 @@ public class UpdateProtocolStepStatusEndpoint {
 
       protocolStepToUpdate.setStatus(updateProtocolStepStatusDto.getStatus());
 
-      Long updatedProtocolStepId = this.protocolStepService.saveProtocolStep(protocolStepToUpdate);
+      Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(protocolStepToUpdate);
 
       log.info(
           "Protocol Step with ID [{}] on Protocol with ID [{}] updated with provided status [{}]",

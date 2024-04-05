@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.service;
+package com.cairn.waypoint.dashboard.service.data;
 
 
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
@@ -12,11 +12,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
-public class StepTemplateService {
+public class StepTemplateDataService {
 
   private final StepTemplateRepository stepTemplateRepository;
 
-  public StepTemplateService(StepTemplateRepository stepTemplateRepository) {
+  public StepTemplateDataService(StepTemplateRepository stepTemplateRepository) {
     this.stepTemplateRepository = stepTemplateRepository;
   }
 
@@ -28,8 +28,8 @@ public class StepTemplateService {
     return this.stepTemplateRepository.findById(id);
   }
 
-  public Long saveStepTemplate(StepTemplate stepTemplate) {
-    return this.stepTemplateRepository.save(stepTemplate).getId();
+  public StepTemplate saveStepTemplate(StepTemplate stepTemplate) {
+    return this.stepTemplateRepository.save(stepTemplate);
   }
 
   public Optional<StepTemplate> findStepTemplateByName(String name) {
