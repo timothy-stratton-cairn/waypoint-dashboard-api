@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HomeworkDataService {
+
   private final HomeworkRepository homeworkRepository;
 
   public HomeworkDataService(HomeworkRepository homeworkRepository) {

@@ -1,14 +1,14 @@
 package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
-import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,7 +39,8 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
 
   public AppendStepTemplateToProtocolTemplateEndpoint(
-      ProtocolTemplateDataService protocolTemplateDataService, StepTemplateDataService stepTemplateDataService,
+      ProtocolTemplateDataService protocolTemplateDataService,
+      StepTemplateDataService stepTemplateDataService,
       ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService) {
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.stepTemplateDataService = stepTemplateDataService;

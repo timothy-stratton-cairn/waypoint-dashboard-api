@@ -8,8 +8,8 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
-import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -75,7 +75,8 @@ public class GetAllProtocolsEndpoint {
                         .needsAttention(protocol.getMarkedForAttention())
                         .lastStatusUpdateTimestamp(protocol.getLastStatusUpdateTimestamp())
                         .completionPercentage(
-                            ProtocolCalculationHelperService.getProtocolCompletionPercentage(protocol))
+                            ProtocolCalculationHelperService.getProtocolCompletionPercentage(
+                                protocol))
                         .associatedSteps(AssociatedStepsListDto.builder()
                             .steps(protocol.getProtocolSteps().stream()
                                 .map(protocolStep -> ProtocolStepDto.builder()

@@ -53,8 +53,10 @@ public class AddProtocolEndpoint {
 
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
 
-  public AddProtocolEndpoint(ProtocolDataService protocolDataService, AccountDataService accountDataService,
-      ProtocolTemplateDataService protocolTemplateDataService, StepTemplateDataService stepTemplateDataService,
+  public AddProtocolEndpoint(ProtocolDataService protocolDataService,
+      AccountDataService accountDataService,
+      ProtocolTemplateDataService protocolTemplateDataService,
+      StepTemplateDataService stepTemplateDataService,
       HomeworkDataService homeworkDataService) {
     this.protocolDataService = protocolDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
@@ -131,7 +133,8 @@ public class AddProtocolEndpoint {
 
       Protocol createdProtocol = this.protocolDataService.saveProtocol(protocolToBeCreated);
 
-      protocolTemplateHelperService.generateAndSaveClientHomework(createdProtocol, principal.getName());
+      protocolTemplateHelperService.generateAndSaveClientHomework(createdProtocol,
+          principal.getName());
 
       log.info("Protocol Template with ID [{}] was successfully associated with Account ID [{}]",
           addProtocolDetailsDto.getProtocolTemplateId(),

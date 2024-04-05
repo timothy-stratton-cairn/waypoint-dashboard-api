@@ -71,7 +71,8 @@ public class UpdateProtocolEndpoint {
       @RequestBody UpdateProtocolDetailsDto updateProtocolDetailsDto, Principal principal) {
     log.info("User [{}] is updating Protocol with ID [{}]", principal.getName(), protocolId);
 
-    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(protocolId);
+    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(
+        protocolId);
 
     if (optionalProtocolToUpdate.isEmpty()) {
       return generateFailureResponse("Protocol with ID [" +

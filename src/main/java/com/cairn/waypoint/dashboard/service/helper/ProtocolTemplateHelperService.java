@@ -127,16 +127,19 @@ public class ProtocolTemplateHelperService {
   }
 
   public void generateAndSaveClientHomework(Protocol createdProtocol, String modifiedBy) {
-    createClientHomework(createdProtocol.getProtocolSteps(), createdProtocol.getAssociatedUsers(), modifiedBy).stream()
+    createClientHomework(createdProtocol.getProtocolSteps(), createdProtocol.getAssociatedUsers(),
+        modifiedBy).stream()
         .peek(this.homeworkDataService::saveHomework)
         .peek(homework -> {
-          homework.getHomeworkQuestions().forEach(homeworkResponse -> homeworkResponse.setHomework(homework));
+          homework.getHomeworkQuestions()
+              .forEach(homeworkResponse -> homeworkResponse.setHomework(homework));
           homework.getAssociatedUsers().forEach(homeworkUser -> homeworkUser.setHomework(homework));
         })
         .forEach(this.homeworkDataService::saveHomework);
   }
 
-  private List<Homework> createClientHomework(Collection<ProtocolStep> protocolSteps, Set<ProtocolUser> associatedUsers, String modifiedBy) {
+  private List<Homework> createClientHomework(Collection<ProtocolStep> protocolSteps,
+      Set<ProtocolUser> associatedUsers, String modifiedBy) {
     return protocolSteps.stream()
         .map(protocolStep -> {
           if (protocolStep.getTemplate().getStepTemplateLinkedHomeworks() != null) {

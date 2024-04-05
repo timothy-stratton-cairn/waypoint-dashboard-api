@@ -87,7 +87,8 @@ public class GetStepTemplateByIdEndpoint {
           .build();
     }
 
-    if (returnedStepTemplate.getStepTemplateLinkedHomeworks() != null && !returnedStepTemplate.getStepTemplateLinkedHomeworks().isEmpty()) {
+    if (returnedStepTemplate.getStepTemplateLinkedHomeworks() != null
+        && !returnedStepTemplate.getStepTemplateLinkedHomeworks().isEmpty()) {
       homeworkTemplateDetailsListDto = HomeworkTemplateDetailsListDto.builder()
           .homeworkTemplates(
               returnedStepTemplate.getStepTemplateLinkedHomeworks().stream()

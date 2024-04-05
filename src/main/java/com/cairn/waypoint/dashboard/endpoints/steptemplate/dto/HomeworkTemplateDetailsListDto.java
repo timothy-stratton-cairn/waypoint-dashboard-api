@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class HomeworkTemplateDetailsListDto {
+
   private List<HomeworkTemplateDetailsDto> homeworkTemplates;
   private Integer numOfHomeworkTemplates;
 

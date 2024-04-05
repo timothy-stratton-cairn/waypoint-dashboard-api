@@ -45,7 +45,8 @@ public class AddStepTemplateEndpoint {
   private final TemplateCategoryDataService templateCategoryDataService;
 
   public AddStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService,
-      StepTaskDataService stepTaskDataService, HomeworkTemplateDataService homeworkTemplateDataService,
+      StepTaskDataService stepTaskDataService,
+      HomeworkTemplateDataService homeworkTemplateDataService,
       TemplateCategoryDataService templateCategoryDataService) {
     this.stepTemplateDataService = stepTemplateDataService;
     this.stepTaskDataService = stepTaskDataService;
@@ -133,7 +134,8 @@ public class AddStepTemplateEndpoint {
     stepTemplateToCreate.setLinkedTask(linkedStepTask);
     stepTemplateToCreate.setCategory(templateCategory);
 
-    StepTemplate createdStepTemplate = this.stepTemplateDataService.saveStepTemplate(stepTemplateToCreate);
+    StepTemplate createdStepTemplate = this.stepTemplateDataService.saveStepTemplate(
+        stepTemplateToCreate);
 
     if (!linkedHomeworkTemplates.isEmpty()) {
       createdStepTemplate.setStepTemplateLinkedHomeworks(linkedHomeworkTemplates.stream()

@@ -68,7 +68,8 @@ public class AppendNoteToProtocolStepEndpoint {
     log.info("User [{}] is appending a note to Protocol Step with ID [{}] on Protocol with ID [{}]",
         principal.getName(), protocolStepId, protocolId);
 
-    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(protocolId);
+    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(
+        protocolId);
     Optional<ProtocolStep> optionalProtocolStepToUpdate = this.protocolStepDataService.getProtocolStepById(
         protocolStepId);
 
@@ -93,7 +94,8 @@ public class AppendNoteToProtocolStepEndpoint {
           .protocolStep(protocolStepToUpdate)
           .build());
 
-      Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(protocolStepToUpdate);
+      Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(
+          protocolStepToUpdate);
 
       log.info("Protocol Step with ID [{}] on Protocol with ID [{}] updated with provided note",
           updatedProtocolStepId, protocolId);

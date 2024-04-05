@@ -32,7 +32,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -59,8 +58,10 @@ public class UpdateStepTemplateEndpoint {
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
 
   public UpdateStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService,
-      StepTaskDataService stepTaskDataService, HomeworkTemplateDataService homeworkTemplateDataService,
-      TemplateCategoryDataService templateCategoryDataService, ProtocolStepDataService protocolStepDataService,
+      StepTaskDataService stepTaskDataService,
+      HomeworkTemplateDataService homeworkTemplateDataService,
+      TemplateCategoryDataService templateCategoryDataService,
+      ProtocolStepDataService protocolStepDataService,
       ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService) {
     this.stepTemplateDataService = stepTemplateDataService;
     this.stepTaskDataService = stepTaskDataService;
@@ -68,7 +69,8 @@ public class UpdateStepTemplateEndpoint {
     this.templateCategoryDataService = templateCategoryDataService;
     this.protocolStepDataService = protocolStepDataService;
 
-    protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService, stepTemplateDataService, homeworkDataService);
+    protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService,
+        stepTemplateDataService, homeworkDataService);
   }
 
   @Transactional
@@ -163,12 +165,14 @@ public class UpdateStepTemplateEndpoint {
         .toEntity(addStepTemplateDetailsDto);
 
     stepTemplateToUpdate.setModifiedBy(modifiedBy);
-    stepTemplateToUpdate.setLinkedTask(linkedStepTask); //TODO give the same function as linked homework
+    stepTemplateToUpdate.setLinkedTask(
+        linkedStepTask); //TODO give the same function as linked homework
     stepTemplateToUpdate.setCategory(templateCategory);
 
     BeanUtils.copyPropertiesIgnoreNulls(stepTemplateToUpdate, targetStepTemplate);
 
-    StepTemplate updatedStepTemplate = this.stepTemplateDataService.saveStepTemplate(targetStepTemplate);
+    StepTemplate updatedStepTemplate = this.stepTemplateDataService.saveStepTemplate(
+        targetStepTemplate);
 
     if (!linkedHomeworkTemplates.isEmpty()) {
       updatedStepTemplate.setStepTemplateLinkedHomeworks(linkedHomeworkTemplates.stream()
@@ -180,10 +184,12 @@ public class UpdateStepTemplateEndpoint {
 
       this.stepTemplateDataService.saveStepTemplate(updatedStepTemplate);
 
-      List<ProtocolStep> protocolStepsToUpdate = this.protocolStepDataService.getProtocolStepsByStepTemplateId(targetStepTemplate.getId());
+      List<ProtocolStep> protocolStepsToUpdate = this.protocolStepDataService.getProtocolStepsByStepTemplateId(
+          targetStepTemplate.getId());
 
       Consumer<Protocol> assignHomeworkToUpdatedHomeworkSteps = (protocolWhoseStepsNeedUpdating) ->
-          this.protocolTemplateHelperService.generateAndSaveClientHomework(protocolWhoseStepsNeedUpdating, modifiedBy);
+          this.protocolTemplateHelperService.generateAndSaveClientHomework(
+              protocolWhoseStepsNeedUpdating, modifiedBy);
 
       protocolStepsToUpdate.stream()
           .map(ProtocolStep::getParentProtocol)

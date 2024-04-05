@@ -68,7 +68,8 @@ public class UpdateProtocolStepStatusEndpoint {
         "User [{}] is updating the status of Protocol Step with ID [{}] on Protocol with ID [{}] to [{}]",
         principal.getName(), protocolStepId, protocolId, updateProtocolStepStatusDto.getStatus());
 
-    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(protocolId);
+    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(
+        protocolId);
     Optional<ProtocolStep> optionalProtocolStepToUpdate = this.protocolStepDataService.getProtocolStepById(
         protocolStepId);
 
@@ -88,7 +89,8 @@ public class UpdateProtocolStepStatusEndpoint {
 
       protocolStepToUpdate.setStatus(updateProtocolStepStatusDto.getStatus());
 
-      Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(protocolStepToUpdate);
+      Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(
+          protocolStepToUpdate);
 
       log.info(
           "Protocol Step with ID [{}] on Protocol with ID [{}] updated with provided status [{}]",

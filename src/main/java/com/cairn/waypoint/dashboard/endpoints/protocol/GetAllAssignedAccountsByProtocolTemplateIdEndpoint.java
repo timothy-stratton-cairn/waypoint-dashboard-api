@@ -79,7 +79,8 @@ public class GetAllAssignedAccountsByProtocolTemplateIdEndpoint {
           protocolTemplateId + "]", HttpStatus.NOT_FOUND);
     } else {
 
-      List<Long> userIds = this.protocolDataService.getByProtocolTemplateId(protocolTemplateId).stream()
+      List<Long> userIds = this.protocolDataService.getByProtocolTemplateId(protocolTemplateId)
+          .stream()
           .map(Protocol::getAssociatedUsers)
           .flatMap(Set::stream)
           .map(ProtocolUser::getUserId)

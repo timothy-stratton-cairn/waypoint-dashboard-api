@@ -19,7 +19,8 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true, exclude = {"homeworkQuestions", "associatedUsers", "associatedProtocolStep"})
+@EqualsAndHashCode(callSuper = true, exclude = {"homeworkQuestions", "associatedUsers",
+    "associatedProtocolStep"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "homework")

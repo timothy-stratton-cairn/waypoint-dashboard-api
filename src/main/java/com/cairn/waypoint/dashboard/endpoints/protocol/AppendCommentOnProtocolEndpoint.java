@@ -64,7 +64,8 @@ public class AppendCommentOnProtocolEndpoint {
     log.info("User [{}] is appending a comment to Protocol with ID [{}]", principal.getName(),
         protocolId);
 
-    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(protocolId);
+    Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(
+        protocolId);
 
     if (optionalProtocolToUpdate.isEmpty()) {
       return generateFailureResponse("Protocol with ID [" +

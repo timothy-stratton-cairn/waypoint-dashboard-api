@@ -2,12 +2,12 @@ package com.cairn.waypoint.dashboard.endpoints.dashboard;
 
 import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.GlobalProtocolViewDto;
 import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.GlobalProtocolViewListDto;
-import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +36,8 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
   private final ProtocolDataService protocolDataService;
 
   public GetAllProtocolsGroupedByProtocolTemplateEndpoint(
-      ProtocolTemplateDataService protocolTemplateDataService, ProtocolDataService protocolDataService) {
+      ProtocolTemplateDataService protocolTemplateDataService,
+      ProtocolDataService protocolDataService) {
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.protocolDataService = protocolDataService;
   }

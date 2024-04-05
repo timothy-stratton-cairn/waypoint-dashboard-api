@@ -66,7 +66,8 @@ public class PrimeDatabaseEndpoint {
       protocolTemplates = getProtocolTemplates();
 
       this.stepTemplates = stepTemplateDataService.saveStepTemplateList(stepTemplates);
-      this.protocolTemplates = protocolTemplateDataService.saveProtocolTemplateList(protocolTemplates);
+      this.protocolTemplates = protocolTemplateDataService.saveProtocolTemplateList(
+          protocolTemplates);
 
       saveNewClientProtocolTemplate();
       saveJobChangeRetirementProtocolTemplate();
@@ -218,7 +219,8 @@ public class PrimeDatabaseEndpoint {
 
     newInheritanceCapitalInfluxProtocolTemplate.setProtocolTemplateSteps(protocolSteps);
 
-    this.protocolTemplateDataService.saveProtocolTemplate(newInheritanceCapitalInfluxProtocolTemplate);
+    this.protocolTemplateDataService.saveProtocolTemplate(
+        newInheritanceCapitalInfluxProtocolTemplate);
   }
 
   private void savePrePurchaseHousePurchaseProtocolTemplate() {
@@ -263,7 +265,8 @@ public class PrimeDatabaseEndpoint {
 
     newPrePurchaseHousePurchaseProtocolTemplate.setProtocolTemplateSteps(protocolSteps);
 
-    this.protocolTemplateDataService.saveProtocolTemplate(newPrePurchaseHousePurchaseProtocolTemplate);
+    this.protocolTemplateDataService.saveProtocolTemplate(
+        newPrePurchaseHousePurchaseProtocolTemplate);
   }
 
   private void savePostPurchaseHousePurchaseProtocolTemplate() {
@@ -308,7 +311,8 @@ public class PrimeDatabaseEndpoint {
 
     newPostPurchaseHousePurchaseProtocolTemplate.setProtocolTemplateSteps(protocolSteps);
 
-    this.protocolTemplateDataService.saveProtocolTemplate(newPostPurchaseHousePurchaseProtocolTemplate);
+    this.protocolTemplateDataService.saveProtocolTemplate(
+        newPostPurchaseHousePurchaseProtocolTemplate);
   }
 
   private List<StepTemplate> getStepTemplates() {
