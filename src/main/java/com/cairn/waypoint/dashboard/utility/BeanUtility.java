@@ -5,7 +5,7 @@ import java.util.Set;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
-public class BeanUtils extends org.springframework.beans.BeanUtils {
+public class BeanUtility extends org.springframework.beans.BeanUtils {
 
   public static String[] getNullPropertyNames(Object source) {
     final BeanWrapper src = new BeanWrapperImpl(source);
@@ -25,6 +25,6 @@ public class BeanUtils extends org.springframework.beans.BeanUtils {
 
   // then use Spring BeanUtils to copy and ignore null using our function
   public static void copyPropertiesIgnoreNulls(Object src, Object target) {
-    BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
+    BeanUtility.copyProperties(src, target, getNullPropertyNames(src));
   }
 }

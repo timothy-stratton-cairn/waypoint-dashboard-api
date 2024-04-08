@@ -19,7 +19,7 @@ import com.cairn.waypoint.dashboard.service.data.StepTaskDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
-import com.cairn.waypoint.dashboard.utility.BeanUtils;
+import com.cairn.waypoint.dashboard.utility.BeanUtility;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -169,7 +169,7 @@ public class UpdateStepTemplateEndpoint {
         linkedStepTask); //TODO give the same function as linked homework
     stepTemplateToUpdate.setCategory(templateCategory);
 
-    BeanUtils.copyPropertiesIgnoreNulls(stepTemplateToUpdate, targetStepTemplate);
+    BeanUtility.copyPropertiesIgnoreNulls(stepTemplateToUpdate, targetStepTemplate);
 
     StepTemplate updatedStepTemplate = this.stepTemplateDataService.saveStepTemplate(
         targetStepTemplate);

@@ -12,7 +12,7 @@ import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateLinkedStepTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
-import com.cairn.waypoint.dashboard.utility.BeanUtils;
+import com.cairn.waypoint.dashboard.utility.BeanUtility;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -162,7 +162,7 @@ public class UpdateProtocolTemplateEndpoint {
         .deleteCollectionOfProtocolTemplateLinkedStepTemplates(
             targetProtocolTemplate.getProtocolTemplateSteps());
 
-    BeanUtils.copyPropertiesIgnoreNulls(updatedProtocolTemplate, targetProtocolTemplate);
+    BeanUtility.copyPropertiesIgnoreNulls(updatedProtocolTemplate, targetProtocolTemplate);
 
     return this.protocolTemplateDataService.saveProtocolTemplate(targetProtocolTemplate);
   }
