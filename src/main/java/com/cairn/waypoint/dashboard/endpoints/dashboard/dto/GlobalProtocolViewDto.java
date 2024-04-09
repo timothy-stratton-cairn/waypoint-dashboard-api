@@ -17,8 +17,6 @@ public class GlobalProtocolViewDto {
   private Long protocolTemplateId;
   private String protocolTemplateName;
   @Builder.Default
-  private Integer numAssignedUsers = 0;
-  @Builder.Default
   private Long numStepsTodo = 0L;
   @Builder.Default
   private Long numStepsInProgress = 0L;
@@ -27,4 +25,6 @@ public class GlobalProtocolViewDto {
   @Builder.Default
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage = BigDecimal.ZERO;
+
+  private AssociatedAccountListDto assignedUsers;
 }
