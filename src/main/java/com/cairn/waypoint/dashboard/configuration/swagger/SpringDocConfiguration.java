@@ -14,8 +14,6 @@ public class SpringDocConfiguration {
   @Bean
   public OpenAPI waypointAuthorizationApiOpenApi() {
     return new OpenAPI()
-        .addServersItem(new Server().description("Dev Server").url("http://96.61.158.12:8083"))
-        .addServersItem(new Server().description("Local Server").url("http://localhost:8083"))
         .info(new Info()
             .title("Waypoint - Dashboard API")
             .description("Waypoint - Dashboard API serves out all application data for Waypoint")

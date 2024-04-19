@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Ops")
 public class PrimeDatabaseEndpoint {
 
-  public static final String PATH = "/ops/prime-database";
+  public static final String PATH = "/api/ops/prime-database";
 
   private final StepTemplateDataService stepTemplateDataService;
   private final ProtocolTemplateDataService protocolTemplateDataService;

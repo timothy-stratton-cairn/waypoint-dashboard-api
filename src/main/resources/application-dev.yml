@@ -1,6 +1,9 @@
 waypoint:
   dashboard:
     base-url: http://localhost:8083
+    s3:
+      bucket: waypoints-dashboard-api
+      import-data-key-prefix: import-data/
 
 spring:
   security:
@@ -12,8 +15,8 @@ spring:
     name: waypoint-dashboard-api
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/dashboard?useSSL=false
-    username: root
+    url: jdbc:mysql://localhost:3306/dashboard-db?useSSL=false
+    username: docker
     password:
     hikari:
       poolName: Hikari

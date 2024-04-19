@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Ops")
 public class SnapshotDatabaseEndpoint {
 
-  public static final String PATH = "/ops/snapshot-database";
+  public static final String PATH = "/api/ops/snapshot-database";
 
   @PostMapping(PATH)
   @PreAuthorize("hasAuthority('SCOPE_admin.full')")

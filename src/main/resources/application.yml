@@ -1,6 +1,9 @@
 waypoint:
   dashboard:
     base-url: ${APP_BASE_URL}
+    s3:
+      bucket: ${S3_BUCKET}
+      import-data-key-prefix: ${IMPORT_KEY_PREFIX}
 
 spring:
   security:
