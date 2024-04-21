@@ -91,7 +91,7 @@ public class AddHomeworkTemplateEndpoint {
           @ApiResponse(responseCode = "409", description = "Conflict",
               content = {@Content(mediaType = "application/json",
                   schema = @Schema(implementation = ErrorMessage.class))})})
-  public ResponseEntity<?> addHomeworkQuestion(
+  public ResponseEntity<?> addHomeworkTemplate(
       @RequestBody AddHomeworkTemplateDetailsDto addHomeworkTemplateDetailsDto,
       Principal principal) {
     log.info("User [{}] is attempting to create Homework Template with Name [{}]",

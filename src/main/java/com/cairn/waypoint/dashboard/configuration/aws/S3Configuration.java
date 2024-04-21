@@ -10,12 +10,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class S3Configuration {
 
-    @Bean
-    public AmazonS3 s3Client() {
-        return AmazonS3ClientBuilder
-                .standard()
-                .withCredentials(new DefaultAWSCredentialsProviderChain())
-                .withRegion(Regions.US_EAST_1)
-                .build();
-    }
+  @Bean
+  public AmazonS3 s3Client() {
+    return AmazonS3ClientBuilder
+        .standard()
+        .withCredentials(new DefaultAWSCredentialsProviderChain())
+        .withRegion(Regions.US_EAST_1)
+        .build();
+  }
 }

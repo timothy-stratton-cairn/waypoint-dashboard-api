@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -52,7 +51,8 @@ public class AccountRepository {
         .block();
   }
 
-  public ClientCreationResponseListDto batchAddAccounts(BatchAddAccountDetailsListDto accountsToAdd) {
+  public ClientCreationResponseListDto batchAddAccounts(
+      BatchAddAccountDetailsListDto accountsToAdd) {
     final String PATH = "/api/account/batch";
 
     return webClient.post()

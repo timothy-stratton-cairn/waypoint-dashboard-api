@@ -26,7 +26,8 @@ public class AccountDataService {
     return this.accountRepository.getAccountsById(accountIds);
   }
 
-  public ClientCreationResponseListDto createBatchAccounts(BatchAddAccountDetailsListDto accountsToAdd) {
+  public ClientCreationResponseListDto createBatchAccounts(
+      BatchAddAccountDetailsListDto accountsToAdd) {
     return this.accountRepository.batchAddAccounts(accountsToAdd);
   }
 }

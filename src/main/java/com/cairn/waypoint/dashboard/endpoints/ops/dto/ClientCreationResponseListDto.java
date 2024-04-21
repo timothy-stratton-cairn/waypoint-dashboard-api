@@ -1,23 +1,27 @@
 package com.cairn.waypoint.dashboard.endpoints.ops.dto;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ClientCreationResponseListDto {
 
-  private List<ClientCreationResponseDto> clientCreationResponses;
+  private List<ClientCreationResponseDto> accountCreationResponses;
   private String overallStatus;
   private Integer numberOfAccounts;
 
   public Integer getNumberOfAccounts() {
-    return clientCreationResponses.size();
+    return accountCreationResponses.size();
   }
 
   public String getOverallStatus() {
-    return clientCreationResponses.stream()
+    return accountCreationResponses.stream()
         .anyMatch(ClientCreationResponseDto::getError) ? "FAILED" : "SUCCESS";
   }
 }

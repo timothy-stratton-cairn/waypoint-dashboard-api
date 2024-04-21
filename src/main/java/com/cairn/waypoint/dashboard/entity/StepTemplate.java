@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,4 +38,11 @@ public class StepTemplate extends BaseEntity {
   @OneToMany(mappedBy = "stepTemplate",
       cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
   private Set<StepTemplateLinkedHomeworkTemplate> stepTemplateLinkedHomeworks;
+
+  public Set<StepTemplateLinkedHomeworkTemplate> getStepTemplateLinkedHomeworks() {
+    if (stepTemplateLinkedHomeworks == null) {
+      stepTemplateLinkedHomeworks = new LinkedHashSet<>();
+    }
+    return stepTemplateLinkedHomeworks;
+  }
 }
