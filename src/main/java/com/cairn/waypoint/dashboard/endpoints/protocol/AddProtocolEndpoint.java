@@ -148,11 +148,16 @@ public class AddProtocolEndpoint {
 
   private Set<ProtocolCommentary> setupProtocolComment(AddProtocolDetailsDto addProtocolDetailsDto,
       String modifiedBy) {
-    return Set.of(ProtocolCommentary.builder()
-        .modifiedBy(modifiedBy)
-        .originalCommenter(modifiedBy)
-        .comment(addProtocolDetailsDto.getComment())
-        .build());
+    if (addProtocolDetailsDto.getComment() == null || addProtocolDetailsDto.getComment()
+        .isEmpty()) {
+      return Set.of();
+    } else {
+      return Set.of(ProtocolCommentary.builder()
+          .modifiedBy(modifiedBy)
+          .originalCommenter(modifiedBy)
+          .comment(addProtocolDetailsDto.getComment())
+          .build());
+    }
   }
 
   private Protocol setupProtocolToBeCreated(ProtocolTemplate protocolTemplate, String modifiedBy) {

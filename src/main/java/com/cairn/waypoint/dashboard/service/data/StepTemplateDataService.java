@@ -29,7 +29,7 @@ public class StepTemplateDataService {
   }
 
   public StepTemplate saveStepTemplate(StepTemplate stepTemplate) {
-    return this.stepTemplateRepository.save(stepTemplate);
+    return this.stepTemplateRepository.saveAndFlush(stepTemplate);
   }
 
   public Optional<StepTemplate> findStepTemplateByName(String name) {

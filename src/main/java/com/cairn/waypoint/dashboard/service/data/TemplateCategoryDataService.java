@@ -26,4 +26,8 @@ public class TemplateCategoryDataService {
   public Optional<TemplateCategory> findByName(String categoryName) {
     return this.templateCategoryRepository.findByName(categoryName);
   }
+
+  public TemplateCategory saveTemplateCategory(TemplateCategory templateCategory) {
+    return this.templateCategoryRepository.save(templateCategory);
+  }
 }

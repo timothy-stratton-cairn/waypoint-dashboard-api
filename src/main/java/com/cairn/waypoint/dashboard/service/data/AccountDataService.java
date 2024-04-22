@@ -2,6 +2,8 @@ package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.dto.AccountDetailsDto;
 import com.cairn.waypoint.dashboard.dto.AccountListDto;
+import com.cairn.waypoint.dashboard.dto.BatchAddAccountDetailsListDto;
+import com.cairn.waypoint.dashboard.endpoints.ops.dto.ClientCreationResponseListDto;
 import com.cairn.waypoint.dashboard.repository.AccountRepository;
 import java.util.List;
 import java.util.Optional;
@@ -22,5 +24,10 @@ public class AccountDataService {
 
   public AccountListDto getAccountsById(List<Long> accountIds) {
     return this.accountRepository.getAccountsById(accountIds);
+  }
+
+  public ClientCreationResponseListDto createBatchAccounts(
+      BatchAddAccountDetailsListDto accountsToAdd) {
+    return this.accountRepository.batchAddAccounts(accountsToAdd);
   }
 }

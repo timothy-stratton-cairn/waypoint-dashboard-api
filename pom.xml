@@ -51,8 +51,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
+      <groupId>org.springframework.boot</groupId>
     </dependency>
 
     <dependency>
@@ -112,19 +112,43 @@
     <dependency>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <groupId>org.springdoc</groupId>
-      <version>2.3.0</version>
+      <version>${springdoc-openapi-starter-webmvc-ui.version}</version>
     </dependency>
 
     <dependency>
       <artifactId>springdoc-openapi-security</artifactId>
       <groupId>org.springdoc</groupId>
-      <version>1.7.0</version>
+      <version>${springdoc-openapi-security.version}</version>
     </dependency>
 
     <dependency>
       <artifactId>commons-exec</artifactId>
       <groupId>org.apache.commons</groupId>
-      <version>1.4.0</version>
+      <version>${commons-exec.version}</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>commons-io</artifactId>
+      <groupId>commons-io</groupId>
+      <version>${commons-io.version}</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>aws-java-sdk-s3</artifactId>
+      <groupId>com.amazonaws</groupId>
+      <version>${aws-java-sdk-s3.version}</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>poi</artifactId>
+      <groupId>org.apache.poi</groupId>
+      <version>${poi.version}</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>poi-ooxml</artifactId>
+      <groupId>org.apache.poi</groupId>
+      <version>${poi.version}</version>
     </dependency>
   </dependencies>
   <groupId>com.cairn.waypoint.dashboard</groupId>
@@ -139,13 +163,19 @@
 
   <properties>
     <HikariCP.version>5.1.0</HikariCP.version>
+    <aws-java-sdk-s3.version>1.12.704</aws-java-sdk-s3.version>
+    <commons-exec.version>1.4.0</commons-exec.version>
+    <commons-io.version>2.16.1</commons-io.version>
     <liquibase-core.version>4.25.1</liquibase-core.version>
     <lombok.version>1.18.30</lombok.version>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <mysql-connector-j.version>8.2.0</mysql-connector-j.version>
     <org.mapstruct.version>1.6.0.Beta1</org.mapstruct.version>
+    <poi.version>5.2.5</poi.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <springdoc-openapi-security.version>1.7.0</springdoc-openapi-security.version>
+    <springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
   </properties>
 
   <version>1.0-SNAPSHOT</version>

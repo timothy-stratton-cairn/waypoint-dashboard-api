@@ -4,6 +4,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,4 +29,11 @@ public class ProtocolTemplate extends BaseEntity {
   @OneToMany(mappedBy = "protocolTemplate",
       cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
   private Set<ProtocolTemplateLinkedStepTemplate> protocolTemplateSteps;
+
+  public Set<ProtocolTemplateLinkedStepTemplate> getProtocolTemplateSteps() {
+    if (protocolTemplateSteps == null) {
+      protocolTemplateSteps = new LinkedHashSet<>();
+    }
+    return protocolTemplateSteps;
+  }
 }

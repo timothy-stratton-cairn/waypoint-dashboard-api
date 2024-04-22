@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Ops")
 public class ResetDatabaseEndpoint {
 
-  public static final String PATH = "/ops/reset-database";
+  public static final String PATH = "/api/ops/reset-database";
 
   private final DataSource dataSource;
 

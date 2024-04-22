@@ -2,6 +2,7 @@ package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.AddStepTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.SuccessfulStepTemplateCreationResponseDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMapper;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTask;
@@ -110,20 +111,23 @@ public class AddStepTemplateEndpoint {
               addStepTemplateDetailsDto.getStepTemplateCategoryId() + "] not found",
           HttpStatus.NOT_FOUND);
     } else {
-      Long createdStepTemplateId = createStepTemplate(addStepTemplateDetailsDto,
+      StepTemplate createdStepTemplate = createStepTemplate(addStepTemplateDetailsDto,
           principal.getName(), linkedStepTask.orElse(null),
           linkedHomeworkTemplates, stepTemplateCategory.orElse(null));
 
       log.info("Step Task [{}] created successfully with ID [{}]",
           addStepTemplateDetailsDto.getName(),
-          createdStepTemplateId);
+          createdStepTemplate.getId());
       return ResponseEntity.status(HttpStatus.CREATED)
-          .body("Step Template ["
-              + addStepTemplateDetailsDto.getName() + "] created successfully");
+          .body(SuccessfulStepTemplateCreationResponseDto.builder()
+              .stepTemplateId(createdStepTemplate.getId())
+              .stepTemplateName(createdStepTemplate.getName())
+              .stepTemplateDescription(createdStepTemplate.getDescription())
+              .build());
     }
   }
 
-  private Long createStepTemplate(AddStepTemplateDetailsDto addStepTemplateDetailsDto,
+  private StepTemplate createStepTemplate(AddStepTemplateDetailsDto addStepTemplateDetailsDto,
       String modifiedBy, StepTask linkedStepTask, List<HomeworkTemplate> linkedHomeworkTemplates,
       TemplateCategory templateCategory) {
 
@@ -145,9 +149,9 @@ public class AddStepTemplateEndpoint {
               .build())
           .collect(Collectors.toSet()));
 
-      return this.stepTemplateDataService.saveStepTemplate(createdStepTemplate).getId();
+      return this.stepTemplateDataService.saveStepTemplate(createdStepTemplate);
     } else {
-      return createdStepTemplate.getId();
+      return createdStepTemplate;
     }
   }
 
