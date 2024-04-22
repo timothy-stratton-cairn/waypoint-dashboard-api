@@ -11,11 +11,15 @@ import com.cairn.waypoint.dashboard.endpoints.ops.dto.ClientCreationResponseList
 import com.cairn.waypoint.dashboard.endpoints.ops.dto.HomeworkSheetEntryDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.AddProtocolEndpoint;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AddProtocolDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.AddProtocolTemplateEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AddProtocolTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.AddStepTemplateEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.UpdateStepTemplateEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.AddStepTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.SuccessfulStepTemplateCreationResponseDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.UpdateStepTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
-import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
-import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
-import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.TemplateCategory;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.AccountDataService;
@@ -32,6 +36,8 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,6 +52,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,32 +67,42 @@ public class ImportDataEndpoint {
 
   public static final String PATH = "/api/ops/import-data";
 
-  private final AccountDataService accountDataService;
-  private final ProtocolTemplateDataService protocolTemplateDataService;
-  private final TemplateCategoryDataService templateCategoryDataService;
-  private final StepTemplateDataService stepTemplateDataService;
-  private final HomeworkTemplateDataService homeworkTemplateDataService;
+  private final AddStepTemplateEndpoint addStepTemplateEndpoint;
+  private final AddProtocolTemplateEndpoint addProtocolTemplateEndpoint;
   private final AddProtocolEndpoint addProtocolEndpoint;
   private final AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint;
+  private final ProtocolTemplateDataService protocolTemplateDataService;
+  private final TemplateCategoryDataService templateCategoryDataService;
+  private final AccountDataService accountDataService;
+  private final HomeworkTemplateDataService homeworkTemplateDataService;
   private final S3FileUpload s3FileUpload;
+  private final ResetDatabaseEndpoint resetDatabaseEndpoint;
+  private final StepTemplateDataService stepTemplateDataService;
+  private final UpdateStepTemplateEndpoint updateStepTemplateEndpoint;
 
-  public ImportDataEndpoint(AccountDataService accountDataService,
-      ProtocolTemplateDataService protocolTemplateDataService,
-      TemplateCategoryDataService templateCategoryDataService,
-      StepTemplateDataService stepTemplateDataService,
-      HomeworkTemplateDataService homeworkTemplateDataService,
+  public ImportDataEndpoint(AddStepTemplateEndpoint addStepTemplateEndpoint,
+      AddProtocolTemplateEndpoint addProtocolTemplateEndpoint,
       AddProtocolEndpoint addProtocolEndpoint,
       AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint,
-      ResetDatabaseEndpoint resetDatabaseEndpoint,
-      S3FileUpload s3FileUpload) {
-    this.accountDataService = accountDataService;
-    this.protocolTemplateDataService = protocolTemplateDataService;
-    this.templateCategoryDataService = templateCategoryDataService;
-    this.stepTemplateDataService = stepTemplateDataService;
-    this.homeworkTemplateDataService = homeworkTemplateDataService;
+      ProtocolTemplateDataService protocolTemplateDataService,
+      TemplateCategoryDataService templateCategoryDataService,
+      AccountDataService accountDataService,
+      HomeworkTemplateDataService homeworkTemplateDataService,
+      S3FileUpload s3FileUpload,
+      ResetDatabaseEndpoint resetDatabaseEndpoint, StepTemplateDataService stepTemplateDataService,
+      UpdateStepTemplateEndpoint updateStepTemplateEndpoint) {
+    this.addStepTemplateEndpoint = addStepTemplateEndpoint;
     this.addProtocolEndpoint = addProtocolEndpoint;
     this.addHomeworkTemplateEndpoint = addHomeworkTemplateEndpoint;
+    this.addProtocolTemplateEndpoint = addProtocolTemplateEndpoint;
+    this.protocolTemplateDataService = protocolTemplateDataService;
+    this.templateCategoryDataService = templateCategoryDataService;
+    this.accountDataService = accountDataService;
+    this.homeworkTemplateDataService = homeworkTemplateDataService;
     this.s3FileUpload = s3FileUpload;
+    this.resetDatabaseEndpoint = resetDatabaseEndpoint;
+    this.stepTemplateDataService = stepTemplateDataService;
+    this.updateStepTemplateEndpoint = updateStepTemplateEndpoint;
   }
 
   @Transactional
@@ -97,6 +114,8 @@ public class ImportDataEndpoint {
   public ResponseEntity<String> importData(@RequestParam("file") MultipartFile file,
       Principal principal) throws IOException {
     log.info("User [{}] is importing data", principal.getName());
+
+    resetDatabaseEndpoint.resetDatabase();
 
     Workbook waypointsDataImportSpreadsheet;
     String lowerCaseFileName = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
@@ -110,10 +129,10 @@ public class ImportDataEndpoint {
     ClientCreationResponseListDto response1 = importClients(
         waypointsDataImportSpreadsheet.getSheet("Client Accounts"));
     importProtocolTemplateDetails(waypointsDataImportSpreadsheet.getSheet("Protocols"),
-        principal.getName());
+        principal);
     importHomework(waypointsDataImportSpreadsheet.getSheet("Homework"), principal);
-    importProtocolTemplateDetails(waypointsDataImportSpreadsheet.getSheet("Protocols"),
-        principal.getName());
+    addStepTemplateHomeworkAssociations(waypointsDataImportSpreadsheet.getSheet("Protocols"),
+        principal);
     importProtocolAssignments(waypointsDataImportSpreadsheet.getSheet("Protocol Assignments"),
         response1, principal);
 
@@ -223,21 +242,12 @@ public class ImportDataEndpoint {
     }
   }
 
-  private void importProtocolTemplateDetails(Sheet protocolsSheet, String modifiedBy) {
+  @SuppressWarnings("OptionalGetWithoutIsPresent")
+  private void importProtocolTemplateDetails(Sheet protocolsSheet, Principal principal) {
+    Map<String, AddProtocolTemplateDetailsDto> protocolTemplates = new HashMap<>();
     for (Row row : protocolsSheet) {
       if (row.getRowNum() == 0 || getCellValue(row.getCell(2)) == null) {
         continue;
-      }
-
-      Optional<ProtocolTemplate> protocolTemplateOptional;
-      if ((protocolTemplateOptional = this.protocolTemplateDataService.findProtocolTemplateByName(
-          getCellValue(row.getCell(0)))).isEmpty()) {
-        protocolTemplateOptional = Optional.of(
-            this.protocolTemplateDataService.saveProtocolTemplate(ProtocolTemplate.builder()
-                .modifiedBy(modifiedBy)
-                .name(getCellValue(row.getCell(0)))
-                .description(getCellValue(row.getCell(1)))
-                .build()));
       }
 
       Optional<TemplateCategory> stepCategoryOptional;
@@ -245,49 +255,90 @@ public class ImportDataEndpoint {
           getCellValue(row.getCell(4)))).isEmpty()) {
         stepCategoryOptional = Optional.of(
             this.templateCategoryDataService.saveTemplateCategory(TemplateCategory.builder()
-                .modifiedBy(modifiedBy)
+                .modifiedBy(principal.getName())
                 .name(getCellValue(row.getCell(4)))
                 .description(getCellValue(row.getCell(4)))
                 .build()));
       }
 
-      Optional<HomeworkTemplate> homeworkTemplateOptional = Optional.empty();
-      if (getCellValue(row.getCell(4)) != null) {
-        homeworkTemplateOptional = this.homeworkTemplateDataService.findHomeworkTemplateByName(
-            getCellValue(row.getCell(4)));
-      }
+      AddStepTemplateDetailsDto addStepTemplateDetailsRequest = AddStepTemplateDetailsDto.builder()
+          .name(getCellValue(row.getCell(2)))
+          .description(getCellValue(row.getCell(3)))
+          .stepTemplateCategoryId(stepCategoryOptional.get().getId())
+          .build();
 
-      Optional<StepTemplate> stepTemplateOptional;
-      if ((stepTemplateOptional = this.stepTemplateDataService.findStepTemplateByName(
-          getCellValue(row.getCell(2)))).isEmpty()) {
-        stepTemplateOptional = Optional.of(
-            this.stepTemplateDataService.saveStepTemplate(StepTemplate.builder()
-                .modifiedBy(modifiedBy)
-                .name(getCellValue(row.getCell(2)))
-                .description(getCellValue(row.getCell(3)))
-                .category(stepCategoryOptional.get())
-                .build()));
-      }
+      ResponseEntity<?> creationResponse = addStepTemplateEndpoint.addStepTemplate(
+          addStepTemplateDetailsRequest, principal);
 
-      if (homeworkTemplateOptional.isPresent()) {
-        stepTemplateOptional.get().getStepTemplateLinkedHomeworks().add(
-            StepTemplateLinkedHomeworkTemplate.builder()
-                .modifiedBy(modifiedBy)
-                .stepTemplate(stepTemplateOptional.get())
-                .homeworkTemplate(homeworkTemplateOptional.get())
-                .build());
-        this.stepTemplateDataService.saveStepTemplate(stepTemplateOptional.get());
+      if (creationResponse.getStatusCode().is2xxSuccessful()) {
+        associateProtocolTemplateWithProtocolStepTemplate(protocolTemplates, row,
+            ((SuccessfulStepTemplateCreationResponseDto) Objects.requireNonNull(
+                creationResponse.getBody())).getStepTemplateId());
+      } else if (creationResponse.getStatusCode().isSameCodeAs(
+          HttpStatusCode.valueOf(409))) {
+        Optional<StepTemplate> stepTemplateOptional = stepTemplateDataService.findStepTemplateByName(
+            getCellValue(row.getCell(2)));
+        associateProtocolTemplateWithProtocolStepTemplate(protocolTemplates, row,
+            stepTemplateOptional.get().getId());
+      } else {
+        throw new RuntimeException("Failed to add step template details");
       }
+    }
 
-      protocolTemplateOptional.get().getProtocolTemplateSteps()
-          .add(ProtocolTemplateLinkedStepTemplate.builder()
-              .modifiedBy(modifiedBy)
-              .protocolTemplate(protocolTemplateOptional.get())
-              .stepTemplate(stepTemplateOptional.get())
-              .ordinalIndex(row.getRowNum())
+    for (AddProtocolTemplateDetailsDto addProtocolTemplateDetailsDto : protocolTemplates.values()) {
+      ResponseEntity<?> creationResponse = addProtocolTemplateEndpoint.addProtocolTemplate(
+          addProtocolTemplateDetailsDto, principal);
+
+      if (!creationResponse.getStatusCode().is2xxSuccessful()) {
+        throw new RuntimeException("Failed to add protocol template details");
+      }
+    }
+  }
+
+  @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
+  private void associateProtocolTemplateWithProtocolStepTemplate(
+      Map<String, AddProtocolTemplateDetailsDto> protocolTemplates, Row row, Long stepTemplateId) {
+    if (protocolTemplates.containsKey(getCellValue(row.getCell(0)))) {
+      protocolTemplates.get(getCellValue(row.getCell(0))).getAssociatedStepTemplateIds()
+          .add(stepTemplateId);
+    } else {
+      protocolTemplates.put(getCellValue(row.getCell(0)),
+          AddProtocolTemplateDetailsDto.builder()
+              .name(getCellValue(row.getCell(0)))
+              .description(getCellValue(row.getCell(1)))
+              .associatedStepTemplateIds(
+                  new LinkedHashSet<>(Arrays.asList(stepTemplateId)))
               .build());
+    }
+  }
 
-      protocolTemplateDataService.saveProtocolTemplate(protocolTemplateOptional.get());
+  @SuppressWarnings("StatementWithEmptyBody")
+  private void addStepTemplateHomeworkAssociations(Sheet protocolsSheet, Principal principal) {
+    for (Row row : protocolsSheet) {
+      if (row.getRowNum() == 0 || getCellValue(row.getCell(2)) == null) {
+        continue;
+      }
+      if (getCellValue(row.getCell(5)) != null && !Objects.requireNonNull(
+          getCellValue(row.getCell(5))).isEmpty()) {
+        Optional<StepTemplate> stepTemplateOptional = stepTemplateDataService.findStepTemplateByName(
+            getCellValue(row.getCell(2)));
+        Optional<HomeworkTemplate> homeworkTemplateOptional = homeworkTemplateDataService.findHomeworkTemplateByName(
+            getCellValue(row.getCell(4)));
+
+        if (stepTemplateOptional.isPresent() && homeworkTemplateOptional.isPresent()) {
+          ResponseEntity<?> creationResponse = updateStepTemplateEndpoint.updateStepTemplate(
+              stepTemplateOptional.get().getId(), UpdateStepTemplateDetailsDto.builder()
+                  .linkedHomeworkTemplateIds(List.of(homeworkTemplateOptional.get().getId()))
+                  .build(), principal);
+          if (creationResponse.getStatusCode().isSameCodeAs(
+              HttpStatusCode.valueOf(409))) {
+            //Do Nothing
+          } else if (!creationResponse.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Failed to associate step template with homework template");
+          }
+        }
+      }
+
     }
   }
 

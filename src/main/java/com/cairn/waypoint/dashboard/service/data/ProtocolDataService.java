@@ -73,28 +73,31 @@ public class ProtocolDataService {
     Protocol createdProtocol = this.protocolRepository.save(protocolToBeCreated);
 
     //Save the Protocol Steps
+    protocolSteps
+        .forEach(protocolStep -> protocolStep.setParentProtocol(createdProtocol));
     Set<ProtocolStep> createdProtocolSteps = protocolSteps.stream()
-        .peek(protocolStep -> protocolStep.setParentProtocol(createdProtocol))
-        .map(this.protocolStepRepository::saveAndFlush)
+        .map(this.protocolStepRepository::save)
         .collect(Collectors.toCollection(LinkedHashSet::new));
     createdProtocol.setProtocolSteps(createdProtocolSteps);
 
     //Save the Protocol-User associations
+    protocolUsers
+        .forEach(protocolUser -> protocolUser.setProtocol(createdProtocol));
     Set<ProtocolUser> createdProtocolUsers = protocolUsers.stream()
-        .peek(protocolUser -> protocolUser.setProtocol(createdProtocol))
-        .map(this.protocolUserRepository::saveAndFlush)
+        .map(this.protocolUserRepository::save)
         .collect(Collectors.toCollection(LinkedHashSet::new));
     createdProtocol.setAssociatedUsers(createdProtocolUsers);
 
     //Save the Protocol Commentary
+    protocolComments
+        .forEach(protocolComment -> protocolComment.setProtocol(createdProtocol));
     Set<ProtocolCommentary> createdProtocolComments = protocolComments.stream()
-        .peek(protocolComment -> protocolComment.setProtocol(createdProtocol))
-        .map(this.protocolCommentaryRepository::saveAndFlush)
+        .map(this.protocolCommentaryRepository::save)
         .collect(Collectors.toCollection(LinkedHashSet::new));
     createdProtocol.setComments(createdProtocolComments);
 
     //Safeguard for any hanging entities
-    return this.protocolRepository.saveAndFlush(createdProtocol);
+    return this.protocolRepository.save(createdProtocol);
   }
 
   public Protocol updateProtocol(Protocol protocolToBeUpdated) {
