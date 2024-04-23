@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class HomeworkDto {
 
+  private Long homeworkId;
   private String name;
   private String description;
   private HomeworkQuestionListDto homeworkQuestions;

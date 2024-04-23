@@ -127,15 +127,22 @@ public class ProtocolTemplateHelperService {
   }
 
   public void generateAndSaveClientHomework(Protocol createdProtocol, String modifiedBy) {
-    createClientHomework(createdProtocol.getProtocolSteps(), createdProtocol.getAssociatedUsers(),
-        modifiedBy).stream()
-        .peek(this.homeworkDataService::saveHomework)
-        .peek(homework -> {
-          homework.getHomeworkQuestions()
-              .forEach(homeworkResponse -> homeworkResponse.setHomework(homework));
-          homework.getAssociatedUsers().forEach(homeworkUser -> homeworkUser.setHomework(homework));
-        })
-        .forEach(this.homeworkDataService::saveHomework);
+    List<Homework> homeworkList = createClientHomework(createdProtocol.getProtocolSteps(),
+        createdProtocol.getAssociatedUsers(),
+        modifiedBy);
+    homeworkList.forEach(homework -> {
+      Set<HomeworkResponse> homeworkResponses = homework.getHomeworkQuestions();
+      homework.setHomeworkQuestions(null);
+      Homework savedHomework = this.homeworkDataService.saveHomework(homework);
+      homework.setHomeworkQuestions(homeworkResponses);
+
+      savedHomework.getHomeworkQuestions()
+          .forEach(homeworkResponse -> homeworkResponse.setHomework(savedHomework));
+      savedHomework.getAssociatedUsers()
+          .forEach(homeworkUser -> homeworkUser.setHomework(savedHomework));
+
+      this.homeworkDataService.saveHomework(homework);
+    });
   }
 
   private List<Homework> createClientHomework(Collection<ProtocolStep> protocolSteps,
@@ -155,6 +162,7 @@ public class ProtocolTemplateHelperService {
                         .map(question -> HomeworkResponse.builder()
                             .modifiedBy(modifiedBy)
                             .homeworkQuestion(question.getHomeworkQuestion())
+                            .ordinalIndex(question.getOrdinalIndex())
                             .build())
                         .collect(Collectors.toSet()))
                     .associatedProtocolStep(protocolStep)

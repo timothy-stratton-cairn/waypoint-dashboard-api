@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = "homework")
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "homework_response")
@@ -31,6 +31,9 @@ public class HomeworkResponse extends BaseEntity {
   @JoinColumn(name = "homework_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Homework homework;
+
+  private String fileGuid;
+  private Integer ordinalIndex;
 
   //usage: new HomeworkResponse().getResponse(QuestionTypeEnum.DATE.getDataType());
   @SuppressWarnings("unchecked")

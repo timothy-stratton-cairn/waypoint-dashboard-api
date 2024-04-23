@@ -8,7 +8,10 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +23,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Entity
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true, exclude = {"homeworkQuestions", "associatedUsers",
-    "associatedProtocolStep"})
+    "associatedProtocolStep", "homeworkTemplate"})
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "homework")
@@ -30,7 +33,7 @@ public class Homework extends BaseEntity {
   private String name;
   private String description;
 
-  @OneToMany(mappedBy = "homework", cascade = CascadeType.MERGE)
+  @OneToMany(mappedBy = "homework", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<HomeworkResponse> homeworkQuestions;
 
   @JoinColumn(name = "homework_template_id", nullable = false)
@@ -45,5 +48,11 @@ public class Homework extends BaseEntity {
 
   @OneToMany(mappedBy = "homework", cascade = CascadeType.MERGE)
   private Set<HomeworkUser> associatedUsers;
+
+  public Set<HomeworkResponse> getHomeworkQuestions() {
+    return homeworkQuestions.stream()
+        .sorted(Comparator.comparing(HomeworkResponse::getOrdinalIndex))
+        .collect(Collectors.toCollection(LinkedHashSet::new));
+  }
 }
 

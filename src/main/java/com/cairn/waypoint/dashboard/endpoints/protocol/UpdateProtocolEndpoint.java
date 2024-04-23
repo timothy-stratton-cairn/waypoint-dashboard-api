@@ -1,7 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.UpdateProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.UpdateProtocolStepDetailsDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
@@ -57,8 +56,7 @@ public class UpdateProtocolEndpoint {
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
-              content = {@Content(mediaType = "application/json",
-                  schema = @Schema(implementation = ProtocolDetailsDto.class))}),
+              description = "Updated - Protocol update was successful"),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",

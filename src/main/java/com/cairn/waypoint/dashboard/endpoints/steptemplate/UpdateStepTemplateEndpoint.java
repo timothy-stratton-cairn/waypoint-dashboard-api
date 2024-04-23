@@ -177,6 +177,7 @@ public class UpdateStepTemplateEndpoint {
     if (!linkedHomeworkTemplates.isEmpty()) {
       updatedStepTemplate.setStepTemplateLinkedHomeworks(linkedHomeworkTemplates.stream()
           .map(homeworkTemplate -> StepTemplateLinkedHomeworkTemplate.builder()
+              .modifiedBy(modifiedBy)
               .homeworkTemplate(homeworkTemplate)
               .stepTemplate(updatedStepTemplate)
               .build())

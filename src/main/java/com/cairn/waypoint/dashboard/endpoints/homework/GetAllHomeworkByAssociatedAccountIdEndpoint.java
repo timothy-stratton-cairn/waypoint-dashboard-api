@@ -1,16 +1,12 @@
 package com.cairn.waypoint.dashboard.endpoints.homework;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkListDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionListDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.ProtocolTemplateDto;
-import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.service.data.AccountDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.helper.HomeworkHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -76,45 +72,9 @@ public class GetAllHomeworkByAssociatedAccountIdEndpoint {
               .flatMap(Set::stream)
               .map(ProtocolStep::getLinkedHomework)
               .filter(Objects::nonNull)
-              .map(homework -> HomeworkDto.builder()
-                  .name(homework.getName())
-                  .description(homework.getDescription())
-                  .parentProtocolId(
-                      homework.getAssociatedProtocolStep().getParentProtocol().getId())
-                  .parentProtocolStepId(homework.getAssociatedProtocolStep().getId())
-                  .homeworkQuestions(HomeworkQuestionListDto.builder()
-                      .questions(homework.getHomeworkQuestions().stream()
-                          .map(homeworkResponse -> HomeworkQuestionDto.builder()
-                              .questionAbbr(
-                                  homeworkResponse.getHomeworkQuestion().getQuestionAbbreviation())
-                              .question(homeworkResponse.getHomeworkQuestion().getQuestion())
-                              .userResponse(homeworkResponse.getResponse())
-                              .isRequired(homeworkResponse.getHomeworkQuestion().getRequired())
-                              .questionType(
-                                  homeworkResponse.getHomeworkQuestion().getQuestionType().name())
-                              .triggersProtocolCreation(homeworkResponse.getHomeworkQuestion()
-                                  .getTriggersProtocolCreation())
-                              .triggeredProtocol(
-                                  getHomeworkTemplateDto(homeworkResponse.getHomeworkQuestion()))
-                              .build())
-                          .toList())
-                      .build())
-                  .build())
+              .map(HomeworkHelperService::generateHomeworkDto)
               .collect(Collectors.toList()))
           .build());
-    }
-  }
-
-  private ProtocolTemplateDto getHomeworkTemplateDto(HomeworkQuestion homeworkQuestion) {
-    if (!homeworkQuestion.getTriggersProtocolCreation()) {
-      return null;
-    } else if (homeworkQuestion.getTriggeredProtocol() == null) {
-      return null;
-    } else {
-      return ProtocolTemplateDto.builder()
-          .id(homeworkQuestion.getTriggeredProtocol().getId())
-          .name(homeworkQuestion.getTriggeredProtocol().getName())
-          .build();
     }
   }
 

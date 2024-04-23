@@ -4,6 +4,7 @@ waypoint:
     s3:
       bucket: waypoints-dashboard-api
       import-data-key-prefix: import-data/
+      homework-response-key-prefix: homework/
 
 spring:
   security:
@@ -28,7 +29,6 @@ spring:
         useServerPrepStmts: true
   liquibase:
     enabled: true
-    drop-first: true
   jpa:
     hibernate:
       ddl-auto: validate

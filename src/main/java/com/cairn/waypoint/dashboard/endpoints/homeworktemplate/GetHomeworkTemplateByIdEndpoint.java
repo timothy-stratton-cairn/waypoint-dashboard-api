@@ -157,14 +157,14 @@ public class GetHomeworkTemplateByIdEndpoint {
     }
   }
 
-  public ResponseEntity<ErrorMessage> generateFailureResponse(Long protocolId) {
-    log.info("Protocol with ID [{}] not found", protocolId);
+  public ResponseEntity<ErrorMessage> generateFailureResponse(Long homeworkTemplateId) {
+    log.info("Homework Template with ID [{}] not found", homeworkTemplateId);
     return new ResponseEntity<>(
         ErrorMessage.builder()
             .path(PATH)
             .timestamp(LocalDateTime.now())
             .status(HttpStatus.NOT_FOUND.value())
-            .error("Protocol with ID [" + protocolId + "] not found")
+            .error("Homework Template with ID [" + homeworkTemplateId + "] not found")
             .build(),
         HttpStatus.NOT_FOUND
     );

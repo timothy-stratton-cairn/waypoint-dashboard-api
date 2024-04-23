@@ -106,6 +106,7 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                                             .toList())
                                         .build())
                                     .status(protocolStep.getStatus().getInstance().getName())
+                                    .linkedHomeworkId(protocolStep.getLinkedHomework().getId())
                                     .category(
                                         protocolStep.getCategory().getTemplateCategory().getName())
                                     .build())

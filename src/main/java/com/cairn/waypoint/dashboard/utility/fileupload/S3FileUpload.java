@@ -21,16 +21,14 @@ public class S3FileUpload implements FileUpload {
   @Value("${waypoint.dashboard.s3.bucket}")
   private String bucketName;
 
-  @Value("${waypoint.dashboard.s3.import-data-key-prefix}")
-  private String baseKey;
-
   public S3FileUpload(AmazonS3 s3Client) {
     this.s3Client = s3Client;
   }
 
   @SuppressWarnings("ResultOfMethodCallIgnored")
   @Override
-  public String uploadFile(MultipartFile multipartFile, String uploader) throws IOException {
+  public String uploadFile(MultipartFile multipartFile, String uploader, String baseKey)
+      throws IOException {
     // convert multipart file  to a file
     File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
     try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
@@ -38,7 +36,7 @@ public class S3FileUpload implements FileUpload {
     }
 
     // generate file name
-    String fileName = generateFileName(multipartFile, uploader);
+    String fileName = generateFileName(multipartFile, uploader, baseKey);
 
     // upload file
     PutObjectRequest request = new PutObjectRequest(this.bucketName, fileName, file);
@@ -66,8 +64,8 @@ public class S3FileUpload implements FileUpload {
     return false;
   }
 
-  private String generateFileName(MultipartFile multiPart, String uploader) {
-    return this.baseKey + new Date().getTime() + "-"
+  private String generateFileName(MultipartFile multiPart, String uploader, String baseKey) {
+    return baseKey + new Date().getTime() + "-"
         + uploader + "-"
         + Objects.requireNonNull(multiPart.getOriginalFilename()).replace(" ", "_");
   }

@@ -52,6 +52,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,7 +67,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImportDataEndpoint {
 
   public static final String PATH = "/api/ops/import-data";
-
   private final AddStepTemplateEndpoint addStepTemplateEndpoint;
   private final AddProtocolTemplateEndpoint addProtocolTemplateEndpoint;
   private final AddProtocolEndpoint addProtocolEndpoint;
@@ -79,6 +79,8 @@ public class ImportDataEndpoint {
   private final ResetDatabaseEndpoint resetDatabaseEndpoint;
   private final StepTemplateDataService stepTemplateDataService;
   private final UpdateStepTemplateEndpoint updateStepTemplateEndpoint;
+  @Value("${waypoint.dashboard.s3.import-data-key-prefix}")
+  private String baseKey;
 
   public ImportDataEndpoint(AddStepTemplateEndpoint addStepTemplateEndpoint,
       AddProtocolTemplateEndpoint addProtocolTemplateEndpoint,
@@ -136,7 +138,7 @@ public class ImportDataEndpoint {
     importProtocolAssignments(waypointsDataImportSpreadsheet.getSheet("Protocol Assignments"),
         response1, principal);
 
-    this.s3FileUpload.uploadFile(file, principal.getName());
+    this.s3FileUpload.uploadFile(file, principal.getName(), baseKey);
 
     return ResponseEntity.ok("Successfully uploaded the file");
   }
