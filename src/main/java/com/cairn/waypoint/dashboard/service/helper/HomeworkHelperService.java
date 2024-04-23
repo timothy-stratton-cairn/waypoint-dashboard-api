@@ -39,8 +39,9 @@ public class HomeworkHelperService {
                         homeworkResponse.getHomeworkQuestion().getQuestionAbbreviation())
                     .question(homeworkResponse.getHomeworkQuestion().getQuestion())
                     .userResponse(homeworkResponse.getHomeworkQuestion().getQuestionType().equals(
-                        QuestionTypeEnum.FILE) ? baseUrl + DownloadFileEndpoint.PATH
-                        .replace("{fileGuid}", homeworkResponse.getFileGuid()) :
+                        QuestionTypeEnum.FILE) ? homeworkResponse.getFileGuid() == null ? null
+                        : baseUrl + DownloadFileEndpoint.PATH
+                            .replace("{fileGuid}", homeworkResponse.getFileGuid()) :
                         homeworkResponse.getResponse())
                     .isRequired(homeworkResponse.getHomeworkQuestion().getRequired())
                     .questionType(
