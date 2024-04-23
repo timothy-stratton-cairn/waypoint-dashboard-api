@@ -76,7 +76,6 @@ public class ImportDataEndpoint {
   private final AccountDataService accountDataService;
   private final HomeworkTemplateDataService homeworkTemplateDataService;
   private final S3FileUpload s3FileUpload;
-  private final ResetDatabaseEndpoint resetDatabaseEndpoint;
   private final StepTemplateDataService stepTemplateDataService;
   private final UpdateStepTemplateEndpoint updateStepTemplateEndpoint;
   @Value("${waypoint.dashboard.s3.import-data-key-prefix}")
@@ -91,7 +90,7 @@ public class ImportDataEndpoint {
       AccountDataService accountDataService,
       HomeworkTemplateDataService homeworkTemplateDataService,
       S3FileUpload s3FileUpload,
-      ResetDatabaseEndpoint resetDatabaseEndpoint, StepTemplateDataService stepTemplateDataService,
+      StepTemplateDataService stepTemplateDataService,
       UpdateStepTemplateEndpoint updateStepTemplateEndpoint) {
     this.addStepTemplateEndpoint = addStepTemplateEndpoint;
     this.addProtocolEndpoint = addProtocolEndpoint;
@@ -102,7 +101,6 @@ public class ImportDataEndpoint {
     this.accountDataService = accountDataService;
     this.homeworkTemplateDataService = homeworkTemplateDataService;
     this.s3FileUpload = s3FileUpload;
-    this.resetDatabaseEndpoint = resetDatabaseEndpoint;
     this.stepTemplateDataService = stepTemplateDataService;
     this.updateStepTemplateEndpoint = updateStepTemplateEndpoint;
   }
@@ -116,8 +114,6 @@ public class ImportDataEndpoint {
   public ResponseEntity<String> importData(@RequestParam("file") MultipartFile file,
       Principal principal) throws IOException {
     log.info("User [{}] is importing data", principal.getName());
-
-    resetDatabaseEndpoint.resetDatabase();
 
     Workbook waypointsDataImportSpreadsheet;
     String lowerCaseFileName = Objects.requireNonNull(file.getOriginalFilename()).toLowerCase();
@@ -244,7 +240,7 @@ public class ImportDataEndpoint {
     }
   }
 
-  @SuppressWarnings("OptionalGetWithoutIsPresent")
+  @SuppressWarnings({"OptionalGetWithoutIsPresent", "StatementWithEmptyBody"})
   private void importProtocolTemplateDetails(Sheet protocolsSheet, Principal principal) {
     Map<String, AddProtocolTemplateDetailsDto> protocolTemplates = new HashMap<>();
     for (Row row : protocolsSheet) {
@@ -291,7 +287,10 @@ public class ImportDataEndpoint {
       ResponseEntity<?> creationResponse = addProtocolTemplateEndpoint.addProtocolTemplate(
           addProtocolTemplateDetailsDto, principal);
 
-      if (!creationResponse.getStatusCode().is2xxSuccessful()) {
+      if (creationResponse.getStatusCode().isSameCodeAs(
+          HttpStatusCode.valueOf(409))) {
+        //Do nothing
+      } else if (!creationResponse.getStatusCode().is2xxSuccessful()) {
         throw new RuntimeException("Failed to add protocol template details");
       }
     }

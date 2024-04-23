@@ -118,7 +118,8 @@ public class GetProtocolByIdEndpoint {
                                     .toList())
                                 .build())
                             .status(protocolStep.getStatus().getInstance().getName())
-                            .linkedHomeworkId(protocolStep.getLinkedHomework().getId())
+                            .linkedHomeworkId(protocolStep.getLinkedHomework() != null ?
+                                protocolStep.getLinkedHomework().getId() : null)
                             .category(protocolStep.getCategory().getTemplateCategory().getName())
                             .build())
                         .collect(Collectors.toList()))

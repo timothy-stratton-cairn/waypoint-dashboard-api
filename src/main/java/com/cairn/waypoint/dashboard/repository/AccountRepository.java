@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Mono;
 
 @Repository
 public class AccountRepository {
@@ -22,6 +24,7 @@ public class AccountRepository {
     this.webClient = webclient;
   }
 
+  @SuppressWarnings("deprecation")
   public Optional<AccountDetailsDto> getAccountById(Long accountId) {
     final String PATH = "/api/account/{accountId}";
 
@@ -32,6 +35,8 @@ public class AccountRepository {
                 .getPrincipal()).getTokenValue())
         .retrieve()
         .bodyToMono(AccountDetailsDto.class)
+        .onErrorResume(WebClientResponseException.class,
+            ex -> ex.getRawStatusCode() == 404 ? Mono.empty() : Mono.error(ex))
         .blockOptional();
   }
 

@@ -101,7 +101,8 @@ public class GetAllProtocolsForAccountEndpoint {
                                             .status(
                                                 protocolStep.getStatus().getInstance().getName())
                                             .linkedHomeworkId(
-                                                protocolStep.getLinkedHomework().getId())
+                                                protocolStep.getLinkedHomework() != null ?
+                                                    protocolStep.getLinkedHomework().getId() : null)
                                             .category(
                                                 protocolStep.getCategory().getTemplateCategory()
                                                     .getName())
