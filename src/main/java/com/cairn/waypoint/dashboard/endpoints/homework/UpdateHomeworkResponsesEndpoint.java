@@ -30,7 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,7 +52,7 @@ public class UpdateHomeworkResponsesEndpoint {
     this.s3FileUpload = s3FileUpload;
   }
 
-  @PatchMapping(PATH)
+  @PatchMapping(value = PATH, consumes = {"multipart/form-data"})
   @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Updates the homework question responses of the provided homework ID.",
@@ -72,8 +72,8 @@ public class UpdateHomeworkResponsesEndpoint {
               content = {@Content(mediaType = "application/json",
                   schema = @Schema(implementation = ErrorMessage.class))}),})
   public ResponseEntity<?> updateHomeworkResponses(@PathVariable Long homeworkId,
-      @RequestBody UpdateHomeworkResponseDetailsListDto updateHomeworkResponseDetailsListDto,
-      MultipartFile[] files, Principal principal) {
+      @RequestPart("json") UpdateHomeworkResponseDetailsListDto updateHomeworkResponseDetailsListDto,
+      @RequestPart("files") MultipartFile[] files, Principal principal) {
     Optional<Homework> homeworkToBeUpdated;
 
     Map<Long, UpdateHomeworkResponseDetailsDto> homeworkQuestions = updateHomeworkResponseDetailsListDto.getResponses()
@@ -109,7 +109,9 @@ public class UpdateHomeworkResponsesEndpoint {
       Map<Long, UpdateHomeworkResponseDetailsDto> homeworkQuestions,
       final MultipartFile[] files, Homework homework, String modifiedBy) {
     Function<String, Optional<MultipartFile>> fileProvider;
-    if (files != null && files.length > 0) {
+    if (files != null && files.length > 0 && files[0] != null
+        && files[0].getOriginalFilename() != null && !files[0].getOriginalFilename()
+        .isEmpty()) {
       fileProvider = (filename) -> Stream.of(files)
           .filter(file -> filename.equals(file.getOriginalFilename()))
           .findFirst();

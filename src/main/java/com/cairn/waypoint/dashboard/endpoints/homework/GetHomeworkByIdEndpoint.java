@@ -28,9 +28,12 @@ public class GetHomeworkByIdEndpoint {
 
   public static final String PATH = "/api/homework/{homeworkId}";
   private final HomeworkDataService homeworkDataService;
+  private final HomeworkHelperService homeworkHelperService;
 
-  public GetHomeworkByIdEndpoint(HomeworkDataService homeworkDataService) {
+  public GetHomeworkByIdEndpoint(HomeworkDataService homeworkDataService,
+      HomeworkHelperService homeworkHelperService) {
     this.homeworkDataService = homeworkDataService;
+    this.homeworkHelperService = homeworkHelperService;
   }
 
   @GetMapping(PATH)
@@ -63,7 +66,7 @@ public class GetHomeworkByIdEndpoint {
   }
 
   private ResponseEntity<HomeworkDto> generateSuccessResponse(Homework homework) {
-    return ResponseEntity.ok(HomeworkHelperService.generateHomeworkDto(homework));
+    return ResponseEntity.ok(homeworkHelperService.generateHomeworkDto(homework));
   }
 
   public ResponseEntity<ErrorMessage> generateFailureResponse(Long homeworkId) {

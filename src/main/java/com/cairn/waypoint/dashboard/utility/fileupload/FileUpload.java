@@ -8,7 +8,7 @@ public interface FileUpload {
   String uploadFile(MultipartFile multipartFile, String uploader, String baseKey)
       throws IOException;
 
-  Object downloadFile(String fileName) throws IOException;
+  Object downloadFile(String fileName, String baseKey) throws IOException;
 
   boolean delete(String fileName);
 }

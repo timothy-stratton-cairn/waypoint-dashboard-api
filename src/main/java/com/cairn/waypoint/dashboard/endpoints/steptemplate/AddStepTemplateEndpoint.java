@@ -115,7 +115,7 @@ public class AddStepTemplateEndpoint {
           principal.getName(), linkedStepTask.orElse(null),
           linkedHomeworkTemplates, stepTemplateCategory.orElse(null));
 
-      log.info("Step Task [{}] created successfully with ID [{}]",
+      log.info("Step Template [{}] created successfully with ID [{}]",
           addStepTemplateDetailsDto.getName(),
           createdStepTemplate.getId());
       return ResponseEntity.status(HttpStatus.CREATED)

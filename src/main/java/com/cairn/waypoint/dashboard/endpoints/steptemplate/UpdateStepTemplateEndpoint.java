@@ -148,7 +148,7 @@ public class UpdateStepTemplateEndpoint {
           linkedHomeworkTemplates, stepTemplateCategory.orElse(null),
           stepTemplateToBeUpdated.get());
 
-      log.info("Step Task [{}] updated successfully with ID [{}]",
+      log.info("Step Template [{}] updated successfully with ID [{}]",
           updateStepTemplateDetailsDto.getName(),
           createdStepTemplateId);
       return ResponseEntity.status(HttpStatus.OK)

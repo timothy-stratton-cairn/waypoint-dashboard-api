@@ -32,9 +32,12 @@ public class GetAllHomeworkByAssociatedProtocolIdEndpoint {
   public static final String PATH = "/api/homework/protocol/{protocolId}";
 
   private final ProtocolDataService protocolDataService;
+  private final HomeworkHelperService homeworkHelperService;
 
-  public GetAllHomeworkByAssociatedProtocolIdEndpoint(ProtocolDataService protocolDataService) {
+  public GetAllHomeworkByAssociatedProtocolIdEndpoint(ProtocolDataService protocolDataService,
+      HomeworkHelperService homeworkHelperService) {
     this.protocolDataService = protocolDataService;
+    this.homeworkHelperService = homeworkHelperService;
   }
 
   //TODO add ability to assign homework to user directly
@@ -76,7 +79,7 @@ public class GetAllHomeworkByAssociatedProtocolIdEndpoint {
             .homeworks(returnedProtocol.getProtocolSteps().stream()
                 .map(ProtocolStep::getLinkedHomework)
                 .filter(Objects::nonNull)
-                .map(HomeworkHelperService::generateHomeworkDto)
+                .map(homeworkHelperService::generateHomeworkDto)
                 .collect(Collectors.toList()))
             .build());
   }

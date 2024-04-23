@@ -182,7 +182,8 @@ public class ImportDataEndpoint {
                     .isRequired(homeworkQuestion.getIsRequired())
                     .triggerProtocolCreation(homeworkQuestion.getTriggersProtocolCreation())
                     .responseOptions(
-                        homeworkQuestion.getTriggersProtocolCreation() &&
+                        homeworkQuestion.getTriggersProtocolCreation() != null &&
+                            homeworkQuestion.getTriggersProtocolCreation() &&
                             homeworkQuestion.getExpectedResponses() != null &&
                             !homeworkQuestion.getExpectedResponses().isEmpty() ?
                             Objects.requireNonNull(homeworkQuestion.getExpectedResponses())

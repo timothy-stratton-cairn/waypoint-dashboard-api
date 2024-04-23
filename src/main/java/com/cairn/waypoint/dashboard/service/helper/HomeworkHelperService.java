@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
+import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadFileEndpoint;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionListDto;
@@ -8,10 +9,17 @@ import com.cairn.waypoint.dashboard.endpoints.homework.dto.ProtocolTemplateDto;
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
+import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class HomeworkHelperService {
 
-  public static HomeworkDto generateHomeworkDto(Homework homework) {
+  @Value("${waypoint.dashboard.base-url}")
+  private String baseUrl;
+
+  public HomeworkDto generateHomeworkDto(Homework homework) {
     return HomeworkDto.builder()
         .homeworkId(homework.getId())
         .name(homework.getName())
@@ -30,7 +38,10 @@ public class HomeworkHelperService {
                     .questionAbbr(
                         homeworkResponse.getHomeworkQuestion().getQuestionAbbreviation())
                     .question(homeworkResponse.getHomeworkQuestion().getQuestion())
-                    .userResponse(homeworkResponse.getResponse())
+                    .userResponse(homeworkResponse.getHomeworkQuestion().getQuestionType().equals(
+                        QuestionTypeEnum.FILE) ? baseUrl + DownloadFileEndpoint.PATH
+                        .replace("{fileGuid}", homeworkResponse.getFileGuid()) :
+                        homeworkResponse.getResponse())
                     .isRequired(homeworkResponse.getHomeworkQuestion().getRequired())
                     .questionType(
                         homeworkResponse.getHomeworkQuestion().getQuestionType().name())
@@ -44,7 +55,7 @@ public class HomeworkHelperService {
         .build();
   }
 
-  private static ProtocolTemplateDto getHomeworkTemplateDto(HomeworkQuestion homeworkQuestion) {
+  private ProtocolTemplateDto getHomeworkTemplateDto(HomeworkQuestion homeworkQuestion) {
     if (!homeworkQuestion.getTriggersProtocolCreation()) {
       return null;
     } else if (homeworkQuestion.getTriggeredProtocol() == null) {

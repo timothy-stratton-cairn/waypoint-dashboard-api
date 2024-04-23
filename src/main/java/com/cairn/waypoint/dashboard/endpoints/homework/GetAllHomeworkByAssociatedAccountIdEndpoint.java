@@ -35,11 +35,13 @@ public class GetAllHomeworkByAssociatedAccountIdEndpoint {
 
   private final ProtocolDataService protocolDataService;
   private final AccountDataService accountDataService;
+  private final HomeworkHelperService homeworkHelperService;
 
   public GetAllHomeworkByAssociatedAccountIdEndpoint(ProtocolDataService protocolDataService,
-      AccountDataService accountDataService) {
+      AccountDataService accountDataService, HomeworkHelperService homeworkHelperService) {
     this.protocolDataService = protocolDataService;
     this.accountDataService = accountDataService;
+    this.homeworkHelperService = homeworkHelperService;
   }
 
   @GetMapping(PATH)
@@ -72,7 +74,7 @@ public class GetAllHomeworkByAssociatedAccountIdEndpoint {
               .flatMap(Set::stream)
               .map(ProtocolStep::getLinkedHomework)
               .filter(Objects::nonNull)
-              .map(HomeworkHelperService::generateHomeworkDto)
+              .map(homeworkHelperService::generateHomeworkDto)
               .collect(Collectors.toList()))
           .build());
     }

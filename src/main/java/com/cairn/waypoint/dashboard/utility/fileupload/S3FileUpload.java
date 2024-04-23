@@ -3,6 +3,8 @@ package com.cairn.waypoint.dashboard.utility.fileupload;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.util.Date;
 import java.util.Objects;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,8 +59,25 @@ public class S3FileUpload implements FileUpload {
   }
 
   @Override
-  public Object downloadFile(String fileName) throws IOException {
-    return null;
+  public Object downloadFile(String fileName, String baseKey) throws IOException {
+    S3Object object = s3Client.getObject(bucketName, fileName);
+    try (S3ObjectInputStream s3is = object.getObjectContent()) {
+      File tempFile = File.createTempFile(fileName, FilenameUtils.getExtension(fileName));
+      try (FileOutputStream fileOutputStream = new FileOutputStream(tempFile, false)) {
+        byte[] readBuf = new byte[1024];
+        int readLen;
+        while ((readLen = s3is.read(readBuf)) > 0) {
+          fileOutputStream.write(readBuf, 0, readLen);
+        }
+      }
+      Resource resource = new UrlResource(tempFile.toPath().toUri());
+
+      if (resource.exists() || resource.isReadable()) {
+        return resource;
+      } else {
+        throw new RuntimeException("Could not read file " + fileName);
+      }
+    }
   }
 
   @Override
@@ -69,4 +90,5 @@ public class S3FileUpload implements FileUpload {
         + uploader + "-"
         + Objects.requireNonNull(multiPart.getOriginalFilename()).replace(" ", "_");
   }
+
 }
