@@ -369,7 +369,8 @@ public class ImportDataEndpoint {
   private ClientCreationResponseListDto importClients(Sheet cllientAccountsSheet) {
     List<BatchAddAccountDetailsDto> accountsToAdd = new ArrayList<>();
     for (int i = 1; i < cllientAccountsSheet.getLastRowNum(); i++) {
-      if (!Objects.requireNonNull(getCellValue(cllientAccountsSheet.getRow(i).getCell(11)))
+      if (cllientAccountsSheet.getRow(i) != null &&
+          !Objects.requireNonNull(getCellValue(cllientAccountsSheet.getRow(i).getCell(11)))
           .isEmpty()) {
         accountsToAdd.add(BatchAddAccountDetailsDto.builder()
             .firstName(getCellValue(cllientAccountsSheet.getRow(i).getCell(0)))
