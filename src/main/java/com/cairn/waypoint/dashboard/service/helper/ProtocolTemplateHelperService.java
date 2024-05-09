@@ -60,9 +60,9 @@ public class ProtocolTemplateHelperService {
               .forEach(protocolStep -> {
                 protocolStep.setActive(Boolean.FALSE);
                 if (protocolStep.getLinkedHomework() != null) {
-                    protocolStep.getLinkedHomework().setActive(Boolean.FALSE);
-                    protocolStep.getLinkedHomework().getAssociatedUsers()
-                        .forEach(homeworkUser -> homeworkUser.setActive(Boolean.FALSE));
+                  protocolStep.getLinkedHomework().setActive(Boolean.FALSE);
+                  protocolStep.getLinkedHomework().getAssociatedUsers()
+                      .forEach(homeworkUser -> homeworkUser.setActive(Boolean.FALSE));
                 }
               });
           return protocolSteps;

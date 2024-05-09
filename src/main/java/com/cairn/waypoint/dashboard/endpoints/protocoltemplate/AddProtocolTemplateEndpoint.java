@@ -2,6 +2,10 @@ package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AddProtocolTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AssociatedStepTemplatesListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolStepTemplateDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.StepTemplateCategoryDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTemplateMapper;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
@@ -56,7 +60,9 @@ public class AddProtocolTemplateEndpoint {
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "201",
-              description = "Created - Protocol Template creation was successful"),
+              description = "Created - Protocol Template creation was successful",
+              content = {@Content(mediaType = "application/json",
+                  schema = @Schema(implementation = ProtocolTemplateDetailsDto.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
@@ -89,19 +95,39 @@ public class AddProtocolTemplateEndpoint {
         return generateFailureResponse(e.getMessage(), HttpStatus.NOT_FOUND);
       }
 
-      Long createdProtocolTemplateId = createProtocolTemplate(addProtocolTemplateDetailsDto,
+      ProtocolTemplate createdProtocolTemplate = createProtocolTemplate(
+          addProtocolTemplateDetailsDto,
           principal.getName(), stepTemplates);
 
       log.info("Protocol Template [{}] created successfully with ID [{}]",
           addProtocolTemplateDetailsDto.getName(),
-          createdProtocolTemplateId);
+          createdProtocolTemplate.getId());
       return ResponseEntity.status(HttpStatus.CREATED)
-          .body("Protocol Template ["
-              + addProtocolTemplateDetailsDto.getName() + "] created successfully");
+          .body(ProtocolTemplateDetailsDto.builder()
+              .id(createdProtocolTemplate.getId())
+              .name(createdProtocolTemplate.getName())
+              .description(createdProtocolTemplate.getDescription())
+              .associatedSteps(AssociatedStepTemplatesListDto.builder()
+                  .steps(createdProtocolTemplate.getProtocolTemplateSteps().stream()
+                      .map(protocolStepTemplate -> ProtocolStepTemplateDto.builder()
+                          .id(protocolStepTemplate.getStepTemplate().getId())
+                          .name(protocolStepTemplate.getStepTemplate().getName())
+                          .description(protocolStepTemplate.getStepTemplate().getDescription())
+                          .category(StepTemplateCategoryDto.builder()
+                              .id(protocolStepTemplate.getStepTemplate().getCategory().getId())
+                              .name(protocolStepTemplate.getStepTemplate().getCategory().getName())
+                              .description(protocolStepTemplate.getStepTemplate().getCategory()
+                                  .getDescription())
+                              .build())
+                          .build())
+                      .collect(Collectors.toList()))
+                  .build())
+              .build());
     }
   }
 
-  private Long createProtocolTemplate(AddProtocolTemplateDetailsDto addProtocolTemplateDetailsDto,
+  private ProtocolTemplate createProtocolTemplate(
+      AddProtocolTemplateDetailsDto addProtocolTemplateDetailsDto,
       String modifiedBy, LinkedHashSet<StepTemplate> stepTemplates) {
 
     ProtocolTemplate protocolTemplateToCreate = ProtocolTemplateMapper.INSTANCE
@@ -114,7 +140,7 @@ public class AddProtocolTemplateEndpoint {
 
     createdProtocolTemplate.setProtocolTemplateSteps(
         createProtocolStepTemplates(createdProtocolTemplate, stepTemplates, modifiedBy));
-    return this.protocolTemplateDataService.saveProtocolTemplate(createdProtocolTemplate).getId();
+    return this.protocolTemplateDataService.saveProtocolTemplate(createdProtocolTemplate);
   }
 
   private Set<ProtocolTemplateLinkedStepTemplate> createProtocolStepTemplates(

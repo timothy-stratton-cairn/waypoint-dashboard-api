@@ -12,6 +12,9 @@ public class ProtocolCommentListDto {
   private Integer numOfComments;
 
   public Integer getNumOfComments() {
+    if (comments == null) {
+      return 0;
+    }
     return comments.size();
   }
 }

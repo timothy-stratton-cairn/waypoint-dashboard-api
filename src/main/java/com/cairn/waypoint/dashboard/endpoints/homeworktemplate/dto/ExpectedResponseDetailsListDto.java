@@ -12,6 +12,9 @@ public class ExpectedResponseDetailsListDto {
   private Integer numOfResponses;
 
   public Integer getNumOfResponses() {
+    if (responses == null) {
+      return 0;
+    }
     return responses.size();
   }
 }

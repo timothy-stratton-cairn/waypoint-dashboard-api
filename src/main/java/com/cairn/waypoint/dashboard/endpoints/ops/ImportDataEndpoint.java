@@ -371,7 +371,7 @@ public class ImportDataEndpoint {
     for (int i = 1; i < cllientAccountsSheet.getLastRowNum(); i++) {
       if (cllientAccountsSheet.getRow(i) != null &&
           !Objects.requireNonNull(getCellValue(cllientAccountsSheet.getRow(i).getCell(11)))
-          .isEmpty()) {
+              .isEmpty()) {
         accountsToAdd.add(BatchAddAccountDetailsDto.builder()
             .firstName(getCellValue(cllientAccountsSheet.getRow(i).getCell(0)))
             .lastName(getCellValue(cllientAccountsSheet.getRow(i).getCell(1)))

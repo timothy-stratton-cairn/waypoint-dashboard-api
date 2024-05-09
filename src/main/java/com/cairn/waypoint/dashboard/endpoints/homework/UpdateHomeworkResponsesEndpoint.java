@@ -9,6 +9,7 @@ import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.utility.fileupload.S3FileUpload;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,6 +27,7 @@ import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -52,7 +54,7 @@ public class UpdateHomeworkResponsesEndpoint {
     this.s3FileUpload = s3FileUpload;
   }
 
-  @PatchMapping(value = PATH, consumes = {"multipart/form-data"})
+  @PatchMapping(value = PATH, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Updates the homework question responses of the provided homework ID.",
@@ -72,7 +74,7 @@ public class UpdateHomeworkResponsesEndpoint {
               content = {@Content(mediaType = "application/json",
                   schema = @Schema(implementation = ErrorMessage.class))}),})
   public ResponseEntity<?> updateHomeworkResponses(@PathVariable Long homeworkId,
-      @RequestPart("json") UpdateHomeworkResponseDetailsListDto updateHomeworkResponseDetailsListDto,
+      @RequestPart("json") @Parameter(schema = @Schema(type = "string", format = "binary")) UpdateHomeworkResponseDetailsListDto updateHomeworkResponseDetailsListDto,
       @RequestPart("files") MultipartFile[] files, Principal principal) {
     Optional<Homework> homeworkToBeUpdated;
 

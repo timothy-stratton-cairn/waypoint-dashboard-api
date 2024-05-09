@@ -2,6 +2,10 @@ package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.AddStepTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateDetailsListDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTaskDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.SuccessfulStepTemplateCreationResponseDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMapper;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
@@ -24,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -66,7 +71,9 @@ public class AddStepTemplateEndpoint {
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "201",
-              description = "Created - Step Template creation was successful"),
+              description = "Created - Step Template creation was successful",
+              content = {@Content(mediaType = "application/json",
+                  schema = @Schema(implementation = SuccessfulStepTemplateCreationResponseDto.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
@@ -123,8 +130,57 @@ public class AddStepTemplateEndpoint {
               .stepTemplateId(createdStepTemplate.getId())
               .stepTemplateName(createdStepTemplate.getName())
               .stepTemplateDescription(createdStepTemplate.getDescription())
+              .linkedStepTask(getStepTaskDetailsDto(createdStepTemplate.getLinkedTask()))
+              .linkedHomeworkTemplates(getHomeworkTemplateDetailsListDto(
+                  createdStepTemplate.getStepTemplateLinkedHomeworks()))
+              .category(getStepTemplateCategoryDetailsDto(createdStepTemplate.getCategory()))
               .build());
     }
+  }
+
+  private StepTaskDetailsDto getStepTaskDetailsDto(StepTask stepTask) {
+    StepTaskDetailsDto stepTaskDetailsDto = null;
+    if (stepTask != null) {
+      stepTaskDetailsDto = StepTaskDetailsDto.builder()
+          .id(stepTask.getId())
+          .name(stepTask.getName())
+          .executableReference(stepTask.getExecutableReference())
+          .build();
+    }
+    return stepTaskDetailsDto;
+  }
+
+  private HomeworkTemplateDetailsListDto getHomeworkTemplateDetailsListDto(
+      Set<StepTemplateLinkedHomeworkTemplate> stepTemplateLinkedHomeworkTemplates) {
+    HomeworkTemplateDetailsListDto homeworkTemplateDetailsListDto = null;
+    if (stepTemplateLinkedHomeworkTemplates != null
+        && !stepTemplateLinkedHomeworkTemplates.isEmpty()) {
+      homeworkTemplateDetailsListDto = HomeworkTemplateDetailsListDto.builder()
+          .homeworkTemplates(
+              stepTemplateLinkedHomeworkTemplates.stream()
+                  .map(StepTemplateLinkedHomeworkTemplate::getHomeworkTemplate)
+                  .map(homeworkTemplate -> HomeworkTemplateDetailsDto.builder()
+                      .id(homeworkTemplate.getId())
+                      .name(homeworkTemplate.getName())
+                      .build())
+                  .toList()
+          ).build();
+
+    }
+    return homeworkTemplateDetailsListDto;
+  }
+
+  private StepTemplateCategoryDetailsDto getStepTemplateCategoryDetailsDto(
+      TemplateCategory templateCategory) {
+    StepTemplateCategoryDetailsDto stepTemplateCategoryDetailsDto = null;
+    if (templateCategory != null) {
+      stepTemplateCategoryDetailsDto = StepTemplateCategoryDetailsDto.builder()
+          .id(templateCategory.getId())
+          .name(templateCategory.getName())
+          .description(templateCategory.getDescription())
+          .build();
+    }
+    return stepTemplateCategoryDetailsDto;
   }
 
   private StepTemplate createStepTemplate(AddStepTemplateDetailsDto addStepTemplateDetailsDto,

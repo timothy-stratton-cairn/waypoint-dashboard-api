@@ -12,6 +12,9 @@ public class ProtocolStepNoteListDto {
   private Integer numOfNotes;
 
   public Integer getNumOfNotes() {
+    if (notes == null) {
+      return 0;
+    }
     return notes.size();
   }
 }

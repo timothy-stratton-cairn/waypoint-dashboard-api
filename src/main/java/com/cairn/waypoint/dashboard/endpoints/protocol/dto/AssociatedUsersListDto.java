@@ -12,6 +12,9 @@ public class AssociatedUsersListDto {
   private Integer numOfUsers;
 
   public Integer getNumOfUsers() {
+    if (userIds == null) {
+      return 0;
+    }
     return userIds.size();
   }
 }

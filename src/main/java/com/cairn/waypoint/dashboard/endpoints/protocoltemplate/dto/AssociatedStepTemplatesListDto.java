@@ -12,6 +12,9 @@ public class AssociatedStepTemplatesListDto {
   private Integer numOfSteps;
 
   public Integer getNumOfSteps() {
+    if (steps == null) {
+      return 0;
+    }
     return steps.size();
   }
 }

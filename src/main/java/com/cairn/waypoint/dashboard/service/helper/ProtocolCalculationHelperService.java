@@ -12,11 +12,11 @@ public class ProtocolCalculationHelperService {
   public static BigDecimal getProtocolCompletionPercentage(Protocol returnedProtocol) {
     if (!returnedProtocol.getProtocolSteps().isEmpty()) {
       return returnedProtocol.getProtocolSteps().stream()
-              .map(ProtocolStep::getStatus)
-              .map(StepStatusEnum::getInstance)
-              .map(StepStatus::getWeight)
-              .reduce(BigDecimal.ZERO, BigDecimal::add)
-              .divide(new BigDecimal(returnedProtocol.getProtocolSteps().size()), RoundingMode.HALF_UP);
+          .map(ProtocolStep::getStatus)
+          .map(StepStatusEnum::getInstance)
+          .map(StepStatus::getWeight)
+          .reduce(BigDecimal.ZERO, BigDecimal::add)
+          .divide(new BigDecimal(returnedProtocol.getProtocolSteps().size()), RoundingMode.HALF_UP);
     } else {
       return new BigDecimal(0);
     }

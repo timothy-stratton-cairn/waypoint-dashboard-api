@@ -3,6 +3,14 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 import com.cairn.waypoint.dashboard.dto.AccountDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AddProtocolDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
@@ -16,6 +24,7 @@ import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -78,7 +87,9 @@ public class AddProtocolEndpoint {
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "201",
-              description = "Created - Protocol creation was successful"),
+              description = "Created - Protocol creation was successful",
+              content = {@Content(mediaType = "application/json",
+                  schema = @Schema(implementation = ProtocolDetailsDto.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
@@ -140,9 +151,59 @@ public class AddProtocolEndpoint {
           addProtocolDetailsDto.getProtocolTemplateId(),
           addProtocolDetailsDto.getAssociatedAccountId());
       return ResponseEntity.status(HttpStatus.CREATED)
-          .body("Protocol [" + createdProtocol.getName()
-              + "] was created successfully and assigned to Account with ID [" +
-              addProtocolDetailsDto.getAssociatedAccountId() + "]");
+          .body(ProtocolDetailsDto.builder()
+              .id(createdProtocol.getId())
+              .name(createdProtocol.getName())
+              .description(createdProtocol.getDescription())
+              .goal(createdProtocol.getGoal())
+              .goalProgress(createdProtocol.getGoalProgress())
+              .protocolComments(ProtocolCommentListDto.builder()
+                  .comments(createdProtocol.getComments() == null || createdProtocol.getComments()
+                      .isEmpty() ?
+                      null : createdProtocol.getComments().stream()
+                      .map(protocolComment -> ProtocolCommentDto.builder()
+                          .takenAt(protocolComment.getCreated())
+                          .takenBy(protocolComment.getOriginalCommenter())
+                          .comment(protocolComment.getComment())
+                          .build())
+                      .toList())
+                  .build())
+              .needsAttention(createdProtocol.getMarkedForAttention())
+              .lastStatusUpdateTimestamp(createdProtocol.getLastStatusUpdateTimestamp())
+              .completionPercentage(
+                  ProtocolCalculationHelperService.getProtocolCompletionPercentage(createdProtocol))
+              .associatedUsers(
+                  AssociatedUsersListDto.builder()
+                      .userIds(
+                          createdProtocol.getAssociatedUsers().stream().map(ProtocolUser::getUserId)
+                              .toList())
+                      .build())
+              .associatedSteps(
+                  AssociatedStepsListDto.builder()
+                      .steps(createdProtocol.getProtocolSteps().stream()
+                          .map(protocolStep -> ProtocolStepDto.builder()
+                              .id(protocolStep.getId())
+                              .name(protocolStep.getName())
+                              .description(protocolStep.getDescription())
+                              .stepNotes(ProtocolStepNoteListDto.builder()
+                                  .notes(protocolStep.getNotes() == null || protocolStep.getNotes()
+                                      .isEmpty() ?
+                                      null : protocolStep.getNotes().stream()
+                                      .map(protocolStepNote -> ProtocolStepNoteDto.builder()
+                                          .takenAt(protocolStepNote.getCreated())
+                                          .takenBy(protocolStepNote.getOriginalCommenter())
+                                          .note(protocolStepNote.getNote())
+                                          .build())
+                                      .toList())
+                                  .build())
+                              .status(protocolStep.getStatus().getInstance().getName())
+                              .linkedHomeworkId(protocolStep.getLinkedHomework() != null ?
+                                  protocolStep.getLinkedHomework().getId() : null)
+                              .category(protocolStep.getCategory().getTemplateCategory().getName())
+                              .build())
+                          .collect(Collectors.toList()))
+                      .build())
+              .build());
     }
   }
 

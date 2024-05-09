@@ -12,6 +12,9 @@ public class HomeworkTemplateDetailsListDto {
   private Integer numOfHomeworkTemplates;
 
   public Integer getNumOfHomeworkTemplates() {
+    if (homeworkTemplates == null) {
+      return 0;
+    }
     return homeworkTemplates.size();
   }
 }

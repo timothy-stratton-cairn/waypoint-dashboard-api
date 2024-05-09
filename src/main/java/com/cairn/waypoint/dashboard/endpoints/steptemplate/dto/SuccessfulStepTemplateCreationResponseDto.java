@@ -10,4 +10,7 @@ public class SuccessfulStepTemplateCreationResponseDto {
   private Long stepTemplateId;
   private String stepTemplateName;
   private String stepTemplateDescription;
+  private StepTaskDetailsDto linkedStepTask;
+  private HomeworkTemplateDetailsListDto linkedHomeworkTemplates;
+  private StepTemplateCategoryDetailsDto category;
 }
