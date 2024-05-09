@@ -6,7 +6,12 @@ import com.cairn.waypoint.dashboard.endpoints.homework.dto.UpdateHomeworkRespons
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
+import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.entity.ProtocolStep;
+import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import com.cairn.waypoint.dashboard.utility.fileupload.S3FileUpload;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -17,6 +22,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
@@ -44,14 +50,19 @@ public class UpdateHomeworkResponsesEndpoint {
   public static final String PATH = "/api/homework/{homeworkId}";
   private final HomeworkDataService homeworkDataService;
   private final S3FileUpload s3FileUpload;
+  private final ProtocolStepDataService protocolStepDataService;
+  private final ProtocolDataService protocolDataService;
 
   @Value("${waypoint.dashboard.s3.homework-response-key-prefix}")
   private String homeworkResponseKeyPrefix;
 
   public UpdateHomeworkResponsesEndpoint(HomeworkDataService homeworkDataService,
-      S3FileUpload s3FileUpload) {
+      S3FileUpload s3FileUpload, ProtocolStepDataService protocolStepDataService,
+      ProtocolDataService protocolDataService) {
     this.homeworkDataService = homeworkDataService;
     this.s3FileUpload = s3FileUpload;
+    this.protocolStepDataService = protocolStepDataService;
+    this.protocolDataService = protocolDataService;
   }
 
   @PatchMapping(value = PATH, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -100,6 +111,21 @@ public class UpdateHomeworkResponsesEndpoint {
           homeworkToBeUpdated.get(), principal.getName());
 
       Homework updatedHomework = homeworkDataService.saveHomework(homeworkToSave);
+
+      ProtocolStep protocolStepToUpdate = updatedHomework.getAssociatedProtocolStep();
+      protocolStepToUpdate.setStatus(StepStatusEnum.IN_PROGRESS);
+
+      ProtocolStep updatedProtocolStep = protocolStepDataService.saveProtocolStep(
+          protocolStepToUpdate);
+
+      Protocol protocolToUpdate = updatedProtocolStep.getParentProtocol();
+      if (protocolToUpdate.getProtocolSteps().stream()
+          .allMatch(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))) {
+        protocolToUpdate.setCompletionDate(LocalDate.now());
+      } else {
+        protocolToUpdate.setCompletionDate(null);
+      }
+      this.protocolDataService.updateProtocol(protocolToUpdate);
 
       return ResponseEntity.status(HttpStatus.OK)
           .body("Homework with ID [" + updatedHomework.getId() + "] and name ["

@@ -9,6 +9,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,9 @@ public class Protocol extends BaseEntity {
 
   private String goal;
   private String goalProgress;
+
+  private LocalDate dueDate;
+  private LocalDate completionDate;
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocol", cascade = {CascadeType.MERGE,
       CascadeType.PERSIST})

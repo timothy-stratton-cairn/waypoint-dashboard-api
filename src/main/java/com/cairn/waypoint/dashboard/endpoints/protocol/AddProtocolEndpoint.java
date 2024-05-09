@@ -132,6 +132,7 @@ public class AddProtocolEndpoint {
           principal.getName());
 
       protocolToBeCreated.setGoal(addProtocolDetailsDto.getGoal());
+      protocolToBeCreated.setDueDate(addProtocolDetailsDto.getDueDate());
 
       protocolToBeCreated.setProtocolSteps(setupProtocolSteps(protocolTemplateOptional.get(),
           principal.getName()));

@@ -17,8 +17,8 @@ public class ProtocolStepDataService {
     this.protocolStepRepository = protocolStepRepository;
   }
 
-  public Long saveProtocolStep(ProtocolStep protocolStep) {
-    return protocolStepRepository.save(protocolStep).getId();
+  public ProtocolStep saveProtocolStep(ProtocolStep protocolStep) {
+    return protocolStepRepository.save(protocolStep);
   }
 
   public Optional<ProtocolStep> getProtocolStepById(Long protocolStepId) {

@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocolstep.dto.UpdateProtocolStepStatusDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
+import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -89,15 +91,24 @@ public class UpdateProtocolStepStatusEndpoint {
 
       protocolStepToUpdate.setStatus(updateProtocolStepStatusDto.getStatus());
 
-      Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(
+      ProtocolStep updatedProtocolStep = this.protocolStepDataService.saveProtocolStep(
           protocolStepToUpdate);
+
+      Protocol protocolToUpdate = updatedProtocolStep.getParentProtocol();
+      if (protocolToUpdate.getProtocolSteps().stream()
+          .allMatch(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))) {
+        protocolToUpdate.setCompletionDate(LocalDate.now());
+      } else {
+        protocolToUpdate.setCompletionDate(null);
+      }
+      this.protocolDataService.updateProtocol(protocolToUpdate);
 
       log.info(
           "Protocol Step with ID [{}] on Protocol with ID [{}] updated with provided status [{}]",
-          updatedProtocolStepId, protocolId, updateProtocolStepStatusDto.getStatus());
+          updatedProtocolStep.getId(), protocolId, updateProtocolStepStatusDto.getStatus());
 
       return ResponseEntity.ok("Protocol Step with ID [" +
-          updatedProtocolStepId + "] on Protocol with ID [" + protocolId
+          updatedProtocolStep.getId() + "] on Protocol with ID [" + protocolId
           + "] updated successfully with status [" +
           updateProtocolStepStatusDto.getStatus() + "]");
     }

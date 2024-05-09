@@ -5,6 +5,7 @@ import com.cairn.waypoint.dashboard.dto.serializer.BigDecimalSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,9 @@ public class ProtocolDetailsDto {
   private String description;
   private String goal;
   private String goalProgress;
+  private LocalDateTime createdAt;
+  private LocalDate dueBy;
+  private LocalDate completedOn;
   private Boolean needsAttention;
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastStatusUpdateTimestamp;

@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -138,6 +139,10 @@ public class UpdateProtocolEndpoint {
       protocolToUpdate.setGoalProgress(updateProtocolDetailsDto.getGoalProgress());
     }
 
+    if (updateProtocolDetailsDto.getDueDate() != null) {
+      protocolToUpdate.setDueDate(updateProtocolDetailsDto.getDueDate());
+    }
+
     return protocolToUpdate;
   }
 
@@ -162,9 +167,17 @@ public class UpdateProtocolEndpoint {
       //Since a Protocol Step was updated we should update the last update timestamp
       updatedProtocol.setLastStatusUpdateTimestamp(LocalDateTime.now());
 
+      if (updatedProtocol.getProtocolSteps().stream()
+          .allMatch(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))) {
+        updatedProtocol.setCompletionDate(LocalDate.now());
+      } else {
+        updatedProtocol.setCompletionDate(null);
+      }
+
       updatedProtocol = this.protocolDataService.updateProtocol(updatedProtocol);
     }
-    Long protocolStepId = this.protocolStepDataService.saveProtocolStep(protocolStepToUpdate);
+    Long protocolStepId = this.protocolStepDataService.saveProtocolStep(protocolStepToUpdate)
+        .getId();
 
     log.info("Updated Protocol Step with ID [{}] on Protocol with ID [{}]", protocolStepId,
         protocolToUpdate.getId());

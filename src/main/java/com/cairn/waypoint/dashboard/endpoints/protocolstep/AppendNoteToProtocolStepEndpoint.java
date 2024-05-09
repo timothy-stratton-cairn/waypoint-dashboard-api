@@ -95,7 +95,7 @@ public class AppendNoteToProtocolStepEndpoint {
           .build());
 
       Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(
-          protocolStepToUpdate);
+          protocolStepToUpdate).getId();
 
       log.info("Protocol Step with ID [{}] on Protocol with ID [{}] updated with provided note",
           updatedProtocolStepId, protocolId);

@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class UpdateStepTemplateEndpoint {
   private final TemplateCategoryDataService templateCategoryDataService;
   private final ProtocolStepDataService protocolStepDataService;
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
+  private final ProtocolDataService protocolDataService;
 
   public UpdateStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService,
       StepTaskDataService stepTaskDataService,
@@ -68,6 +70,7 @@ public class UpdateStepTemplateEndpoint {
     this.homeworkTemplateDataService = homeworkTemplateDataService;
     this.templateCategoryDataService = templateCategoryDataService;
     this.protocolStepDataService = protocolStepDataService;
+    this.protocolDataService = protocolDataService;
 
     protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService,
         stepTemplateDataService, homeworkDataService);
@@ -199,7 +202,17 @@ public class UpdateStepTemplateEndpoint {
       protocolStepsToUpdate.stream()
           .filter(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))
           .peek(protocolStep -> protocolStep.setStatus(StepStatusEnum.IN_PROGRESS))
-          .forEach(this.protocolStepDataService::saveProtocolStep);
+          .map(this.protocolStepDataService::saveProtocolStep)
+          .forEach(updatedProtocolStep -> {
+            Protocol protocolToUpdate = updatedProtocolStep.getParentProtocol();
+            if (protocolToUpdate.getProtocolSteps().stream()
+                .allMatch(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))) {
+              protocolToUpdate.setCompletionDate(LocalDate.now());
+            } else {
+              protocolToUpdate.setCompletionDate(null);
+            }
+            this.protocolDataService.updateProtocol(protocolToUpdate);
+          });
     }
     return updatedStepTemplate.getId();
   }

@@ -35,3 +35,5 @@ databaseChangeLog:
       file: db/changelog/2024-04-02-update-step-template-linked-homework-template-table.yaml
   - include:
       file: db/changelog/2024-04-22-add-columns-to-homework-response-table.yaml
+  - include:
+      file: db/changelog/2024-05-09-update-protocol-table-with-completion-and-due-dates.yaml
