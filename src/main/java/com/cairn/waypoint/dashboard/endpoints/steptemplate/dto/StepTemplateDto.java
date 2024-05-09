@@ -10,6 +10,6 @@ public class StepTemplateDto {
   private Long id;
   private String name;
   private String description;
-  private Long linkedHomeworkId;
+  private HomeworkTemplateDetailsListDto linkedHomeworkTemplates;
   private StepTemplateCategoryDetailsDto category;
 }

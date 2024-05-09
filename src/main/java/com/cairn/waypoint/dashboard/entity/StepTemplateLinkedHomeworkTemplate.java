@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
@@ -20,6 +21,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "step_template_linked_homework_template")
+@SQLRestriction("active=1")
 public class StepTemplateLinkedHomeworkTemplate extends BaseEntity {
 
   @ManyToOne

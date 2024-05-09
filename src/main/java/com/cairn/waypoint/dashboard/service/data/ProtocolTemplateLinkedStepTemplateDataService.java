@@ -21,7 +21,7 @@ public class ProtocolTemplateLinkedStepTemplateDataService {
         protocolTemplateLinkedStepTemplate -> protocolTemplateLinkedStepTemplate.setActive(
             Boolean.FALSE));
 
-    this.protocolTemplateLinkedStepTemplateRepository.saveAllAndFlush(
+    this.protocolTemplateLinkedStepTemplateRepository.saveAll(
         protocolTemplateLinkedStepTemplates);
   }
 

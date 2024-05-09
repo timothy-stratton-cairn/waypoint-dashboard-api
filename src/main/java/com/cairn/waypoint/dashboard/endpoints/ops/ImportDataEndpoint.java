@@ -251,12 +251,12 @@ public class ImportDataEndpoint {
 
       Optional<TemplateCategory> stepCategoryOptional;
       if ((stepCategoryOptional = this.templateCategoryDataService.findByName(
-          getCellValue(row.getCell(4)))).isEmpty()) {
+          getCellValue(row.getCell(5)))).isEmpty()) {
         stepCategoryOptional = Optional.of(
             this.templateCategoryDataService.saveTemplateCategory(TemplateCategory.builder()
                 .modifiedBy(principal.getName())
-                .name(getCellValue(row.getCell(4)))
-                .description(getCellValue(row.getCell(4)))
+                .name(getCellValue(row.getCell(5)))
+                .description(getCellValue(row.getCell(5)))
                 .build()));
       }
 

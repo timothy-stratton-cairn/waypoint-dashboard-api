@@ -28,4 +28,8 @@ public class ProtocolStepDataService {
   public List<ProtocolStep> getProtocolStepsByStepTemplateId(Long protocolStepTemplateId) {
     return this.protocolStepRepository.findByTemplate_Id(protocolStepTemplateId);
   }
+
+  public List<ProtocolStep> saveProtocolStepList(List<ProtocolStep> protocolSteps) {
+    return this.protocolStepRepository.saveAllAndFlush(protocolSteps);
+  }
 }

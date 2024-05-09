@@ -2,7 +2,6 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.dto.AccountListDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedAccountDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedAccountsListDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
@@ -58,7 +57,7 @@ public class GetAllAssignedAccountsByProtocolTemplateIdEndpoint {
       responses = {
           @ApiResponse(responseCode = "200",
               content = {@Content(mediaType = "application/json",
-                  schema = @Schema(implementation = ProtocolListDto.class))}),
+                  schema = @Schema(implementation = ProtocolTemplateGroupedAccountsListDto.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
