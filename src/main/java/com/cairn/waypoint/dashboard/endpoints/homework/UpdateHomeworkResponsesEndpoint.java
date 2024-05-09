@@ -102,7 +102,7 @@ public class UpdateHomeworkResponsesEndpoint {
       if (!homeworkToBeUpdated.get().getHomeworkQuestions().stream()
           .map(HomeworkResponse::getHomeworkQuestion)
           .map(HomeworkQuestion::getId)
-          .collect(Collectors.toSet()).equals(homeworkQuestions.keySet())) {
+          .collect(Collectors.toSet()).containsAll(homeworkQuestions.keySet())) {
         return generateFailureResponse("Provided Question IDs are not associated with the homework",
             HttpStatus.UNPROCESSABLE_ENTITY);
       }
@@ -154,21 +154,26 @@ public class UpdateHomeworkResponsesEndpoint {
 
           Optional<MultipartFile> fileToUpload;
           String uploadedFileName;
-          if ((fileToUpload = fileProvider.apply(responseToUpdate.getUserResponse())).isPresent()) {
-            try {
-              uploadedFileName = s3FileUpload.uploadFile(fileToUpload.get(), modifiedBy,
-                  homeworkResponseKeyPrefix);
-            } catch (IOException e) {
-              throw new RuntimeException(e);
+          try {
+            if ((fileToUpload = fileProvider.apply(
+                responseToUpdate.getUserResponse())).isPresent()) {
+              try {
+                uploadedFileName = s3FileUpload.uploadFile(fileToUpload.get(), modifiedBy,
+                    homeworkResponseKeyPrefix);
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+              responseToUpdate.setUserResponse(uploadedFileName);
+              responseToUpdate.setUploadedFile(fileToUpload.get());
             }
-            responseToUpdate.setUserResponse(uploadedFileName);
-            responseToUpdate.setUploadedFile(fileToUpload.get());
-          }
 
-          homeworkResponse.setModifiedBy(modifiedBy);
-          homeworkResponse.setResponse(responseToUpdate.getUserResponse());
-          homeworkResponse.setFileGuid(
-              fileToUpload.isPresent() ? UUID.randomUUID().toString() : null);
+            homeworkResponse.setModifiedBy(modifiedBy);
+            homeworkResponse.setResponse(responseToUpdate.getUserResponse());
+            homeworkResponse.setFileGuid(
+                fileToUpload.isPresent() ? UUID.randomUUID().toString() : null);
+          } catch (NullPointerException e) {
+            //Nothing to be done
+          }
         });
 
     return homework;
