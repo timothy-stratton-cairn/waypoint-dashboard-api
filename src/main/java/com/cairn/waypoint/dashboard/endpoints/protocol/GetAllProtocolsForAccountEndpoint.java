@@ -75,11 +75,13 @@ public class GetAllProtocolsForAccountEndpoint {
                                         .takenAt(protocolComment.getCreated())
                                         .takenBy(protocolComment.getOriginalCommenter())
                                         .comment(protocolComment.getComment())
+                                        .commentType(protocolComment.getCommentType().name())
                                         .build())
                                     .toList())
                                 .build())
                             .needsAttention(protocol.getMarkedForAttention())
                             .lastStatusUpdateTimestamp(protocol.getLastStatusUpdateTimestamp())
+                            .status(protocol.getStatus().name())
                             .completionPercentage(
                                 ProtocolCalculationHelperService.getProtocolCompletionPercentage(
                                     protocol))

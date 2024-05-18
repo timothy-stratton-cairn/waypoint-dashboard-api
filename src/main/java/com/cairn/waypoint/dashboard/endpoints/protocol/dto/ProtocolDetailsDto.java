@@ -25,6 +25,7 @@ public class ProtocolDetailsDto {
   private Boolean needsAttention;
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastStatusUpdateTimestamp;
+  private String status;
 
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage;

@@ -37,3 +37,7 @@ databaseChangeLog:
       file: db/changelog/2024-04-22-add-columns-to-homework-response-table.yaml
   - include:
       file: db/changelog/2024-05-09-update-protocol-table-with-completion-and-due-dates.yaml
+  - include:
+      file: db/changelog/2024-05-18-add-protocol-statuses-to-system.yaml
+  - include:
+      file: db/changelog/2024-05-18-add-protocol-comment-types-to-system.yaml

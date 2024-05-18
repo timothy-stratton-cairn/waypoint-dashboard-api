@@ -1,7 +1,10 @@
 package com.cairn.waypoint.dashboard.entity;
 
+import com.cairn.waypoint.dashboard.entity.converter.ProtocolStatusConverter;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -37,6 +40,10 @@ public class Protocol extends BaseEntity {
 
   private LocalDate dueDate;
   private LocalDate completionDate;
+
+  @Column(name = "protocol_status_id")
+  @Convert(converter = ProtocolStatusConverter.class)
+  private ProtocolStatusEnum status;
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocol", cascade = {CascadeType.MERGE,
       CascadeType.PERSIST})

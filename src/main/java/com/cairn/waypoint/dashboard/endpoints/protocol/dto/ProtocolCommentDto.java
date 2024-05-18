@@ -14,4 +14,5 @@ public class ProtocolCommentDto {
   private LocalDateTime takenAt;
   private String takenBy;
   private String comment;
+  private String commentType;
 }

@@ -5,6 +5,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AppendProtocolComment
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -50,7 +51,9 @@ public class AppendCommentOnProtocolEndpoint {
       responses = {
           @ApiResponse(responseCode = "200",
               content = {@Content(mediaType = "application/json",
-                  schema = @Schema(implementation = ProtocolDetailsDto.class))}),
+                  schema = @Schema(implementation = String.class))}),
+          @ApiResponse(responseCode = "400", description = "Bad Request",
+              content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
@@ -71,6 +74,20 @@ public class AppendCommentOnProtocolEndpoint {
       return generateFailureResponse("Protocol with ID [" +
           protocolId + "] not found", HttpStatus.NOT_FOUND);
     } else {
+      try {
+        if (appendProtocolCommentaryDto.getComment() != null &&
+            appendProtocolCommentaryDto.getCommentType() != null) {
+          appendProtocolCommentaryDto.setProtocolCommentType(ProtocolCommentTypeEnum
+              .valueOf(appendProtocolCommentaryDto.getCommentType()));
+        } else if (appendProtocolCommentaryDto.getComment() != null) {
+          appendProtocolCommentaryDto.setProtocolCommentType(ProtocolCommentTypeEnum.COMMENT);
+        }
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Provided comment type [" +
+            appendProtocolCommentaryDto.getCommentType() + "] does not exist",
+            HttpStatus.BAD_REQUEST);
+      }
+
       Protocol protocolToUpdate = updateProtocolFields(optionalProtocolToUpdate.get(),
           appendProtocolCommentaryDto, principal.getName());
 
@@ -93,6 +110,7 @@ public class AppendCommentOnProtocolEndpoint {
           .modifiedBy(modifiedBy)
           .originalCommenter(modifiedBy)
           .comment(appendProtocolCommentaryDto.getComment())
+          .commentType(appendProtocolCommentaryDto.getProtocolCommentType())
           .protocol(protocolToUpdate)
           .build());
     }

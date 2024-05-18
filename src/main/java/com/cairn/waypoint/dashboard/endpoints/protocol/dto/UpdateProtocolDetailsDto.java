@@ -1,5 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol.dto;
 
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
@@ -12,7 +14,11 @@ public class UpdateProtocolDetailsDto {
   private String goal;
   private String goalProgress;
   private String comment;
+  private String commentType;
   private Boolean markForAttention;
   private LocalDate dueDate;
   private List<UpdateProtocolStepDetailsDto> protocolSteps;
+
+  @JsonIgnore
+  private ProtocolCommentTypeEnum protocolCommentType;
 }

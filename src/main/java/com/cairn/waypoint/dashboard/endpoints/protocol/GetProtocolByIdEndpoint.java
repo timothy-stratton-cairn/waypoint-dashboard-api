@@ -91,11 +91,13 @@ public class GetProtocolByIdEndpoint {
                         .takenAt(protocolComment.getCreated())
                         .takenBy(protocolComment.getOriginalCommenter())
                         .comment(protocolComment.getComment())
+                        .commentType(protocolComment.getCommentType().name())
                         .build())
                     .toList())
                 .build())
             .needsAttention(returnedProtocol.getMarkedForAttention())
             .lastStatusUpdateTimestamp(returnedProtocol.getLastStatusUpdateTimestamp())
+            .status(returnedProtocol.getStatus().name())
             .completionPercentage(
                 ProtocolCalculationHelperService.getProtocolCompletionPercentage(returnedProtocol))
             .associatedUsers(

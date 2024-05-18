@@ -18,6 +18,8 @@ import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.AccountDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
@@ -90,6 +92,8 @@ public class AddProtocolEndpoint {
               description = "Created - Protocol creation was successful",
               content = {@Content(mediaType = "application/json",
                   schema = @Schema(implementation = ProtocolDetailsDto.class))}),
+          @ApiResponse(responseCode = "400", description = "Bad Request",
+              content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
@@ -140,6 +144,20 @@ public class AddProtocolEndpoint {
       protocolToBeCreated.setAssociatedUsers(setupProtocolUsers(addProtocolDetailsDto,
           principal.getName(), accountDetailsDtoOptional.get()));
 
+      try {
+        if (addProtocolDetailsDto.getComment() != null &&
+            addProtocolDetailsDto.getCommentType() != null) {
+          addProtocolDetailsDto.setProtocolCommentType(ProtocolCommentTypeEnum
+              .valueOf(addProtocolDetailsDto.getCommentType()));
+        } else if (addProtocolDetailsDto.getComment() != null) {
+          addProtocolDetailsDto.setProtocolCommentType(ProtocolCommentTypeEnum.COMMENT);
+        }
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Provided comment type [" +
+                addProtocolDetailsDto.getCommentType() + "] does not exist",
+            HttpStatus.BAD_REQUEST);
+      }
+
       protocolToBeCreated.setComments(
           setupProtocolComment(addProtocolDetailsDto, principal.getName()));
 
@@ -166,6 +184,7 @@ public class AddProtocolEndpoint {
                           .takenAt(protocolComment.getCreated())
                           .takenBy(protocolComment.getOriginalCommenter())
                           .comment(protocolComment.getComment())
+                          .commentType(protocolComment.getCommentType().name())
                           .build())
                       .toList())
                   .build())
@@ -218,6 +237,7 @@ public class AddProtocolEndpoint {
           .modifiedBy(modifiedBy)
           .originalCommenter(modifiedBy)
           .comment(addProtocolDetailsDto.getComment())
+          .commentType(addProtocolDetailsDto.getProtocolCommentType())
           .build());
     }
   }
@@ -230,6 +250,7 @@ public class AddProtocolEndpoint {
     protocolToBeCreated.setProtocolTemplate(protocolTemplate);
     protocolToBeCreated.setMarkedForAttention(Boolean.FALSE);
     protocolToBeCreated.setLastStatusUpdateTimestamp(LocalDateTime.now());
+    protocolToBeCreated.setStatus(ProtocolStatusEnum.IN_PROGRESS);
 
     return protocolToBeCreated;
   }

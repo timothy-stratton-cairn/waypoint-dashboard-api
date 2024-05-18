@@ -7,6 +7,7 @@ import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
@@ -58,6 +59,8 @@ public class UpdateProtocolEndpoint {
       responses = {
           @ApiResponse(responseCode = "200",
               description = "Updated - Protocol update was successful"),
+          @ApiResponse(responseCode = "400", description = "Bad Request",
+              content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
@@ -77,6 +80,21 @@ public class UpdateProtocolEndpoint {
       return generateFailureResponse("Protocol with ID [" +
           protocolId + "] not found", HttpStatus.NOT_FOUND);
     } else {
+      if (updateProtocolDetailsDto.getComment() != null) {
+        try {
+          if (updateProtocolDetailsDto.getCommentType() != null) {
+            updateProtocolDetailsDto.setProtocolCommentType(ProtocolCommentTypeEnum
+                .valueOf(updateProtocolDetailsDto.getCommentType()));
+          } else {
+            updateProtocolDetailsDto.setProtocolCommentType(ProtocolCommentTypeEnum.COMMENT);
+          }
+        } catch (IllegalArgumentException e) {
+          return generateFailureResponse("Provided comment type [" +
+                  updateProtocolDetailsDto.getCommentType() + "] does not exist",
+              HttpStatus.BAD_REQUEST);
+        }
+      }
+
       return updateProtocol(optionalProtocolToUpdate.get(), updateProtocolDetailsDto,
           principal.getName());
     }
@@ -123,6 +141,7 @@ public class UpdateProtocolEndpoint {
           .modifiedBy(modifiedBy)
           .originalCommenter(modifiedBy)
           .comment(updateProtocolDetailsDto.getComment())
+          .commentType(updateProtocolDetailsDto.getProtocolCommentType())
           .protocol(protocolToUpdate)
           .build());
     }
