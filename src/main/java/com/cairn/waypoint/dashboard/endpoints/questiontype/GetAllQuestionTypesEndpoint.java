@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "Protocol Step Status")
+@Tag(name = "Homework Question Type")
 public class GetAllQuestionTypesEndpoint {
 
   public static final String PATH = "/api/homework-question/type";
