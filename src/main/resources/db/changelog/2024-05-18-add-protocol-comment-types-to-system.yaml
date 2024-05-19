@@ -46,4 +46,4 @@ databaseChangeLog:
             sql: INSERT INTO protocol_comment_type (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Internal Meeting Note', 'Internal Meeting notes on the Client\'s Protocol', 1)
         - sql:
             dbms: 'h2, mysql'
-            sql: UPDATE protocol_commentary SET protocol_comment_type_id = (SELECT name FROM protocol_comment_type WHERE name = 'Comment');
+            sql: UPDATE protocol_commentary SET protocol_comment_type_id = (SELECT id FROM protocol_comment_type WHERE name = 'Comment');
