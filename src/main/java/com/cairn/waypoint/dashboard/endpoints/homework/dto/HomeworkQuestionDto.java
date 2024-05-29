@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.homework.dto;
 
+import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDetailsListDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,4 +16,5 @@ public class HomeworkQuestionDto {
   private String questionType;
   private Boolean triggersProtocolCreation;
   private ProtocolTemplateDto triggeredProtocol;
+  private ExpectedResponseListDto expectedHomeworkResponses;
 }
