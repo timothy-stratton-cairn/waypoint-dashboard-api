@@ -86,7 +86,7 @@ public class UpdateHomeworkResponsesEndpoint {
                   schema = @Schema(implementation = ErrorMessage.class))}),})
   public ResponseEntity<?> updateHomeworkResponses(@PathVariable Long homeworkId,
       @RequestPart("json") @Parameter(schema = @Schema(type = "string", format = "binary")) UpdateHomeworkResponseDetailsListDto updateHomeworkResponseDetailsListDto,
-      @RequestPart("files") MultipartFile[] files, Principal principal) {
+      @RequestPart("files") Optional<MultipartFile[]> files, Principal principal) {
     Optional<Homework> homeworkToBeUpdated;
 
     Map<Long, UpdateHomeworkResponseDetailsDto> homeworkQuestions = updateHomeworkResponseDetailsListDto.getResponses()
@@ -107,7 +107,7 @@ public class UpdateHomeworkResponsesEndpoint {
             HttpStatus.UNPROCESSABLE_ENTITY);
       }
 
-      Homework homeworkToSave = stageHomeworkResponses(homeworkQuestions, files,
+      Homework homeworkToSave = stageHomeworkResponses(homeworkQuestions, files.orElse(null),
           homeworkToBeUpdated.get(), principal.getName());
 
       Homework updatedHomework = homeworkDataService.saveHomework(homeworkToSave);
