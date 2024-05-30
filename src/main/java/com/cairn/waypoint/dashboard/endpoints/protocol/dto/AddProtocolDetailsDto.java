@@ -18,7 +18,7 @@ public class AddProtocolDetailsDto {
   private String goal;
   private String comment;
   private String commentType;
-  private Long associatedAccountId;
+  private Long associatedHouseholdId;
   private LocalDate dueDate;
 
   @JsonIgnore

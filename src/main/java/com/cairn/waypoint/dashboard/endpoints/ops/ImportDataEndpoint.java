@@ -226,7 +226,7 @@ public class ImportDataEndpoint {
       }
 
       addProtocolEndpoint.addProtocolTemplate(AddProtocolDetailsDto.builder()
-          .associatedAccountId(createdClients.getAccountCreationResponses().stream()
+          .associatedHouseholdId(createdClients.getAccountCreationResponses().stream()
               .filter(Predicate.not(ClientCreationResponseDto::getError))
               .filter(clientCreationResponseDto -> clientCreationResponseDto.getUsername()
                   .equals(getCellValue(row.getCell(1))))

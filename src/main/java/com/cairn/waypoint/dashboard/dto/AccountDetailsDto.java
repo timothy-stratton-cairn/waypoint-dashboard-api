@@ -15,4 +15,5 @@ public class AccountDetailsDto {
   private String email;
   private LinkedAccountDetailsDto coClient;
   private Set<LinkedAccountDetailsDto> dependents;
+  private Long householdId;
 }

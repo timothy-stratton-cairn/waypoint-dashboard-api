@@ -63,7 +63,7 @@ public class Protocol extends BaseEntity {
   @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<ProtocolStep> protocolSteps;
 
-  @JoinColumn(name = "protocol_id")
+  @JoinColumn(name = "assigned_household_id")
   @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<ProtocolUser> associatedUsers;
 }

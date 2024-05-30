@@ -1,6 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.dto.AccountDetailsDto;
+import com.cairn.waypoint.dashboard.dto.HouseholdDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AddProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
@@ -23,6 +24,7 @@ import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.AccountDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
+import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
@@ -63,18 +65,20 @@ public class AddProtocolEndpoint {
   private final AccountDataService accountDataService;
 
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
+  private final HouseholdDataService householdDataService;
 
   public AddProtocolEndpoint(ProtocolDataService protocolDataService,
       AccountDataService accountDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateDataService stepTemplateDataService,
-      HomeworkDataService homeworkDataService) {
+      HomeworkDataService homeworkDataService, HouseholdDataService householdDataService) {
     this.protocolDataService = protocolDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.accountDataService = accountDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
         protocolDataService, stepTemplateDataService, homeworkDataService);
+    this.householdDataService = householdDataService;
   }
 
   @Transactional
@@ -108,23 +112,23 @@ public class AddProtocolEndpoint {
   public ResponseEntity<?> addProtocolTemplate(
       @RequestBody AddProtocolDetailsDto addProtocolDetailsDto,
       Principal principal) {
-    log.info("User [{}] is associating Protocol Template with ID [{}] with Account ID [{}]",
+    log.info("User [{}] is associating Protocol Template with ID [{}] for Household ID [{}]",
         principal.getName(), addProtocolDetailsDto.getProtocolTemplateId(),
-        addProtocolDetailsDto.getAssociatedAccountId());
+        addProtocolDetailsDto.getAssociatedHouseholdId());
 
-    Optional<AccountDetailsDto> accountDetailsDtoOptional;
+    Optional<HouseholdDetailsDto> householdDetailsDtoOptional;
     Optional<ProtocolTemplate> protocolTemplateOptional;
     if (this.protocolDataService.getByProtocolTemplateIdAndUserId(
         addProtocolDetailsDto.getProtocolTemplateId(),
-        addProtocolDetailsDto.getAssociatedAccountId()).isPresent()) {
+        addProtocolDetailsDto.getAssociatedHouseholdId()).isPresent()) {
       return generateFailureResponse("Account [" +
-          addProtocolDetailsDto.getAssociatedAccountId()
+          addProtocolDetailsDto.getAssociatedHouseholdId()
           + "] already associated with Protocol Template [" +
           addProtocolDetailsDto.getProtocolTemplateId() + "]", HttpStatus.CONFLICT);
-    } else if ((accountDetailsDtoOptional = this.accountDataService.getAccountDetails(
-        addProtocolDetailsDto.getAssociatedAccountId())).isEmpty()) {
+    } else if ((householdDetailsDtoOptional = this.householdDataService.getHouseholdDetails(
+        addProtocolDetailsDto.getAssociatedHouseholdId())).isEmpty()) {
       return generateFailureResponse("Account with ID [" +
-              addProtocolDetailsDto.getAssociatedAccountId() + "] does not exists",
+              addProtocolDetailsDto.getAssociatedHouseholdId() + "] does not exists",
           HttpStatus.NOT_FOUND);
     } else if ((protocolTemplateOptional = this.protocolTemplateDataService.getProtocolTemplateById(
         addProtocolDetailsDto.getProtocolTemplateId())).isEmpty()) {
@@ -142,7 +146,7 @@ public class AddProtocolEndpoint {
           principal.getName()));
 
       protocolToBeCreated.setAssociatedUsers(setupProtocolUsers(addProtocolDetailsDto,
-          principal.getName(), accountDetailsDtoOptional.get()));
+          principal.getName(), householdDetailsDtoOptional.get()));
 
       try {
         if (addProtocolDetailsDto.getComment() != null &&
@@ -168,7 +172,7 @@ public class AddProtocolEndpoint {
 
       log.info("Protocol Template with ID [{}] was successfully associated with Account ID [{}]",
           addProtocolDetailsDto.getProtocolTemplateId(),
-          addProtocolDetailsDto.getAssociatedAccountId());
+          addProtocolDetailsDto.getAssociatedHouseholdId());
       return ResponseEntity.status(HttpStatus.CREATED)
           .body(ProtocolDetailsDto.builder()
               .id(createdProtocol.getId())
@@ -276,21 +280,14 @@ public class AddProtocolEndpoint {
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  private Set<ProtocolUser> setupProtocolUsers(AddProtocolDetailsDto addProtocolDetailsDto,
-      String modifiedBy, AccountDetailsDto accountDetailsDto) {
+  private Set<ProtocolUser> setupProtocolAssignment(AddProtocolDetailsDto addProtocolDetailsDto,
+      String modifiedBy, HouseholdDetailsDto accountDetailsDto) {
     Set<ProtocolUser> protocolUsers = new HashSet<>();
 
     protocolUsers.add(ProtocolUser.builder()
         .modifiedBy(modifiedBy)
-        .userId(addProtocolDetailsDto.getAssociatedAccountId())
+        .userId(addProtocolDetailsDto.getAssociatedHouseholdId())
         .build());
-
-    if (accountDetailsDto.getCoClient() != null) {
-      protocolUsers.add(ProtocolUser.builder()
-          .modifiedBy(modifiedBy)
-          .userId(accountDetailsDto.getCoClient().getId())
-          .build());
-    }
 
     return protocolUsers;
   }
