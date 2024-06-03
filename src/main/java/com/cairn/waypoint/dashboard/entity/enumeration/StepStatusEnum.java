@@ -5,7 +5,7 @@ import com.cairn.waypoint.dashboard.service.data.StepStatusDataService;
 import jakarta.persistence.EntityNotFoundException;
 
 public enum StepStatusEnum {
-  TODO, IN_PROGRESS, DONE;
+  TODO, IN_PROGRESS, DONE, CONDITIONAL_COMPLETION;
 
   private StepStatus instance;
 

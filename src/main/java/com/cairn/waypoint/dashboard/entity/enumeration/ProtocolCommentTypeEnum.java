@@ -5,7 +5,7 @@ import com.cairn.waypoint.dashboard.service.data.ProtocolCommentTypeDataService;
 import jakarta.persistence.EntityNotFoundException;
 
 public enum ProtocolCommentTypeEnum {
-  COMMENT, RECOMMENDATION, INTERNAL_MEETING_NOTE;
+  COMMENT, RECOMMENDATION, INTERNAL_MEETING_NOTE, CONDITIONAL_COMPLETION_NOTE;
 
   private ProtocolCommentType instance;
 

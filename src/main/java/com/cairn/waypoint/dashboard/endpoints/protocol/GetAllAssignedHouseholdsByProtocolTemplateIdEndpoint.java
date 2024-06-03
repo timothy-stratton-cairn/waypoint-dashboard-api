@@ -1,11 +1,9 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
-import com.cairn.waypoint.dashboard.dto.HouseholdAccountListDto;
-import com.cairn.waypoint.dashboard.dto.HouseholdDto;
 import com.cairn.waypoint.dashboard.dto.HouseholdListDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedAccountDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedAccountsListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedHouseholdDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedHouseholdListDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
@@ -58,7 +56,7 @@ public class GetAllAssignedHouseholdsByProtocolTemplateIdEndpoint {
       responses = {
           @ApiResponse(responseCode = "200",
               content = {@Content(mediaType = "application/json",
-                  schema = @Schema(implementation = ProtocolTemplateGroupedAccountsListDto.class))}),
+                  schema = @Schema(implementation = ProtocolTemplateGroupedHouseholdListDto.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
@@ -84,19 +82,16 @@ public class GetAllAssignedHouseholdsByProtocolTemplateIdEndpoint {
           .map(Protocol::getAssignedHouseholdId)
           .toList();
 
-      HouseholdListDto accountListDto = this.householdDataService.getHouseholdDetailsListByIdList(
+      HouseholdListDto householdListDto = this.householdDataService.getHouseholdDetailsListByIdList(
           householdIds);
 
       return ResponseEntity.ok(
-          ProtocolTemplateGroupedAccountsListDto.builder()
-              .accounts(accountListDto.getHouseholds().stream()
-                  .map(HouseholdDto::getHouseholdAccounts)
-                  .map(HouseholdAccountListDto::getAccounts)
-                  .flatMap(List::stream)
-                  .map(accountDto -> ProtocolTemplateGroupedAccountDto.builder()
-                      .id(accountDto.getId())
-                      .firstName(accountDto.getFirstName())
-                      .lastName(accountDto.getLastName())
+          ProtocolTemplateGroupedHouseholdListDto.builder()
+              .households(householdListDto.getHouseholds().stream()
+                  .map(householdDto -> ProtocolTemplateGroupedHouseholdDto.builder()
+                      .id(householdDto.getId())
+                      .householdName(householdDto.getName())
+                      .householdAccountList(householdDto.getHouseholdAccounts())
                       .build())
                   .collect(Collectors.toList()))
               .build()

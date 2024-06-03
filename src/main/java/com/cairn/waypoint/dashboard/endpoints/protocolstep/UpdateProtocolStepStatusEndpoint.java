@@ -55,6 +55,8 @@ public class UpdateProtocolStepStatusEndpoint {
           @ApiResponse(responseCode = "200",
               content = {@Content(mediaType = "application/json",
                   schema = @Schema(implementation = String.class))}),
+          @ApiResponse(responseCode = "400", description = "Bad Request",
+              content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
@@ -86,17 +88,25 @@ public class UpdateProtocolStepStatusEndpoint {
       return generateFailureResponse("The Protocol Step ID [" + protocolStepId
               + "] is not a Protocol Step ID present on Protocol with ID [" + protocolId + "]",
           HttpStatus.UNPROCESSABLE_ENTITY);
+    } else if (updateProtocolStepStatusDto.getStatus().equals(StepStatusEnum.CONDITIONAL_COMPLETION) &&
+        (updateProtocolStepStatusDto.getCompletionCondition() == null ||
+            updateProtocolStepStatusDto.getCompletionCondition().isEmpty())) {
+      return generateFailureResponse("A Completion Condition message must be provided"
+              + " when a step is updated to the 'Conditional Completion' status",
+          HttpStatus.BAD_REQUEST);
     } else {
       ProtocolStep protocolStepToUpdate = optionalProtocolStepToUpdate.get();
 
       protocolStepToUpdate.setStatus(updateProtocolStepStatusDto.getStatus());
+
 
       ProtocolStep updatedProtocolStep = this.protocolStepDataService.saveProtocolStep(
           protocolStepToUpdate);
 
       Protocol protocolToUpdate = updatedProtocolStep.getParentProtocol();
       if (protocolToUpdate.getProtocolSteps().stream()
-          .allMatch(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))) {
+          .allMatch(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE) ||
+              protocolStep.getStatus().equals(StepStatusEnum.CONDITIONAL_COMPLETION))) {
         protocolToUpdate.setCompletionDate(LocalDate.now());
       } else {
         protocolToUpdate.setCompletionDate(null);

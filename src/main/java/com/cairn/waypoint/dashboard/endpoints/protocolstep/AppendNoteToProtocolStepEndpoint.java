@@ -5,6 +5,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocolstep.dto.AppendProtocolSte
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -85,12 +86,26 @@ public class AppendNoteToProtocolStepEndpoint {
               + "] is not a Protocol Step ID present on Protocol with ID [" + protocolId + "]",
           HttpStatus.UNPROCESSABLE_ENTITY);
     } else {
+      try {
+        if (appendProtocolStepNoteDto.getNote() != null &&
+            appendProtocolStepNoteDto.getNoteType() != null) {
+          appendProtocolStepNoteDto.setProtocolStepNoteType(ProtocolCommentTypeEnum
+              .valueOf(appendProtocolStepNoteDto.getNoteType()));
+        } else if (appendProtocolStepNoteDto.getNote() != null) {
+          appendProtocolStepNoteDto.setProtocolStepNoteType(ProtocolCommentTypeEnum.COMMENT);
+        }
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Provided comment type [" +
+                appendProtocolStepNoteDto.getNoteType() + "] does not exist",
+            HttpStatus.BAD_REQUEST);
+      }
       ProtocolStep protocolStepToUpdate = optionalProtocolStepToUpdate.get();
 
       protocolStepToUpdate.getNotes().add(ProtocolStepNote.builder()
           .modifiedBy(principal.getName())
           .originalCommenter(principal.getName())
           .note(appendProtocolStepNoteDto.getNote())
+          .noteType(appendProtocolStepNoteDto.getProtocolStepNoteType())
           .protocolStep(protocolStepToUpdate)
           .build());
 

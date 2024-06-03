@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class UpdateProtocolStepStatusDto {
 
   private StepStatusEnum status;
+  private String completionCondition;
 }

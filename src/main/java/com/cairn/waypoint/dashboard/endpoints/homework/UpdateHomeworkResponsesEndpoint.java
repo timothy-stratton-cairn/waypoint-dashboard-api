@@ -113,7 +113,14 @@ public class UpdateHomeworkResponsesEndpoint {
       Homework updatedHomework = homeworkDataService.saveHomework(homeworkToSave);
 
       ProtocolStep protocolStepToUpdate = updatedHomework.getAssociatedProtocolStep();
-      protocolStepToUpdate.setStatus(StepStatusEnum.IN_PROGRESS);
+
+      if (updatedHomework.getHomeworkQuestions().stream().anyMatch(homeworkResponse ->
+          homeworkResponse.getHomeworkQuestion().getRequired() &&
+          (homeworkResponse.getResponse() == null || homeworkResponse.getResponse().isEmpty()))) {
+        protocolStepToUpdate.setStatus(StepStatusEnum.IN_PROGRESS);
+      } else {
+        protocolStepToUpdate.setStatus(StepStatusEnum.DONE);
+      }
 
       ProtocolStep updatedProtocolStep = protocolStepDataService.saveProtocolStep(
           protocolStepToUpdate);

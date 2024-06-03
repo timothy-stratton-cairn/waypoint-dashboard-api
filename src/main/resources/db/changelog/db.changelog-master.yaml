@@ -43,3 +43,8 @@ databaseChangeLog:
       file: db/changelog/2024-05-18-add-protocol-comment-types-to-system.yaml
   - include:
       file: db/changelog/2024-04-22-add-columns-household-columns-to-protocol-and-homework-tables.yaml
+  - include:
+      file: db/changelog/2024-06-03-add-additional-step-statuses.yaml
+  - include:
+      file: db/changelog/2024-06-03-add-additional-comment-types.yaml
+
