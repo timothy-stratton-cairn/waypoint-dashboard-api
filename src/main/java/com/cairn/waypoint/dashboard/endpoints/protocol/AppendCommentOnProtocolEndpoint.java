@@ -2,7 +2,6 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AppendProtocolCommentaryDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
@@ -84,7 +83,7 @@ public class AppendCommentOnProtocolEndpoint {
         }
       } catch (IllegalArgumentException e) {
         return generateFailureResponse("Provided comment type [" +
-            appendProtocolCommentaryDto.getCommentType() + "] does not exist",
+                appendProtocolCommentaryDto.getCommentType() + "] does not exist",
             HttpStatus.BAD_REQUEST);
       }
 

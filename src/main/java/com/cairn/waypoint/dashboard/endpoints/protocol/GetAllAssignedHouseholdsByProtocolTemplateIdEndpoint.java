@@ -1,12 +1,13 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
-import com.cairn.waypoint.dashboard.dto.AccountListDto;
+import com.cairn.waypoint.dashboard.dto.HouseholdAccountListDto;
+import com.cairn.waypoint.dashboard.dto.HouseholdDto;
+import com.cairn.waypoint.dashboard.dto.HouseholdListDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedAccountDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedAccountsListDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
-import com.cairn.waypoint.dashboard.service.data.AccountDataService;
+import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,20 +32,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Tag(name = "Protocol")
-public class GetAllAssignedAccountsByProtocolTemplateIdEndpoint {
+public class GetAllAssignedHouseholdsByProtocolTemplateIdEndpoint {
 
-  public static final String PATH = "/api/protocol/account/protocol-template/{protocolTemplateId}";
+  public static final String PATH = "/api/protocol/household/protocol-template/{protocolTemplateId}";
 
   private final ProtocolDataService protocolDataService;
   private final ProtocolTemplateDataService protocolTemplateDataService;
-  private final AccountDataService accountDataService;
+  private final HouseholdDataService householdDataService;
 
-  public GetAllAssignedAccountsByProtocolTemplateIdEndpoint(ProtocolDataService protocolDataService,
+  public GetAllAssignedHouseholdsByProtocolTemplateIdEndpoint(
+      ProtocolDataService protocolDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
-      AccountDataService accountDataService) {
+      HouseholdDataService householdDataService) {
     this.protocolDataService = protocolDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
-    this.accountDataService = accountDataService;
+    this.householdDataService = householdDataService;
   }
 
   @GetMapping(PATH)
@@ -78,18 +79,20 @@ public class GetAllAssignedAccountsByProtocolTemplateIdEndpoint {
           protocolTemplateId + "]", HttpStatus.NOT_FOUND);
     } else {
 
-      List<Long> userIds = this.protocolDataService.getByProtocolTemplateId(protocolTemplateId)
+      List<Long> householdIds = this.protocolDataService.getByProtocolTemplateId(protocolTemplateId)
           .stream()
-          .map(Protocol::getAssociatedUsers)
-          .flatMap(Set::stream)
-          .map(ProtocolUser::getUserId)
+          .map(Protocol::getAssignedHouseholdId)
           .toList();
 
-      AccountListDto accountListDto = this.accountDataService.getAccountsById(userIds);
+      HouseholdListDto accountListDto = this.householdDataService.getHouseholdDetailsListByIdList(
+          householdIds);
 
       return ResponseEntity.ok(
           ProtocolTemplateGroupedAccountsListDto.builder()
-              .accounts(accountListDto.getAccounts().stream()
+              .accounts(accountListDto.getHouseholds().stream()
+                  .map(HouseholdDto::getHouseholdAccounts)
+                  .map(HouseholdAccountListDto::getAccounts)
+                  .flatMap(List::stream)
                   .map(accountDto -> ProtocolTemplateGroupedAccountDto.builder()
                       .id(accountDto.getId())
                       .firstName(accountDto.getFirstName())

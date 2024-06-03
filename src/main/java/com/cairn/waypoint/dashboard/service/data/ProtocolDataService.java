@@ -1,14 +1,11 @@
 package com.cairn.waypoint.dashboard.service.data;
 
-
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.repository.ProtocolCommentaryRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolStepRepository;
-import com.cairn.waypoint.dashboard.repository.ProtocolUserRepository;
 import jakarta.transaction.Transactional;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -23,16 +20,13 @@ public class ProtocolDataService {
 
   private final ProtocolRepository protocolRepository;
   private final ProtocolStepRepository protocolStepRepository;
-  private final ProtocolUserRepository protocolUserRepository;
   private final ProtocolCommentaryRepository protocolCommentaryRepository;
 
   public ProtocolDataService(ProtocolRepository protocolRepository,
       ProtocolStepRepository protocolStepRepository,
-      ProtocolUserRepository protocolUserRepository,
       ProtocolCommentaryRepository protocolCommentaryRepository) {
     this.protocolRepository = protocolRepository;
     this.protocolStepRepository = protocolStepRepository;
-    this.protocolUserRepository = protocolUserRepository;
     this.protocolCommentaryRepository = protocolCommentaryRepository;
   }
 
@@ -44,8 +38,9 @@ public class ProtocolDataService {
     return this.protocolRepository.findById(id);
   }
 
-  public Optional<Protocol> getByProtocolTemplateIdAndUserId(Long protocolTemplateId, Long userId) {
-    return this.protocolRepository.findByAssociatedUsers_UserId(userId).stream()
+  public Optional<Protocol> getByProtocolTemplateIdAndHouseholdId(Long protocolTemplateId,
+      Long householdId) {
+    return this.protocolRepository.findByAssignedHouseholdId(householdId).stream()
         .filter(protocol -> protocol.getProtocolTemplate()
             .getId()
             .equals(protocolTemplateId))
@@ -56,8 +51,8 @@ public class ProtocolDataService {
     return this.protocolRepository.findByProtocolTemplate_Id(protocolTemplateId);
   }
 
-  public List<Protocol> getByUserId(Long userId) {
-    return this.protocolRepository.findByAssociatedUsers_UserId(userId);
+  public List<Protocol> getByHouseholdId(Long householdId) {
+    return this.protocolRepository.findByAssignedHouseholdId(householdId);
   }
 
   @Transactional
@@ -65,8 +60,6 @@ public class ProtocolDataService {
     //Save the Protocol
     Set<ProtocolStep> protocolSteps = protocolToBeCreated.getProtocolSteps();
     protocolToBeCreated.setProtocolSteps(null);
-    Set<ProtocolUser> protocolUsers = protocolToBeCreated.getAssociatedUsers();
-    protocolToBeCreated.setAssociatedUsers(null);
     Set<ProtocolCommentary> protocolComments = protocolToBeCreated.getComments();
     protocolToBeCreated.setComments(null);
 
@@ -79,14 +72,6 @@ public class ProtocolDataService {
         .map(this.protocolStepRepository::save)
         .collect(Collectors.toCollection(LinkedHashSet::new));
     createdProtocol.setProtocolSteps(createdProtocolSteps);
-
-    //Save the Protocol-User associations
-    protocolUsers
-        .forEach(protocolUser -> protocolUser.setProtocol(createdProtocol));
-    Set<ProtocolUser> createdProtocolUsers = protocolUsers.stream()
-        .map(this.protocolUserRepository::save)
-        .collect(Collectors.toCollection(LinkedHashSet::new));
-    createdProtocol.setAssociatedUsers(createdProtocolUsers);
 
     //Save the Protocol Commentary
     protocolComments

@@ -60,7 +60,8 @@ public class UpdateProtocolStatusEndpoint {
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> updateProtocolById(@PathVariable Long protocolId,
       @RequestBody UpdateProtocolStatusDto updateProtocolStatusDto, Principal principal) {
-    log.info("User [{}] is updating the status of Protocol with ID [{}]", principal.getName(), protocolId);
+    log.info("User [{}] is updating the status of Protocol with ID [{}]", principal.getName(),
+        protocolId);
 
     Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(
         protocolId);
@@ -85,7 +86,8 @@ public class UpdateProtocolStatusEndpoint {
       updatedProtocol = protocolDataService.updateProtocol(protocolToUpdate);
     } catch (IllegalArgumentException e) {
       return generateFailureResponse("Provided Protocol Status [ " +
-          updateProtocolDetailsDto.getNewProtocolStatus() + "does not exist", HttpStatus.BAD_REQUEST);
+              updateProtocolDetailsDto.getNewProtocolStatus() + "does not exist",
+          HttpStatus.BAD_REQUEST);
     }
 
     return ResponseEntity.status(HttpStatus.OK)

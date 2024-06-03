@@ -9,7 +9,8 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.Objects;
 
 @Converter
-public class ProtocolCommentTypeConverter implements AttributeConverter<ProtocolCommentTypeEnum, Long> {
+public class ProtocolCommentTypeConverter implements
+    AttributeConverter<ProtocolCommentTypeEnum, Long> {
 
   @Override
   public Long convertToDatabaseColumn(ProtocolCommentTypeEnum protocolCommentTypeEnum) {
@@ -23,6 +24,7 @@ public class ProtocolCommentTypeConverter implements AttributeConverter<Protocol
         .findFirst()
         .orElseThrow(EntityNotFoundException::new);
 
-    return ProtocolCommentTypeEnum.valueOf(retrievedCommentType.getName().toUpperCase().replace(' ', '_'));
+    return ProtocolCommentTypeEnum.valueOf(
+        retrievedCommentType.getName().toUpperCase().replace(' ', '_'));
   }
 }

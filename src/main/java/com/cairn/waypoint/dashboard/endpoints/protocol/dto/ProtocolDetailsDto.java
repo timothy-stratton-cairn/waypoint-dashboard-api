@@ -26,10 +26,10 @@ public class ProtocolDetailsDto {
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastStatusUpdateTimestamp;
   private String status;
+  private Long assignedHouseholdId;
 
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage;
   private ProtocolCommentListDto protocolComments;
-  private AssociatedUsersListDto associatedUsers;
   private AssociatedStepsListDto associatedSteps;
 }

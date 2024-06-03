@@ -1,11 +1,8 @@
 package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.ProtocolStatus;
-import com.cairn.waypoint.dashboard.entity.StepStatus;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
-import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.repository.ProtocolStatusRepository;
-import com.cairn.waypoint.dashboard.repository.StepStatusRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;

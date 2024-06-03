@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.dashboard.dto;
 
+import com.cairn.waypoint.dashboard.dto.HouseholdListDto;
 import com.cairn.waypoint.dashboard.dto.serializer.BigDecimalSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.math.BigDecimal;
@@ -26,5 +27,5 @@ public class GlobalProtocolViewDto {
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage = BigDecimal.ZERO;
 
-  private AssociatedAccountListDto assignedUsers;
+  private HouseholdListDto assignedHousehold;
 }

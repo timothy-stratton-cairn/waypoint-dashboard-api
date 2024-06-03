@@ -1,15 +1,11 @@
 package com.cairn.waypoint.dashboard.endpoints.dashboard;
 
-import com.cairn.waypoint.dashboard.dto.AccountListDto;
-import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.AssociatedAccountDto;
-import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.AssociatedAccountListDto;
 import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.GlobalProtocolViewDto;
 import com.cairn.waypoint.dashboard.endpoints.dashboard.dto.GlobalProtocolViewListDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
-import com.cairn.waypoint.dashboard.service.data.AccountDataService;
+import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
@@ -24,7 +20,6 @@ import java.math.RoundingMode;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -41,14 +36,14 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
 
   private final ProtocolTemplateDataService protocolTemplateDataService;
   private final ProtocolDataService protocolDataService;
-  private final AccountDataService accountDataService;
+  private final HouseholdDataService householdDataService;
 
   public GetAllProtocolsGroupedByProtocolTemplateEndpoint(
       ProtocolTemplateDataService protocolTemplateDataService,
-      ProtocolDataService protocolDataService, AccountDataService accountDataService) {
+      ProtocolDataService protocolDataService, HouseholdDataService householdDataService) {
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.protocolDataService = protocolDataService;
-    this.accountDataService = accountDataService;
+    this.householdDataService = householdDataService;
   }
 
   @GetMapping(PATH)
@@ -77,13 +72,6 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
           List<Protocol> assignedProtocols = this.protocolDataService.getByProtocolTemplateId(
               protocolTemplate.getId());
 
-          AccountListDto associatedUsers = this.accountDataService.getAccountsById(
-              assignedProtocols.stream()
-                  .map(Protocol::getAssociatedUsers)
-                  .flatMap(Set::stream)
-                  .map(ProtocolUser::getUserId)
-                  .collect(Collectors.toList()));
-
           if (!assignedProtocols.isEmpty()) {
             globalProtocolViewDtos.add(GlobalProtocolViewDto.builder()
                 .protocolTemplateId(protocolTemplate.getId())
@@ -104,15 +92,10 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
                     .map(ProtocolCalculationHelperService::getProtocolCompletionPercentage).reduce(
                         BigDecimal.ZERO, BigDecimal::add)
                     .divide(new BigDecimal(assignedProtocols.size()), RoundingMode.HALF_UP))
-                .assignedUsers(AssociatedAccountListDto.builder()
-                    .accounts(associatedUsers.getAccounts().stream()
-                        .map(accountDto -> AssociatedAccountDto.builder()
-                            .id(accountDto.getId())
-                            .firstName(accountDto.getFirstName())
-                            .lastName(accountDto.getLastName())
-                            .build())
-                        .collect(Collectors.toList()))
-                    .build())
+                .assignedHousehold(
+                    householdDataService.getHouseholdDetailsListByIdList(assignedProtocols.stream()
+                        .map(Protocol::getAssignedHouseholdId)
+                        .collect(Collectors.toList())))
                 .build());
           } else {
             globalProtocolViewDtos.add(GlobalProtocolViewDto.builder()

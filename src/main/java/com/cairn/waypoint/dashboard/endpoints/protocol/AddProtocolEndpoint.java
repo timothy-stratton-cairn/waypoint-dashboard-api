@@ -1,11 +1,9 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
-import com.cairn.waypoint.dashboard.dto.AccountDetailsDto;
 import com.cairn.waypoint.dashboard.dto.HouseholdDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AddProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
@@ -17,12 +15,10 @@ import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
-import com.cairn.waypoint.dashboard.service.data.AccountDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
@@ -39,7 +35,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -62,19 +57,16 @@ public class AddProtocolEndpoint {
 
   private final ProtocolDataService protocolDataService;
   private final ProtocolTemplateDataService protocolTemplateDataService;
-  private final AccountDataService accountDataService;
 
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
   private final HouseholdDataService householdDataService;
 
   public AddProtocolEndpoint(ProtocolDataService protocolDataService,
-      AccountDataService accountDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateDataService stepTemplateDataService,
       HomeworkDataService homeworkDataService, HouseholdDataService householdDataService) {
     this.protocolDataService = protocolDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
-    this.accountDataService = accountDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
         protocolDataService, stepTemplateDataService, homeworkDataService);
@@ -83,6 +75,7 @@ public class AddProtocolEndpoint {
 
   @Transactional
   @PostMapping(PATH)
+  @SuppressWarnings("OptionalGetWithoutIsPresent")
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to create new protocol, "
@@ -109,26 +102,26 @@ public class AddProtocolEndpoint {
           @ApiResponse(responseCode = "409", description = "Conflict",
               content = {@Content(mediaType = "application/json",
                   schema = @Schema(implementation = ErrorMessage.class))})})
-  public ResponseEntity<?> addProtocolTemplate(
+  public ResponseEntity<?> assignProtocol(
       @RequestBody AddProtocolDetailsDto addProtocolDetailsDto,
       Principal principal) {
     log.info("User [{}] is associating Protocol Template with ID [{}] for Household ID [{}]",
         principal.getName(), addProtocolDetailsDto.getProtocolTemplateId(),
-        addProtocolDetailsDto.getAssociatedHouseholdId());
+        addProtocolDetailsDto.getAssignedHouseholdId());
 
     Optional<HouseholdDetailsDto> householdDetailsDtoOptional;
     Optional<ProtocolTemplate> protocolTemplateOptional;
-    if (this.protocolDataService.getByProtocolTemplateIdAndUserId(
+    if (this.protocolDataService.getByProtocolTemplateIdAndHouseholdId(
         addProtocolDetailsDto.getProtocolTemplateId(),
-        addProtocolDetailsDto.getAssociatedHouseholdId()).isPresent()) {
+        addProtocolDetailsDto.getAssignedHouseholdId()).isPresent()) {
       return generateFailureResponse("Account [" +
-          addProtocolDetailsDto.getAssociatedHouseholdId()
+          addProtocolDetailsDto.getAssignedHouseholdId()
           + "] already associated with Protocol Template [" +
           addProtocolDetailsDto.getProtocolTemplateId() + "]", HttpStatus.CONFLICT);
     } else if ((householdDetailsDtoOptional = this.householdDataService.getHouseholdDetails(
-        addProtocolDetailsDto.getAssociatedHouseholdId())).isEmpty()) {
+        addProtocolDetailsDto.getAssignedHouseholdId())).isEmpty()) {
       return generateFailureResponse("Account with ID [" +
-              addProtocolDetailsDto.getAssociatedHouseholdId() + "] does not exists",
+              addProtocolDetailsDto.getAssignedHouseholdId() + "] does not exists",
           HttpStatus.NOT_FOUND);
     } else if ((protocolTemplateOptional = this.protocolTemplateDataService.getProtocolTemplateById(
         addProtocolDetailsDto.getProtocolTemplateId())).isEmpty()) {
@@ -145,8 +138,7 @@ public class AddProtocolEndpoint {
       protocolToBeCreated.setProtocolSteps(setupProtocolSteps(protocolTemplateOptional.get(),
           principal.getName()));
 
-      protocolToBeCreated.setAssociatedUsers(setupProtocolUsers(addProtocolDetailsDto,
-          principal.getName(), householdDetailsDtoOptional.get()));
+      protocolToBeCreated.setAssignedHouseholdId(householdDetailsDtoOptional.get().getId());
 
       try {
         if (addProtocolDetailsDto.getComment() != null &&
@@ -170,9 +162,11 @@ public class AddProtocolEndpoint {
       protocolTemplateHelperService.generateAndSaveClientHomework(createdProtocol,
           principal.getName());
 
+      createdProtocol = this.protocolDataService.getProtocolById(createdProtocol.getId()).get();
+
       log.info("Protocol Template with ID [{}] was successfully associated with Account ID [{}]",
           addProtocolDetailsDto.getProtocolTemplateId(),
-          addProtocolDetailsDto.getAssociatedHouseholdId());
+          addProtocolDetailsDto.getAssignedHouseholdId());
       return ResponseEntity.status(HttpStatus.CREATED)
           .body(ProtocolDetailsDto.builder()
               .id(createdProtocol.getId())
@@ -196,12 +190,7 @@ public class AddProtocolEndpoint {
               .lastStatusUpdateTimestamp(createdProtocol.getLastStatusUpdateTimestamp())
               .completionPercentage(
                   ProtocolCalculationHelperService.getProtocolCompletionPercentage(createdProtocol))
-              .associatedUsers(
-                  AssociatedUsersListDto.builder()
-                      .userIds(
-                          createdProtocol.getAssociatedUsers().stream().map(ProtocolUser::getUserId)
-                              .toList())
-                      .build())
+              .assignedHouseholdId(createdProtocol.getAssignedHouseholdId())
               .associatedSteps(
                   AssociatedStepsListDto.builder()
                       .steps(createdProtocol.getProtocolSteps().stream()
@@ -278,18 +267,6 @@ public class AddProtocolEndpoint {
           return protocolStep;
         })
         .collect(Collectors.toCollection(LinkedHashSet::new));
-  }
-
-  private Set<ProtocolUser> setupProtocolAssignment(AddProtocolDetailsDto addProtocolDetailsDto,
-      String modifiedBy, HouseholdDetailsDto accountDetailsDto) {
-    Set<ProtocolUser> protocolUsers = new HashSet<>();
-
-    protocolUsers.add(ProtocolUser.builder()
-        .modifiedBy(modifiedBy)
-        .userId(addProtocolDetailsDto.getAssociatedHouseholdId())
-        .build());
-
-    return protocolUsers;
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {

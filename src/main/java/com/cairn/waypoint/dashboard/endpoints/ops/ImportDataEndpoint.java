@@ -225,14 +225,14 @@ public class ImportDataEndpoint {
         continue;
       }
 
-      addProtocolEndpoint.addProtocolTemplate(AddProtocolDetailsDto.builder()
-          .associatedHouseholdId(createdClients.getAccountCreationResponses().stream()
+      addProtocolEndpoint.assignProtocol(AddProtocolDetailsDto.builder()
+          .assignedHouseholdId(createdClients.getAccountCreationResponses().stream()
               .filter(Predicate.not(ClientCreationResponseDto::getError))
               .filter(clientCreationResponseDto -> clientCreationResponseDto.getUsername()
                   .equals(getCellValue(row.getCell(1))))
               .findFirst()
               .orElseThrow()
-              .getAccountId())
+              .getHouseholdId())
           .protocolTemplateId(this.protocolTemplateDataService.findProtocolTemplateByName(
               getCellValue(row.getCell(0))).orElseThrow().getId())
           .goal(getCellValue(row.getCell(2)))

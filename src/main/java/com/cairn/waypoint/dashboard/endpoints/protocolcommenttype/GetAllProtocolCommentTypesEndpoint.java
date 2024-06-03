@@ -38,7 +38,8 @@ public class GetAllProtocolCommentTypesEndpoint {
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})})
-  public ResponseEntity<ProtocolCommentTypeListDto> getAllProtocolCommentTypes(Principal principal) {
+  public ResponseEntity<ProtocolCommentTypeListDto> getAllProtocolCommentTypes(
+      Principal principal) {
     log.info("User [{}] is Retrieving All Protocol Comment Type", principal.getName());
     return ResponseEntity.ok(
         ProtocolCommentTypeListDto.builder()

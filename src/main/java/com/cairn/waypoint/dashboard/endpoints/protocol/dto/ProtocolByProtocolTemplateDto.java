@@ -29,6 +29,6 @@ public class ProtocolByProtocolTemplateDto {
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage;
   private ProtocolCommentListDto protocolComments;
-  private AssociatedUsersListDto associatedUsers;
+  private Long associatedHousehold;
   private AssociatedStepsListDto associatedSteps;
 }

@@ -25,6 +25,7 @@ public class ProtocolDto {
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastStatusUpdateTimestamp;
   private String status;
+  private Long assignedHouseholdId;
 
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage;

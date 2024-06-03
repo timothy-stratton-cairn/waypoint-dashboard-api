@@ -46,8 +46,7 @@ public class Homework extends BaseEntity {
       inverseJoinColumns = @JoinColumn(name = "protocol_step_id", referencedColumnName = "id"))
   private ProtocolStep associatedProtocolStep;
 
-  @OneToMany(mappedBy = "homework", cascade = CascadeType.MERGE)
-  private Set<HomeworkUser> associatedUsers;
+  private Long assignedHouseholdId;
 
   public Set<HomeworkResponse> getHomeworkQuestions() {
     return homeworkQuestions.stream()

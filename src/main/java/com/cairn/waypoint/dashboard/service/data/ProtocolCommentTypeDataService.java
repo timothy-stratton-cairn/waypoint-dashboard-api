@@ -13,8 +13,10 @@ public class ProtocolCommentTypeDataService {
   public static final List<ProtocolCommentType> availableCommentTypes = new ArrayList<>();
 
   @SuppressWarnings({"unused", "UnusedAssignment"})
-  public ProtocolCommentTypeDataService(ProtocolCommentTypeRepository protocolCommentTypeRepository) {
-    ProtocolCommentTypeDataService.availableCommentTypes.addAll(protocolCommentTypeRepository.findAll());
+  public ProtocolCommentTypeDataService(
+      ProtocolCommentTypeRepository protocolCommentTypeRepository) {
+    ProtocolCommentTypeDataService.availableCommentTypes.addAll(
+        protocolCommentTypeRepository.findAll());
 
     //Initialize the Enum
     ProtocolCommentTypeEnum unused = ProtocolCommentTypeEnum.COMMENT;

@@ -8,9 +8,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDt
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
-import com.cairn.waypoint.dashboard.service.data.ProtocolUserDataService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,33 +21,28 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @Tag(name = "Protocol")
-public class AddCoClientToAllProtocolsForAccountEndpoint {
+public class GetAllProtocolsForHouseholdEndpoint {
 
-  public static final String PATH = "/api/protocol/account/{accountId}/{coClientId}";
+  public static final String PATH = "/api/protocol/account/{householdId}";
 
   private final ProtocolDataService protocolDataService;
-  private final ProtocolUserDataService protocolUserDataService;
 
-  public AddCoClientToAllProtocolsForAccountEndpoint(ProtocolDataService protocolDataService,
-      ProtocolUserDataService protocolUserDataService) {
+  public GetAllProtocolsForHouseholdEndpoint(ProtocolDataService protocolDataService) {
     this.protocolDataService = protocolDataService;
-    this.protocolUserDataService = protocolUserDataService;
   }
 
-  @PostMapping(PATH)
+  @GetMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
-      summary = "Updates all protocols assigned to the provided account with the provided coClient.",
-      description =
-          "Updates all protocols assigned to the provided account with the provided coClient."
-              + " Requires the `protocol.full` permission.",
+      summary = "Retrieves all protocols assigned to the provided account.",
+      description = "Retrieves all protocols assigned to the provided account. Requires the `protocol.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
@@ -59,27 +52,13 @@ public class AddCoClientToAllProtocolsForAccountEndpoint {
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})})
-  public ResponseEntity<AccountProtocolListDto> getAllProtocols(@PathVariable Long accountId,
-      @PathVariable Long coClientId, Principal principal) {
-    log.info(
-        "User [{}] is Updating All Protocols associated with Account ID [{}] with Co-Client ID [{}]",
-        principal.getName(), accountId, coClientId);
-
-    protocolUserDataService.getAllProtocolsForAccountId(accountId)
-        .forEach(protocolUser -> {
-          ProtocolUser newProtocolUser = ProtocolUser.builder()
-              .modifiedBy(principal.getName())
-              .protocol(protocolUser.getProtocol())
-              .userId(coClientId)
-              .build();
-
-          protocolUserDataService.saveProtocolUser(newProtocolUser);
-        });
-
+  public ResponseEntity<AccountProtocolListDto> getAllProtocols(@PathVariable Long householdId,
+      Principal principal) {
+    log.info("User [{}] is Retrieving All Protocols", principal.getName());
     return ResponseEntity.ok(
         AccountProtocolListDto.builder()
             .protocols(
-                this.protocolDataService.getByUserId(accountId).stream()
+                this.protocolDataService.getByHouseholdId(householdId).stream()
                     .map(protocol ->
                         AccountProtocolDto.builder()
                             .id(protocol.getId())
@@ -102,6 +81,8 @@ public class AddCoClientToAllProtocolsForAccountEndpoint {
                                 .build())
                             .needsAttention(protocol.getMarkedForAttention())
                             .lastStatusUpdateTimestamp(protocol.getLastStatusUpdateTimestamp())
+                            .status(protocol.getStatus().name())
+                            .assignedHouseholdId(protocol.getAssignedHouseholdId())
                             .completionPercentage(
                                 ProtocolCalculationHelperService.getProtocolCompletionPercentage(
                                     protocol))

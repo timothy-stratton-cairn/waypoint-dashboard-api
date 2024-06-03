@@ -45,6 +45,8 @@ public class Protocol extends BaseEntity {
   @Convert(converter = ProtocolStatusConverter.class)
   private ProtocolStatusEnum status;
 
+  private Long assignedHouseholdId;
+
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocol", cascade = {CascadeType.MERGE,
       CascadeType.PERSIST})
   private Set<ProtocolCommentary> comments;
@@ -62,8 +64,4 @@ public class Protocol extends BaseEntity {
   @JoinColumn(name = "parent_protocol_id")
   @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<ProtocolStep> protocolSteps;
-
-  @JoinColumn(name = "assigned_household_id")
-  @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private Set<ProtocolUser> associatedUsers;
 }

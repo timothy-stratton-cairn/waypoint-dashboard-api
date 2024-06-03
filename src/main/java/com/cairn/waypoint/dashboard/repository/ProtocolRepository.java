@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProtocolRepository extends JpaRepository<Protocol, Long> {
 
-  List<Protocol> findByAssociatedUsers_UserId(Long userId);
-
   List<Protocol> findByProtocolTemplate_Id(Long protocolTemplateId);
+
+  List<Protocol> findByAssignedHouseholdId(Long householdId);
 }

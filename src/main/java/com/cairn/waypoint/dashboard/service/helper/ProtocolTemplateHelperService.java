@@ -3,12 +3,10 @@ package com.cairn.waypoint.dashboard.service.helper;
 import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
-import com.cairn.waypoint.dashboard.entity.HomeworkUser;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
@@ -61,8 +59,6 @@ public class ProtocolTemplateHelperService {
                 protocolStep.setActive(Boolean.FALSE);
                 if (protocolStep.getLinkedHomework() != null) {
                   protocolStep.getLinkedHomework().setActive(Boolean.FALSE);
-                  protocolStep.getLinkedHomework().getAssociatedUsers()
-                      .forEach(homeworkUser -> homeworkUser.setActive(Boolean.FALSE));
                 }
               });
           return protocolSteps;
@@ -121,7 +117,7 @@ public class ProtocolTemplateHelperService {
         })
         .collect(Collectors.toSet());
 
-    createClientHomework(newProtocolSteps, parentProtocol.getAssociatedUsers(), modifiedBy);
+    createClientHomework(newProtocolSteps, parentProtocol.getAssignedHouseholdId(), modifiedBy);
 
     protocolSteps.addAll(newProtocolSteps);
 
@@ -130,7 +126,7 @@ public class ProtocolTemplateHelperService {
 
   public void generateAndSaveClientHomework(Protocol createdProtocol, String modifiedBy) {
     List<Homework> homeworkList = createClientHomework(createdProtocol.getProtocolSteps(),
-        createdProtocol.getAssociatedUsers(),
+        createdProtocol.getAssignedHouseholdId(),
         modifiedBy);
     homeworkList.forEach(homework -> {
       Set<HomeworkResponse> homeworkResponses = homework.getHomeworkQuestions();
@@ -140,15 +136,14 @@ public class ProtocolTemplateHelperService {
 
       savedHomework.getHomeworkQuestions()
           .forEach(homeworkResponse -> homeworkResponse.setHomework(savedHomework));
-      savedHomework.getAssociatedUsers()
-          .forEach(homeworkUser -> homeworkUser.setHomework(savedHomework));
 
       this.homeworkDataService.saveHomework(homework);
     });
   }
 
   private List<Homework> createClientHomework(Collection<ProtocolStep> protocolSteps,
-      Set<ProtocolUser> associatedUsers, String modifiedBy) {
+      Long householdId,
+      String modifiedBy) {
     return protocolSteps.stream()
         .map(protocolStep -> {
           if (protocolStep.getTemplate().getStepTemplateLinkedHomeworks() != null) {
@@ -168,12 +163,7 @@ public class ProtocolTemplateHelperService {
                             .build())
                         .collect(Collectors.toSet()))
                     .associatedProtocolStep(protocolStep)
-                    .associatedUsers(associatedUsers.stream()
-                        .map(protocolUser -> HomeworkUser.builder()
-                            .modifiedBy(modifiedBy)
-                            .userId(protocolUser.getUserId())
-                            .build())
-                        .collect(Collectors.toSet()))
+                    .assignedHouseholdId(householdId)
                     .build())
                 .collect(Collectors.toList());
           } else {

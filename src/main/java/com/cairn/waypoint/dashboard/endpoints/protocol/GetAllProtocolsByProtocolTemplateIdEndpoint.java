@@ -1,7 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolByProtocolTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
@@ -10,7 +9,6 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolsByProtocolTemplateListDto;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -88,13 +86,7 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                         .completionPercentage(
                             ProtocolCalculationHelperService.getProtocolCompletionPercentage(
                                 protocol))
-                        .associatedUsers(
-                            AssociatedUsersListDto.builder()
-                                .userIds(
-                                    protocol.getAssociatedUsers().stream()
-                                        .map(ProtocolUser::getUserId)
-                                        .toList())
-                                .build())
+                        .associatedHousehold(protocol.getAssignedHouseholdId())
                         .associatedSteps(AssociatedStepsListDto.builder()
                             .steps(protocol.getProtocolSteps().stream()
                                 .map(protocolStep -> ProtocolStepDto.builder()

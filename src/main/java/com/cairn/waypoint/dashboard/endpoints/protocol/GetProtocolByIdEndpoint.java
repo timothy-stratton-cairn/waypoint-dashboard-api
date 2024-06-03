@@ -2,7 +2,6 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedUsersListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
@@ -10,7 +9,6 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -100,12 +98,7 @@ public class GetProtocolByIdEndpoint {
             .status(returnedProtocol.getStatus().name())
             .completionPercentage(
                 ProtocolCalculationHelperService.getProtocolCompletionPercentage(returnedProtocol))
-            .associatedUsers(
-                AssociatedUsersListDto.builder()
-                    .userIds(
-                        returnedProtocol.getAssociatedUsers().stream().map(ProtocolUser::getUserId)
-                            .toList())
-                    .build())
+            .assignedHouseholdId(returnedProtocol.getAssignedHouseholdId())
             .associatedSteps(
                 AssociatedStepsListDto.builder()
                     .steps(returnedProtocol.getProtocolSteps().stream()

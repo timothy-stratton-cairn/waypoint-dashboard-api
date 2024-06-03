@@ -21,4 +21,8 @@ public class HomeworkDataService {
   public Optional<Homework> getHomeworkById(Long id) {
     return this.homeworkRepository.findById(id);
   }
+
+  public Optional<Homework> getHomeworkByAssignedHouseholdId(Long assignedHouseholdId) {
+    return this.homeworkRepository.findByAssignedHouseholdId(assignedHouseholdId);
+  }
 }

@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.endpoints.homework.dto;
 
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDetailsListDto;
 import lombok.Builder;
 import lombok.Data;
 

@@ -6,14 +6,10 @@ import com.cairn.waypoint.dashboard.endpoints.homework.dto.ExpectedResponseListD
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionListDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkUserListDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.ProtocolTemplateDto;
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDetailsListDto;
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.ProtocolUser;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,10 +29,7 @@ public class HomeworkHelperService {
         .parentProtocolId(
             homework.getAssociatedProtocolStep().getParentProtocol().getId())
         .parentProtocolStepId(homework.getAssociatedProtocolStep().getId())
-        .assignedUsers(HomeworkUserListDto.builder()
-            .userIds(homework.getAssociatedProtocolStep().getParentProtocol().getAssociatedUsers()
-                .stream().map(
-                    ProtocolUser::getUserId).toList()).build())
+        .assignedHouseholdId(homework.getAssignedHouseholdId())
         .homeworkQuestions(HomeworkQuestionListDto.builder()
             .questions(homework.getHomeworkQuestions().stream()
                 .map(homeworkResponse -> HomeworkQuestionDto.builder()
@@ -52,10 +45,14 @@ public class HomeworkHelperService {
                     .isRequired(homeworkResponse.getHomeworkQuestion().getRequired())
                     .questionType(
                         homeworkResponse.getHomeworkQuestion().getQuestionType().name())
-                    .expectedHomeworkResponses(homeworkResponse.getHomeworkQuestion().getQuestionType().equals(QuestionTypeEnum.SELECT_OPTION) ||
-                        homeworkResponse.getHomeworkQuestion().getQuestionType().equals(QuestionTypeEnum.MULTI_SELECT_OPTION) ?
-                        getExpectedResponseListDto(homeworkResponse.getHomeworkQuestion().getExpectedHomeworkResponses()) :
-                        null)
+                    .expectedHomeworkResponses(
+                        homeworkResponse.getHomeworkQuestion().getQuestionType()
+                            .equals(QuestionTypeEnum.SELECT_OPTION) ||
+                            homeworkResponse.getHomeworkQuestion().getQuestionType()
+                                .equals(QuestionTypeEnum.MULTI_SELECT_OPTION) ?
+                            getExpectedResponseListDto(homeworkResponse.getHomeworkQuestion()
+                                .getExpectedHomeworkResponses()) :
+                            null)
                     .triggersProtocolCreation(homeworkResponse.getHomeworkQuestion()
                         .getTriggersProtocolCreation())
                     .triggeredProtocol(
