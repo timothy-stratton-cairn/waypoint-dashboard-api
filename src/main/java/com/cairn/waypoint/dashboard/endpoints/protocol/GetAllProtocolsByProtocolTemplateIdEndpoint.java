@@ -86,7 +86,7 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                         .completionPercentage(
                             ProtocolCalculationHelperService.getProtocolCompletionPercentage(
                                 protocol))
-                        .associatedHousehold(protocol.getAssignedHouseholdId())
+                        .associatedHouseholdId(protocol.getAssignedHouseholdId())
                         .associatedSteps(AssociatedStepsListDto.builder()
                             .steps(protocol.getProtocolSteps().stream()
                                 .map(protocolStep -> ProtocolStepDto.builder()
