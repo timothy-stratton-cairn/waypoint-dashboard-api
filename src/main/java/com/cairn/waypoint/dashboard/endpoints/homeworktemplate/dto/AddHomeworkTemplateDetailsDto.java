@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddHomeworkTemplateDetailsDto {
 
-  @Size(max = 32, message = "The Question Abbreviation cannot exceed 32 characters in length")
+  @Size(max = 32, message = "The Homework Template name cannot exceed 32 characters in length")
   @NotNull(message = "Question Abbreviation cannot be null")
   private String name;
-  @Size(max = 500, message = "The Question cannot exceed 500 characters in length")
+  @Size(max = 500, message = "The Homework Template description cannot exceed 500 characters in length")
   private String description;
 
-  @NotNull(message = "Question Abbreviation cannot be null")
+  @NotNull(message = "Please provide whether this is a multi-response question or not")
   private Boolean isMultiResponse;
 
   @Valid
