@@ -2,6 +2,7 @@ package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.repository.HomeworkRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class HomeworkDataService {
     return this.homeworkRepository.findById(id);
   }
 
-  public Optional<Homework> getHomeworkByAssignedHouseholdId(Long assignedHouseholdId) {
+  public List<Homework> getHomeworkByAssignedHouseholdId(Long assignedHouseholdId) {
     return this.homeworkRepository.findByAssignedHouseholdId(assignedHouseholdId);
   }
 }

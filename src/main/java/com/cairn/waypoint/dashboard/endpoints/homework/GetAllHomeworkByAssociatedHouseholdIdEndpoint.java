@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Homework")
 public class GetAllHomeworkByAssociatedHouseholdIdEndpoint {
 
-  public static final String PATH = "/api/homework/account/{householdId}";
+  public static final String PATH = "/api/homework/household/{householdId}";
 
   private final HomeworkHelperService homeworkHelperService;
   private final HouseholdDataService householdDataService;
