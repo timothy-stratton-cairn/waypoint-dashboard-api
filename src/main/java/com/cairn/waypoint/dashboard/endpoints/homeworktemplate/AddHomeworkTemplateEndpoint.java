@@ -42,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,21 +84,21 @@ public class AddHomeworkTemplateEndpoint {
       responses = {
           @ApiResponse(responseCode = "201",
               description = "Created - Homework Template creation was successful",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = HomeworkTemplateDetailsDto.class))}),
           @ApiResponse(responseCode = "400", description = "Bad Request",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))}),
           @ApiResponse(responseCode = "404", description = "Not Found",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))}),
           @ApiResponse(responseCode = "409", description = "Conflict",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> addHomeworkTemplate(
       @RequestBody AddHomeworkTemplateDetailsDto addHomeworkTemplateDetailsDto,

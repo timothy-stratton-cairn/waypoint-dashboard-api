@@ -23,8 +23,8 @@ import org.hibernate.annotations.SQLRestriction;
 @EqualsAndHashCode(callSuper = true, exclude = "protocol")
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "protocol_commentary")
 @SQLRestriction("active=1")
+@Table(name = "protocol_commentary")
 public class ProtocolCommentary extends BaseEntity {
 
   private String originalCommenter;

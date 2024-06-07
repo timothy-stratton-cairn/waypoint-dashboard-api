@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,14 +45,14 @@ public class GetAllStepTemplateCategoriesByParentCategoryIdEndpoint {
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ChildTemplateCategoryListDto.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "404", description = "Not Found",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> getAllStepTemplateCategoriesByParent(
       @PathVariable Long templateCategoryId, Principal principal) {

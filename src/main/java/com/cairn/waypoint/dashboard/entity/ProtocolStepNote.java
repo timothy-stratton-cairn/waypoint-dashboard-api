@@ -23,8 +23,8 @@ import org.hibernate.annotations.SQLRestriction;
 @EqualsAndHashCode(callSuper = true, exclude = "protocolStep")
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "protocol_step_note")
 @SQLRestriction("active=1")
+@Table(name = "protocol_step_note")
 public class ProtocolStepNote extends BaseEntity {
 
   private String originalCommenter;

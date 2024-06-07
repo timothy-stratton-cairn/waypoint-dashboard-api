@@ -27,8 +27,8 @@ import org.hibernate.annotations.SQLRestriction;
 @EqualsAndHashCode(callSuper = false, exclude = {"parentProtocol", "notes", "linkedHomework"})
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "protocol_step")
 @SQLRestriction("active=1")
+@Table(name = "protocol_step")
 public class ProtocolStep extends BaseEntity {
 
   private String name;

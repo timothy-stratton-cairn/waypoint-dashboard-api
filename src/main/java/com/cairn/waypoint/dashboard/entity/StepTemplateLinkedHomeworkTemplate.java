@@ -20,8 +20,8 @@ import org.hibernate.annotations.SQLRestriction;
 @EqualsAndHashCode(callSuper = true, exclude = {"stepTemplate", "homeworkTemplate"})
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "step_template_linked_homework_template")
 @SQLRestriction("active=1")
+@Table(name = "step_template_linked_homework_template")
 public class StepTemplateLinkedHomeworkTemplate extends BaseEntity {
 
   @ManyToOne

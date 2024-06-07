@@ -52,7 +52,7 @@ public class DownloadFileEndpoint {
           @ApiResponse(responseCode = "200",
               description = "The file requested, downloaded to the user's browser"),
           @ApiResponse(responseCode = "404", description = "Not Found",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> downloadFile(@PathVariable("fileGuid") String fileGuid) {
     Optional<HomeworkResponse> homeworkResponse = homeworkResponseDataService.getHomeworkResponseByFileGuid(

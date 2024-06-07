@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
@@ -17,6 +18,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLRestriction("active=1")
 @Table(name = "homework_template")
 public class HomeworkTemplate extends BaseEntity {
 
@@ -26,6 +28,6 @@ public class HomeworkTemplate extends BaseEntity {
   private Boolean multiResponse;
 
   @OneToMany(mappedBy = "homeworkTemplate",
-      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<HomeworkTemplateLinkedHomeworkQuestion> homeworkQuestions;
 }

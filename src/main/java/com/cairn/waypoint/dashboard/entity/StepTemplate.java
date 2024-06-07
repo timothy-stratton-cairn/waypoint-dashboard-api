@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
@@ -21,6 +22,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true, exclude = "stepTemplateLinkedHomeworks")
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLRestriction("active=1")
 @Table(name = "protocol_step_template")
 public class StepTemplate extends BaseEntity {
 
@@ -36,7 +38,7 @@ public class StepTemplate extends BaseEntity {
   private TemplateCategory category;
 
   @OneToMany(mappedBy = "stepTemplate",
-      cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<StepTemplateLinkedHomeworkTemplate> stepTemplateLinkedHomeworks;
 
   public Set<StepTemplateLinkedHomeworkTemplate> getStepTemplateLinkedHomeworks() {

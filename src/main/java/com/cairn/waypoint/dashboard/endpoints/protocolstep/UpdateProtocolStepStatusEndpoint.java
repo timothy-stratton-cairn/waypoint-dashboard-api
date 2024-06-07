@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -53,17 +54,17 @@ public class UpdateProtocolStepStatusEndpoint {
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = String.class))}),
           @ApiResponse(responseCode = "400", description = "Bad Request",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))}),
           @ApiResponse(responseCode = "404", description = "Not Found",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> updateStatusOnProtocol(@PathVariable Long protocolId,
       @PathVariable Long protocolStepId,
@@ -88,7 +89,8 @@ public class UpdateProtocolStepStatusEndpoint {
       return generateFailureResponse("The Protocol Step ID [" + protocolStepId
               + "] is not a Protocol Step ID present on Protocol with ID [" + protocolId + "]",
           HttpStatus.UNPROCESSABLE_ENTITY);
-    } else if (updateProtocolStepStatusDto.getStatus().equals(StepStatusEnum.CONDITIONAL_COMPLETION) &&
+    } else if (updateProtocolStepStatusDto.getStatus().equals(StepStatusEnum.CONDITIONAL_COMPLETION)
+        &&
         (updateProtocolStepStatusDto.getCompletionCondition() == null ||
             updateProtocolStepStatusDto.getCompletionCondition().isEmpty())) {
       return generateFailureResponse("A Completion Condition message must be provided"
@@ -98,7 +100,6 @@ public class UpdateProtocolStepStatusEndpoint {
       ProtocolStep protocolStepToUpdate = optionalProtocolStepToUpdate.get();
 
       protocolStepToUpdate.setStatus(updateProtocolStepStatusDto.getStatus());
-
 
       ProtocolStep updatedProtocolStep = this.protocolStepDataService.saveProtocolStep(
           protocolStepToUpdate);

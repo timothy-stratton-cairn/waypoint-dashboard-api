@@ -79,10 +79,10 @@ public class UpdateHomeworkResponsesEndpoint {
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "404", description = "Not Found",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))}),
           @ApiResponse(responseCode = "422", description = "Unprocessable Entity",
-              content = {@Content(mediaType = "application/json",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))}),})
   public ResponseEntity<?> updateHomeworkResponses(@PathVariable Long homeworkId,
       @RequestPart("json") @Parameter(schema = @Schema(type = "string", format = "binary")) UpdateHomeworkResponseDetailsListDto updateHomeworkResponseDetailsListDto,
@@ -116,7 +116,8 @@ public class UpdateHomeworkResponsesEndpoint {
 
       if (updatedHomework.getHomeworkQuestions().stream().anyMatch(homeworkResponse ->
           homeworkResponse.getHomeworkQuestion().getRequired() &&
-          (homeworkResponse.getResponse() == null || homeworkResponse.getResponse().isEmpty()))) {
+              (homeworkResponse.getResponse() == null || homeworkResponse.getResponse()
+                  .isEmpty()))) {
         protocolStepToUpdate.setStatus(StepStatusEnum.IN_PROGRESS);
       } else {
         protocolStepToUpdate.setStatus(StepStatusEnum.DONE);
