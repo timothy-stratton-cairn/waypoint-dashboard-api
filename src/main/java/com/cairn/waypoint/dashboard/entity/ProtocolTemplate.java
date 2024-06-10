@@ -11,7 +11,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
@@ -19,7 +18,6 @@ import org.hibernate.annotations.SQLRestriction;
 @EqualsAndHashCode(callSuper = false, exclude = "protocolTemplateSteps")
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLRestriction("active=1")
 @Table(name = "protocol_template")
 public class ProtocolTemplate extends BaseEntity {
 
