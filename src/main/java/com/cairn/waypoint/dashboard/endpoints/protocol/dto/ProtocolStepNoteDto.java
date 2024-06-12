@@ -10,6 +10,7 @@ import lombok.Data;
 @Builder
 public class ProtocolStepNoteDto {
 
+  private Long noteId;
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime takenAt;
   private String takenBy;

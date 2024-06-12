@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.endpoints.protocol;
+package com.cairn.waypoint.dashboard.endpoints.protocolcomment;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AppendProtocolCommentaryDto;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "Protocol")
+@Tag(name = "Protocol Comment")
 public class AppendCommentOnProtocolEndpoint {
 
 

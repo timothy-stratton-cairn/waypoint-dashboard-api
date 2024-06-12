@@ -1,10 +1,7 @@
 package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.Homework;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
-import com.cairn.waypoint.dashboard.repository.HomeworkTemplateLinkedHomeworkQuestionRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolStepLinkedHomeworkRepository;
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +17,8 @@ public class ProtocolStepLinkedHomeworkService {
     this.protocolStepLinkedHomeworkRepository = protocolStepLinkedHomeworkRepository;
   }
 
-  public List<ProtocolStepLinkedHomework> getProtocolStepLinkedHomeworkByHomework(Homework homework) {
+  public List<ProtocolStepLinkedHomework> getProtocolStepLinkedHomeworkByHomework(
+      Homework homework) {
     return this.protocolStepLinkedHomeworkRepository.findByHomework(homework);
   }
 

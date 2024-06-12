@@ -10,6 +10,7 @@ import lombok.Data;
 @Builder
 public class ProtocolCommentDto {
 
+  private Long commentId;
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime takenAt;
   private String takenBy;

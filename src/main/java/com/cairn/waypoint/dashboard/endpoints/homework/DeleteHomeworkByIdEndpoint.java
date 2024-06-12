@@ -2,7 +2,6 @@ package com.cairn.waypoint.dashboard.endpoints.homework;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.Homework;
-import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

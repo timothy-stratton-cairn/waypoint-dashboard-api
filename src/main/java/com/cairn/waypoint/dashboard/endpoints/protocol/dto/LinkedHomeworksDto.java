@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class LinkedHomeworksDto {
+
   private Set<Long> homeworkIds;
   private Integer numberOfHomeworks;
 

@@ -183,6 +183,7 @@ public class AddProtocolEndpoint {
                       .isEmpty() ?
                       null : createdProtocol.getComments().stream()
                       .map(protocolComment -> ProtocolCommentDto.builder()
+                          .commentId(protocolComment.getId())
                           .takenAt(protocolComment.getCreated())
                           .takenBy(protocolComment.getOriginalCommenter())
                           .comment(protocolComment.getComment())
@@ -207,6 +208,7 @@ public class AddProtocolEndpoint {
                                       .isEmpty() ?
                                       null : protocolStep.getNotes().stream()
                                       .map(protocolStepNote -> ProtocolStepNoteDto.builder()
+                                          .noteId(protocolStepNote.getId())
                                           .takenAt(protocolStepNote.getCreated())
                                           .takenBy(protocolStepNote.getOriginalCommenter())
                                           .note(protocolStepNote.getNote())
@@ -217,10 +219,10 @@ public class AddProtocolEndpoint {
                               .linkedHomeworks(protocolStep.getLinkedHomework() != null ?
                                   LinkedHomeworksDto.builder()
                                       .homeworkIds(protocolStep.getLinkedHomework().stream().map(
-                                      ProtocolStepLinkedHomework::getHomework)
-                                      .map(Homework::getId)
-                                      .collect(Collectors.toSet()))
-                                      .build(): null)
+                                              ProtocolStepLinkedHomework::getHomework)
+                                          .map(Homework::getId)
+                                          .collect(Collectors.toSet()))
+                                      .build() : null)
                               .category(protocolStep.getCategory().getTemplateCategory().getName())
                               .build())
                           .collect(Collectors.toList()))

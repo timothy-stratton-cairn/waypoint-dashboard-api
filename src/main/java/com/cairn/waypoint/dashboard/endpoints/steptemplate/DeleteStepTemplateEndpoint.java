@@ -1,7 +1,9 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
+import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,9 +32,12 @@ public class DeleteStepTemplateEndpoint {
   public static final String PATH = "/api/protocol-step-template/{stepTemplateId}";
 
   private final StepTemplateDataService stepTemplateDataService;
+  private final ProtocolStepDataService protocolStepDataService;
 
-  public DeleteStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService) {
+  public DeleteStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService,
+      ProtocolStepDataService protocolStepDataService) {
     this.stepTemplateDataService = stepTemplateDataService;
+    this.protocolStepDataService = protocolStepDataService;
   }
 
   @Transactional
@@ -75,6 +81,25 @@ public class DeleteStepTemplateEndpoint {
 
   public ResponseEntity<String> generateSuccessResponse(
       StepTemplate stepTemplateToDelete, String modifiedBy) {
+    List<ProtocolStep> protocolStepList = protocolStepDataService.getProtocolStepsByStepTemplateId(
+        stepTemplateToDelete.getId());
+
+    protocolStepList.forEach(protocolStep -> {
+      protocolStep.getNotes().forEach(note -> {
+        note.setActive(Boolean.FALSE);
+        note.setModifiedBy(modifiedBy);
+      });
+      protocolStep.getLinkedHomework().forEach(homeworkLink -> {
+        homeworkLink.setActive(Boolean.FALSE);
+        homeworkLink.setModifiedBy(modifiedBy);
+      });
+
+      protocolStep.setActive(Boolean.FALSE);
+      protocolStep.setModifiedBy(modifiedBy);
+
+      protocolStepDataService.saveProtocolStep(protocolStep);
+    });
+
     stepTemplateToDelete.setActive(Boolean.FALSE);
     stepTemplateToDelete.setModifiedBy(modifiedBy);
 

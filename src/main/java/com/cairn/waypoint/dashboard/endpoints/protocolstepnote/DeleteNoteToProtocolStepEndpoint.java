@@ -1,11 +1,8 @@
-package com.cairn.waypoint.dashboard.endpoints.protocolstep;
+package com.cairn.waypoint.dashboard.endpoints.protocolstepnote;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.protocolstep.dto.AppendProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
-import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,29 +21,28 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "Protocol Step")
-public class AppendNoteToProtocolStepEndpoint {
+@Tag(name = "Protocol Step Note")
+public class DeleteNoteToProtocolStepEndpoint {
 
-  public static final String PATH = "/api/protocol/{protocolId}/protocol-step/{protocolStepId}/note";
+  public static final String PATH = "/api/protocol/{protocolId}/protocol-step/{protocolStepId}/note/{noteId}";
 
   private final ProtocolDataService protocolDataService;
   private final ProtocolStepDataService protocolStepDataService;
 
-  public AppendNoteToProtocolStepEndpoint(ProtocolDataService protocolDataService,
+  public DeleteNoteToProtocolStepEndpoint(ProtocolDataService protocolDataService,
       ProtocolStepDataService protocolStepDataService) {
     this.protocolDataService = protocolDataService;
     this.protocolStepDataService = protocolStepDataService;
   }
 
   @Transactional
-  @PostMapping(PATH)
+  @DeleteMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to add notes to a protocol step.",
@@ -64,11 +60,11 @@ public class AppendNoteToProtocolStepEndpoint {
           @ApiResponse(responseCode = "404", description = "Not Found",
               content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
-  public ResponseEntity<?> appendCommentOnProtocol(@PathVariable Long protocolId,
-      @PathVariable Long protocolStepId,
-      @RequestBody AppendProtocolStepNoteDto appendProtocolStepNoteDto, Principal principal) {
-    log.info("User [{}] is appending a note to Protocol Step with ID [{}] on Protocol with ID [{}]",
-        principal.getName(), protocolStepId, protocolId);
+  public ResponseEntity<?> deleteCommentOnProtocol(@PathVariable Long protocolId,
+      @PathVariable Long protocolStepId, @PathVariable Long noteId, Principal principal) {
+    log.info(
+        "User [{}] is deleting note with ID [{}] on Protocol Step with ID [{}] on Protocol with ID [{}]",
+        principal.getName(), noteId, protocolStepId, protocolId);
 
     Optional<Protocol> optionalProtocolToUpdate = this.protocolDataService.getProtocolById(
         protocolId);
@@ -86,40 +82,28 @@ public class AppendNoteToProtocolStepEndpoint {
       return generateFailureResponse("The Protocol Step ID [" + protocolStepId
               + "] is not a Protocol Step ID present on Protocol with ID [" + protocolId + "]",
           HttpStatus.UNPROCESSABLE_ENTITY);
+    } else if (optionalProtocolStepToUpdate.get().getNotes().stream()
+        .noneMatch(protocolStepNote -> protocolStepNote.getId().equals(noteId))) {
+      return generateFailureResponse("Protocol Step Note with ID [" +
+          noteId + "] not found", HttpStatus.NOT_FOUND);
     } else {
-      try {
-        if (appendProtocolStepNoteDto.getNote() != null &&
-            appendProtocolStepNoteDto.getNoteType() != null) {
-          appendProtocolStepNoteDto.setProtocolStepNoteType(ProtocolCommentTypeEnum
-              .valueOf(appendProtocolStepNoteDto.getNoteType()));
-        } else if (appendProtocolStepNoteDto.getNote() != null) {
-          appendProtocolStepNoteDto.setProtocolStepNoteType(ProtocolCommentTypeEnum.COMMENT);
-        }
-      } catch (IllegalArgumentException e) {
-        return generateFailureResponse("Provided comment type [" +
-                appendProtocolStepNoteDto.getNoteType() + "] does not exist",
-            HttpStatus.BAD_REQUEST);
-      }
+
       ProtocolStep protocolStepToUpdate = optionalProtocolStepToUpdate.get();
 
-      protocolStepToUpdate.getNotes().add(ProtocolStepNote.builder()
-          .modifiedBy(principal.getName())
-          .originalCommenter(principal.getName())
-          .note(appendProtocolStepNoteDto.getNote())
-          .noteType(appendProtocolStepNoteDto.getProtocolStepNoteType())
-          .protocolStep(protocolStepToUpdate)
-          .build());
+      protocolStepToUpdate.getNotes().stream()
+          .filter(protocolStepNote -> protocolStepNote.getId().equals(noteId))
+          .forEach(protocolStepNote -> protocolStepNote.setActive(Boolean.FALSE));
 
       Long updatedProtocolStepId = this.protocolStepDataService.saveProtocolStep(
           protocolStepToUpdate).getId();
 
-      log.info("Protocol Step with ID [{}] on Protocol with ID [{}] updated with provided note",
-          updatedProtocolStepId, protocolId);
+      log.info(
+          "Protocol Step Note with ID [{}} on Protocol Step with ID [{}] on Protocol with ID [{}] has been deactivated",
+          noteId, updatedProtocolStepId, protocolId);
 
-      return ResponseEntity.ok("Protocol Step with ID [" +
-          updatedProtocolStepId + "] on Protocol with ID [" + protocolId
-          + "] updated successfully with commentary [" +
-          appendProtocolStepNoteDto.getNote() + "]");
+      return ResponseEntity.ok("Protocol Step Note with ID [" +
+          noteId + "] on Protocol Step with ID [" + updatedProtocolStepId
+          + "] on Protocol with ID [" + protocolId + "] deactivated");
     }
   }
 

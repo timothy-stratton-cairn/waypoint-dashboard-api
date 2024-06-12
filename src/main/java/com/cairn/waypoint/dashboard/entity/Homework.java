@@ -22,7 +22,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true, exclude = {"homeworkQuestions", "associatedUsers",
+@EqualsAndHashCode(callSuper = true, exclude = {"homeworkQuestions",
     "associatedProtocolStep", "homeworkTemplate"})
 @NoArgsConstructor
 @AllArgsConstructor

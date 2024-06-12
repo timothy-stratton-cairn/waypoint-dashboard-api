@@ -1,6 +1,7 @@
 package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
+import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
 import java.util.List;
 import java.util.Optional;
@@ -25,5 +26,9 @@ public class HomeworkQuestionDataService {
 
   public HomeworkQuestion saveHomeworkQuestion(HomeworkQuestion homeworkQuestion) {
     return this.homeworkQuestionRepository.save(homeworkQuestion);
+  }
+
+  public List<HomeworkQuestion> findByTriggeredProtocol(ProtocolTemplate protocolTemplate) {
+    return this.homeworkQuestionRepository.findByTriggeredProtocol(protocolTemplate);
   }
 }

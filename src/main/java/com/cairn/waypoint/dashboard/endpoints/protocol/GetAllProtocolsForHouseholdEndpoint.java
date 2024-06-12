@@ -76,6 +76,7 @@ public class GetAllProtocolsForHouseholdEndpoint {
                             .protocolComments(ProtocolCommentListDto.builder()
                                 .comments(protocol.getComments().stream()
                                     .map(protocolComment -> ProtocolCommentDto.builder()
+                                        .commentId(protocolComment.getId())
                                         .takenAt(protocolComment.getCreated())
                                         .takenBy(protocolComment.getOriginalCommenter())
                                         .comment(protocolComment.getComment())
@@ -101,6 +102,7 @@ public class GetAllProtocolsForHouseholdEndpoint {
                                                 .notes(protocolStep.getNotes().stream()
                                                     .map(
                                                         protocolStepNote -> ProtocolStepNoteDto.builder()
+                                                            .noteId(protocolStepNote.getId())
                                                             .takenAt(protocolStepNote.getCreated())
                                                             .takenBy(
                                                                 protocolStepNote.getOriginalCommenter())
@@ -113,11 +115,13 @@ public class GetAllProtocolsForHouseholdEndpoint {
                                             .linkedHomeworks(
                                                 protocolStep.getLinkedHomework() != null ?
                                                     LinkedHomeworksDto.builder()
-                                                        .homeworkIds(protocolStep.getLinkedHomework().stream().map(
-                                                                ProtocolStepLinkedHomework::getHomework)
-                                                            .map(Homework::getId)
-                                                            .collect(Collectors.toSet()))
-                                                        .build(): null)
+                                                        .homeworkIds(
+                                                            protocolStep.getLinkedHomework()
+                                                                .stream().map(
+                                                                    ProtocolStepLinkedHomework::getHomework)
+                                                                .map(Homework::getId)
+                                                                .collect(Collectors.toSet()))
+                                                        .build() : null)
                                             .category(
                                                 protocolStep.getCategory().getTemplateCategory()
                                                     .getName())

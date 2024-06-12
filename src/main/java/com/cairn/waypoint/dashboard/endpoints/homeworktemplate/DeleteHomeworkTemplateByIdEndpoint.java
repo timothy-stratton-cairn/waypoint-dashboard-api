@@ -1,8 +1,11 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworktemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
+import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,10 +32,16 @@ public class DeleteHomeworkTemplateByIdEndpoint {
   public static final String PATH = "/api/homework-template/{homeworkTemplateId}";
 
   private final HomeworkTemplateDataService homeworkTemplateDataService;
+  private final HomeworkDataService homeworkDataService;
+  private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
 
   public DeleteHomeworkTemplateByIdEndpoint(
-      HomeworkTemplateDataService homeworkTemplateDataService) {
+      HomeworkTemplateDataService homeworkTemplateDataService,
+      HomeworkDataService homeworkDataService,
+      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
     this.homeworkTemplateDataService = homeworkTemplateDataService;
+    this.homeworkDataService = homeworkDataService;
+    this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
   }
 
   @DeleteMapping(PATH)
@@ -70,6 +80,28 @@ public class DeleteHomeworkTemplateByIdEndpoint {
 
   public ResponseEntity<String> generateSuccessResponse(
       HomeworkTemplate returnedHomeworkTemplate, String modifiedBy) {
+    List<Homework> associatedHomeworks = homeworkDataService.getHomeworkByHomeworkTemplate(
+        returnedHomeworkTemplate);
+
+    associatedHomeworks.forEach(homework -> {
+      protocolStepLinkedHomeworkService.getProtocolStepLinkedHomeworkByHomework(homework).stream()
+          .peek(protocolStepLinkedHomework -> {
+            protocolStepLinkedHomework.setModifiedBy(modifiedBy);
+            protocolStepLinkedHomework.setActive(Boolean.FALSE);
+          })
+          .forEach(protocolStepLinkedHomeworkService::saveProtocolStepLinkedHomework);
+
+      homework.setActive(Boolean.FALSE);
+      homework.setModifiedBy(modifiedBy);
+
+      homework.getHomeworkQuestions().forEach(response -> {
+        response.setModifiedBy(modifiedBy);
+        response.setActive(Boolean.FALSE);
+      });
+
+      homeworkDataService.saveHomework(homework);
+    });
+
     returnedHomeworkTemplate.setModifiedBy(modifiedBy);
     returnedHomeworkTemplate.setActive(Boolean.FALSE);
 
