@@ -49,4 +49,6 @@ databaseChangeLog:
       file: db/changelog/2024-06-03-add-additional-comment-types.yaml
   - include:
       file: db/changelog/2024-06-07-activate-all-step-template-categories.yaml
+  - include:
+      file: db/changelog/2024-06-11-update-protocol-step-homework-table.yaml
 

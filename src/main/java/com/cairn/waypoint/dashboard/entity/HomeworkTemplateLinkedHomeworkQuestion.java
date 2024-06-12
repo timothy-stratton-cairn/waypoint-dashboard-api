@@ -9,6 +9,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLRestriction;
@@ -19,6 +20,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
+@EqualsAndHashCode(callSuper = true, exclude = {"homeworkTemplate", "homeworkQuestion"})
 @Table(name = "homework_template_linked_homework_question")
 public class HomeworkTemplateLinkedHomeworkQuestion extends BaseEntity {
 
@@ -31,20 +33,4 @@ public class HomeworkTemplateLinkedHomeworkQuestion extends BaseEntity {
   private HomeworkQuestion homeworkQuestion;
 
   private Integer ordinalIndex;
-
-  public boolean equals(Object o) {
-    if (!(o instanceof HomeworkTemplateLinkedHomeworkQuestion)) {
-      return false;
-    } else if (!((HomeworkTemplateLinkedHomeworkQuestion) o).getHomeworkTemplate().getId()
-        .equals(this.homeworkTemplate.getId())) {
-      return false;
-    } else {
-      return ((HomeworkTemplateLinkedHomeworkQuestion) o).getHomeworkQuestion().getId()
-          .equals(this.homeworkQuestion.getId());
-    }
-  }
-
-  public int hashCode() {
-    return this.homeworkTemplate.getId().hashCode() + this.homeworkQuestion.getId().hashCode();
-  }
 }

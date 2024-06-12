@@ -109,7 +109,8 @@ public class RemoveHomeworkTemplateFromStepTemplateByIdEndpoint {
       associatedProtocolSteps
           .forEach(protocolStep -> {
             if (protocolStep.getLinkedHomework() != null) {
-              protocolStep.getLinkedHomework().setActive(Boolean.FALSE);
+              protocolStep.getLinkedHomework().forEach(protocolStepLinkedHomework ->
+                  protocolStepLinkedHomework.setActive(Boolean.FALSE));
             }
           });
 

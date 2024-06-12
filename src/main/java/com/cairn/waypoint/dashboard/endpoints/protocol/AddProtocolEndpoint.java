@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.dto.HouseholdDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AddProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.LinkedHomeworksDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
@@ -11,9 +12,11 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
+import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
+import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
@@ -211,8 +214,13 @@ public class AddProtocolEndpoint {
                                       .toList())
                                   .build())
                               .status(protocolStep.getStatus().getInstance().getName())
-                              .linkedHomeworkId(protocolStep.getLinkedHomework() != null ?
-                                  protocolStep.getLinkedHomework().getId() : null)
+                              .linkedHomeworks(protocolStep.getLinkedHomework() != null ?
+                                  LinkedHomeworksDto.builder()
+                                      .homeworkIds(protocolStep.getLinkedHomework().stream().map(
+                                      ProtocolStepLinkedHomework::getHomework)
+                                      .map(Homework::getId)
+                                      .collect(Collectors.toSet()))
+                                      .build(): null)
                               .category(protocolStep.getCategory().getTemplateCategory().getName())
                               .build())
                           .collect(Collectors.toList()))

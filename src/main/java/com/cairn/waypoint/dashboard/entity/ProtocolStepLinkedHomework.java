@@ -20,17 +20,15 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
-@EqualsAndHashCode(callSuper = true, exclude = {"protocolTemplate", "stepTemplate"})
-@Table(name = "protocol_template_linked_step_template")
-public class ProtocolTemplateLinkedStepTemplate extends BaseEntity {
+@EqualsAndHashCode(callSuper = true, exclude = {"step", "homework"})
+@Table(name = "protocol_step_linked_homework")
+public class ProtocolStepLinkedHomework extends BaseEntity {
 
   @ManyToOne
-  @JoinColumn(name = "protocol_template_id", nullable = false)
-  private ProtocolTemplate protocolTemplate;
+  @JoinColumn(name = "protocol_step_id", nullable = false)
+  private ProtocolStep step;
 
-  @JoinColumn(name = "step_template_id", nullable = false)
+  @JoinColumn(name = "homework_id", nullable = false)
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private StepTemplate stepTemplate;
-
-  private Integer ordinalIndex;
+  private Homework homework;
 }

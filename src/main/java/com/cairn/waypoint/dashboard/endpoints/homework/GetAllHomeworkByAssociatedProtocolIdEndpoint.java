@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkListDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
+import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.helper.HomeworkHelperService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -79,6 +81,8 @@ public class GetAllHomeworkByAssociatedProtocolIdEndpoint {
         HomeworkListDto.builder()
             .homeworks(returnedProtocol.getProtocolSteps().stream()
                 .map(ProtocolStep::getLinkedHomework)
+                .flatMap(Set::stream)
+                .map(ProtocolStepLinkedHomework::getHomework)
                 .filter(Objects::nonNull)
                 .map(homeworkHelperService::generateHomeworkDto)
                 .collect(Collectors.toList()))

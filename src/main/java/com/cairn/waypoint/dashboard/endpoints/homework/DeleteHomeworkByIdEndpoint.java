@@ -2,8 +2,10 @@ package com.cairn.waypoint.dashboard.endpoints.homework;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.Homework;
+import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,6 +14,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,11 +32,14 @@ public class DeleteHomeworkByIdEndpoint {
   public static final String PATH = "/api/homework/{homeworkId}";
   private final HomeworkDataService homeworkDataService;
   private final ProtocolStepDataService protocolStepDataService;
+  private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
 
   public DeleteHomeworkByIdEndpoint(HomeworkDataService homeworkDataService,
-      ProtocolStepDataService protocolStepDataService) {
+      ProtocolStepDataService protocolStepDataService,
+      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
     this.homeworkDataService = homeworkDataService;
     this.protocolStepDataService = protocolStepDataService;
+    this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
   }
 
   @DeleteMapping(PATH)
@@ -71,6 +77,13 @@ public class DeleteHomeworkByIdEndpoint {
   }
 
   private ResponseEntity<String> generateSuccessResponse(Homework homework, String modifiedBy) {
+    protocolStepLinkedHomeworkService.getProtocolStepLinkedHomeworkByHomework(homework).stream()
+        .peek(protocolStepLinkedHomework -> {
+          protocolStepLinkedHomework.setModifiedBy(modifiedBy);
+          protocolStepLinkedHomework.setActive(Boolean.FALSE);
+        })
+        .forEach(protocolStepLinkedHomeworkService::saveProtocolStepLinkedHomework);
+
     homework.setActive(Boolean.FALSE);
     homework.setModifiedBy(modifiedBy);
 

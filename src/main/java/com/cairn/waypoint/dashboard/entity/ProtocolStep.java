@@ -8,7 +8,6 @@ import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -56,11 +55,9 @@ public class ProtocolStep extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private StepTask linkedTask;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-  @JoinTable(name = "protocol_step_homework",
-      joinColumns = @JoinColumn(name = "protocol_step_id", referencedColumnName = "id"),
-      inverseJoinColumns = @JoinColumn(name = "homework_id", referencedColumnName = "id"))
-  private Homework linkedHomework;
+  @OneToMany(mappedBy = "step",
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  private Set<ProtocolStepLinkedHomework> linkedHomework;
 
   @JoinColumn(name = "parent_protocol_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)

@@ -50,7 +50,7 @@ public class ProtocolTemplateHelperService {
         .map(StepTemplate::getId)
         .toList();
 
-    BiFunction<Set<ProtocolStep>, List<Long>, Set<ProtocolStep>> removeProtocolStepBiConsumer =
+    BiFunction<Set<ProtocolStep>, List<Long>, Set<ProtocolStep>> removeProtocolStepBiFunction =
         (protocolSteps, updatedStepTemplateIds) -> {
           protocolSteps.stream()
               .filter(protocolStep -> !updatedStepTemplateIds.contains(
@@ -58,7 +58,7 @@ public class ProtocolTemplateHelperService {
               .forEach(protocolStep -> {
                 protocolStep.setActive(Boolean.FALSE);
                 if (protocolStep.getLinkedHomework() != null) {
-                  protocolStep.getLinkedHomework().setActive(Boolean.FALSE);
+                  protocolStep.getLinkedHomework().forEach(protocolStepLinkedHomework -> protocolStepLinkedHomework.setActive(Boolean.FALSE));
                 }
               });
           return protocolSteps;
@@ -66,7 +66,7 @@ public class ProtocolTemplateHelperService {
 
     associatedProtocols.stream()
         .peek(protocol -> protocol.setProtocolSteps(
-            removeProtocolStepBiConsumer.apply(protocol.getProtocolSteps(),
+            removeProtocolStepBiFunction.apply(protocol.getProtocolSteps(),
                 updatedStepTemplateIdList)))
         .forEach(this.protocolDataService::updateProtocol);
   }

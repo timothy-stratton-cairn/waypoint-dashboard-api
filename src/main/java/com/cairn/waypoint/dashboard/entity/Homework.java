@@ -41,7 +41,7 @@ public class Homework extends BaseEntity {
   private HomeworkTemplate homeworkTemplate;
 
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-  @JoinTable(name = "protocol_step_homework",
+  @JoinTable(name = "protocol_step_linked_homework",
       joinColumns = @JoinColumn(name = "homework_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "protocol_step_id", referencedColumnName = "id"))
   private ProtocolStep associatedProtocolStep;
