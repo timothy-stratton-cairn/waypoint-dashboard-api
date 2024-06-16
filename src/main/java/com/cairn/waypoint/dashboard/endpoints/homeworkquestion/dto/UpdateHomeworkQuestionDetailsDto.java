@@ -2,6 +2,7 @@ package com.cairn.waypoint.dashboard.endpoints.homeworkquestion.dto;
 
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.UpdateExpectedResponseDetailsDto;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -27,6 +28,8 @@ public class UpdateHomeworkQuestionDetailsDto {
   private String question;
 
   private QuestionTypeEnum questionType;
+
+  private String status;
 
   private Boolean isRequired;
 
@@ -64,5 +67,14 @@ public class UpdateHomeworkQuestionDetailsDto {
     return !((this.questionType.equals(QuestionTypeEnum.SELECT_OPTION) || this.questionType.equals(
         QuestionTypeEnum.MULTI_SELECT_OPTION))
         && this.responseOptions.isEmpty());
+  }
+
+  @JsonIgnore
+  public TemplateStatusEnum getStatus() {
+    try {
+      return TemplateStatusEnum.valueOf(status);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 }

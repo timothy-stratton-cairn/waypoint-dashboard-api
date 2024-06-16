@@ -10,6 +10,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTe
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -108,6 +109,7 @@ public class AddProtocolTemplateEndpoint {
               .id(createdProtocolTemplate.getId())
               .name(createdProtocolTemplate.getName())
               .description(createdProtocolTemplate.getDescription())
+              .status(createdProtocolTemplate.getStatus().name())
               .associatedSteps(AssociatedStepTemplatesListDto.builder()
                   .steps(createdProtocolTemplate.getProtocolTemplateSteps().stream()
                       .map(protocolStepTemplate -> ProtocolStepTemplateDto.builder()
@@ -135,6 +137,7 @@ public class AddProtocolTemplateEndpoint {
         .toEntity(addProtocolTemplateDetailsDto);
 
     protocolTemplateToCreate.setModifiedBy(modifiedBy);
+    protocolTemplateToCreate.setStatus(TemplateStatusEnum.INACTIVE);
 
     ProtocolTemplate createdProtocolTemplate = this.protocolTemplateDataService.saveProtocolTemplate(
         protocolTemplateToCreate);

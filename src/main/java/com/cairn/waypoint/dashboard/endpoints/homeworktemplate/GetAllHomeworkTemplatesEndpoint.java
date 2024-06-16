@@ -54,6 +54,7 @@ public class GetAllHomeworkTemplatesEndpoint {
                     .id(homeworkTemplate.getId())
                     .name(homeworkTemplate.getName())
                     .description(homeworkTemplate.getDescription())
+                    .status(homeworkTemplate.getStatus().name())
                     .isMultiResponse(homeworkTemplate.getMultiResponse())
                     .numberOfQuestionsInHomework(homeworkTemplate.getHomeworkQuestions().size())
                     .build())

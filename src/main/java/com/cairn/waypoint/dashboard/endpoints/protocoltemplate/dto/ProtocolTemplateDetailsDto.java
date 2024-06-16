@@ -11,5 +11,6 @@ public class ProtocolTemplateDetailsDto {
   private Long id;
   private String name;
   private String description;
+  private String status;
   private AssociatedStepTemplatesListDto associatedSteps;
 }

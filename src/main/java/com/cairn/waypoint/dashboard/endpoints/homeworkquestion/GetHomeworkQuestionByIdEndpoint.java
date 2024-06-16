@@ -82,6 +82,7 @@ public class GetHomeworkQuestionByIdEndpoint {
         .questionAbbr(homeworkQuestion.getQuestionAbbreviation())
         .question(homeworkQuestion.getQuestion())
         .questionType(homeworkQuestion.getQuestionType().name())
+        .status(homeworkQuestion.getStatus().name())
         .isRequired(homeworkQuestion.getRequired())
         .triggersProtocolCreation(homeworkQuestion.getTriggersProtocolCreation())
         .triggeredProtocol(getTriggeredProtocol(homeworkQuestion.getTriggeredProtocol()))

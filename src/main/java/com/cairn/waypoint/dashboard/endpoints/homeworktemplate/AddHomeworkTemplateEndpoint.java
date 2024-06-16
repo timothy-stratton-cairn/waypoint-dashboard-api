@@ -15,6 +15,7 @@ import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ExpectedResponseDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
@@ -166,6 +167,7 @@ public class AddHomeworkTemplateEndpoint {
                   .id(createdHomeworkTemplate.getId())
                   .name(createdHomeworkTemplate.getName())
                   .description(createdHomeworkTemplate.getDescription())
+                  .status(createdHomeworkTemplate.getStatus().name())
                   .isMultiResponse(createdHomeworkTemplate.getMultiResponse())
                   .homeworkQuestions(HomeworkQuestionDetailsListDto.builder()
                       .questions(createdHomeworkTemplate.getHomeworkQuestions().stream()
@@ -250,6 +252,7 @@ public class AddHomeworkTemplateEndpoint {
         .name(addHomeworkTemplateDetailsDto.getName())
         .description(addHomeworkTemplateDetailsDto.getDescription())
         .multiResponse(addHomeworkTemplateDetailsDto.getIsMultiResponse())
+        .status(TemplateStatusEnum.INACTIVE)
         .build());
   }
 

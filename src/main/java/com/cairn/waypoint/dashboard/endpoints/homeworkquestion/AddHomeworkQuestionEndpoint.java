@@ -10,6 +10,7 @@ import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ExpectedResponseDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
@@ -132,6 +133,7 @@ public class AddHomeworkQuestionEndpoint {
           .questionAbbr(createdHomeworkQuestion.getQuestionAbbreviation())
           .question(createdHomeworkQuestion.getQuestion())
           .isRequired(createdHomeworkQuestion.getRequired())
+          .status(createdHomeworkQuestion.getStatus().name())
           .questionType(createdHomeworkQuestion.getQuestionType().name())
           .triggersProtocolCreation(createdHomeworkQuestion.getTriggersProtocolCreation())
           .triggeredProtocol(getTriggeredProtocol(createdHomeworkQuestion.getTriggeredProtocol()))
@@ -199,8 +201,6 @@ public class AddHomeworkQuestionEndpoint {
           createdHomeworkQuestion,
           addHomeworkQuestionDetailsDto,
           modifiedBy);
-//      updateExpectedResponsesWithParentHomeworkQuestion(expectedResponses,
-//          createdHomeworkQuestion);
 
       if (addHomeworkQuestionDetailsDto.getTriggerProtocolCreation()) {
         saveTriggeringExpectedResponse(createdHomeworkQuestion, expectedResponses,
@@ -245,6 +245,7 @@ public class AddHomeworkQuestionEndpoint {
         .required(addHomeworkQuestionDetailsDto.getIsRequired())
         .triggersProtocolCreation(addHomeworkQuestionDetailsDto.getTriggerProtocolCreation())
         .triggeredProtocol(protocolTemplate)
+        .status(TemplateStatusEnum.INACTIVE)
         .build();
 
     return this.homeworkQuestionDataService.saveHomeworkQuestion(homeworkQuestion);

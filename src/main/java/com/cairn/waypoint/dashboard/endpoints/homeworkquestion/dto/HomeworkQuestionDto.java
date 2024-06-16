@@ -10,4 +10,5 @@ public class HomeworkQuestionDto {
   private Long questionId;
   private String questionAbbr;
   private String question;
+  private String status;
 }

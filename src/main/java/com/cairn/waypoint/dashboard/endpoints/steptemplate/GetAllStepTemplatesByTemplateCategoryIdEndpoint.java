@@ -79,6 +79,7 @@ public class GetAllStepTemplatesByTemplateCategoryIdEndpoint {
                           .id(stepTemplate.getId())
                           .name(stepTemplate.getName())
                           .description(stepTemplate.getDescription())
+                          .status(stepTemplate.getStatus().name())
                           .linkedHomeworkTemplates(
                               stepTemplate.getStepTemplateLinkedHomeworks() == null ||
                                   stepTemplate.getStepTemplateLinkedHomeworks().isEmpty() ?

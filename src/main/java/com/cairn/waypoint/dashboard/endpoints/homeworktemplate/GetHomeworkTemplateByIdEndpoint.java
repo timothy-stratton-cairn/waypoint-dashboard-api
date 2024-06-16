@@ -84,6 +84,7 @@ public class GetHomeworkTemplateByIdEndpoint {
             .id(returnedHomeworkTemplate.getId())
             .name(returnedHomeworkTemplate.getName())
             .description(returnedHomeworkTemplate.getDescription())
+            .status(returnedHomeworkTemplate.getStatus().name())
             .isMultiResponse(returnedHomeworkTemplate.getMultiResponse())
             .homeworkQuestions(HomeworkQuestionDetailsListDto.builder()
                 .questions(returnedHomeworkTemplate.getHomeworkQuestions().stream()

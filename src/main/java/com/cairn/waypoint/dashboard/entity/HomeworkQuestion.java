@@ -1,7 +1,9 @@
 package com.cairn.waypoint.dashboard.entity;
 
 import com.cairn.waypoint.dashboard.entity.converter.QuestionTypeConverter;
+import com.cairn.waypoint.dashboard.entity.converter.TemplateStatusConverter;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -38,6 +40,10 @@ public class HomeworkQuestion extends BaseEntity {
   private QuestionTypeEnum questionType;
 
   private Boolean required;
+
+  @Column(name = "status_id")
+  @Convert(converter = TemplateStatusConverter.class)
+  private TemplateStatusEnum status;
 
   @OrderBy("ordinalIndex ASC")
   @JoinColumn(name = "parent_homework_question_id")

@@ -116,6 +116,7 @@ public class GetStepTemplateByIdEndpoint {
             .id(returnedStepTemplate.getId())
             .name(returnedStepTemplate.getName())
             .description(returnedStepTemplate.getDescription())
+            .status(returnedStepTemplate.getStatus().name())
             .linkedStepTask(stepTaskDetailsDto)
             .linkedHomeworkTemplates(homeworkTemplateDetailsListDto)
             .category(categoryDetailsDto)

@@ -366,9 +366,7 @@ public class UpdateHomeworkTemplateEndpoint {
     }
 
     if (updateHomeworkQuestionDetailsDto.getTriggeredProtocolId() != null) {
-      Optional<ProtocolTemplate> associatedProtocolTemplate = protocolTemplateDataService.getProtocolTemplateById(
-          updateHomeworkQuestionDetailsDto.getTriggeredProtocolId());
-      homeworkQuestionToUpdate.setTriggeredProtocol(associatedProtocolTemplate.get());
+      homeworkQuestionToUpdate.setTriggeredProtocol(protocolTemplate);
     }
 
     if (updateHomeworkQuestionDetailsDto.getIsRequired() != null) {

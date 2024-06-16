@@ -132,6 +132,10 @@ public class UpdateHomeworkQuestionEndpoint {
         homeworkQuestionToUpdate.setRequired(updateHomeworkQuestionDetailsDto.getIsRequired());
       }
 
+      if (updateHomeworkQuestionDetailsDto.getStatus() != null) {
+        homeworkQuestionToUpdate.setStatus(updateHomeworkQuestionDetailsDto.getStatus());
+      }
+
       protocolTemplateOptional.ifPresent(homeworkQuestionToUpdate::setTriggeredProtocol);
 
       if (updateHomeworkQuestionDetailsDto.isValidSelectOptionRequest()

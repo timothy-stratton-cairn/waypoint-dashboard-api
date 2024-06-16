@@ -13,6 +13,7 @@ import com.cairn.waypoint.dashboard.entity.StepTask;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.TemplateCategory;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTaskDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
@@ -131,6 +132,7 @@ public class AddStepTemplateEndpoint {
               .stepTemplateId(createdStepTemplate.getId())
               .stepTemplateName(createdStepTemplate.getName())
               .stepTemplateDescription(createdStepTemplate.getDescription())
+              .status(createdStepTemplate.getStatus().name())
               .linkedStepTask(getStepTaskDetailsDto(createdStepTemplate.getLinkedTask()))
               .linkedHomeworkTemplates(getHomeworkTemplateDetailsListDto(
                   createdStepTemplate.getStepTemplateLinkedHomeworks()))
@@ -194,6 +196,7 @@ public class AddStepTemplateEndpoint {
     stepTemplateToCreate.setModifiedBy(modifiedBy);
     stepTemplateToCreate.setLinkedTask(linkedStepTask);
     stepTemplateToCreate.setCategory(templateCategory);
+    stepTemplateToCreate.setStatus(TemplateStatusEnum.INACTIVE);
 
     StepTemplate createdStepTemplate = this.stepTemplateDataService.saveStepTemplate(
         stepTemplateToCreate);

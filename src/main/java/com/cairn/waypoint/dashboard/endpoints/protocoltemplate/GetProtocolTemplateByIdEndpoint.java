@@ -79,6 +79,7 @@ public class GetProtocolTemplateByIdEndpoint {
             .id(returnedProtocolTemplate.getId())
             .name(returnedProtocolTemplate.getName())
             .description(returnedProtocolTemplate.getDescription())
+            .status(returnedProtocolTemplate.getStatus().name())
             .associatedSteps(AssociatedStepTemplatesListDto.builder()
                 .steps(returnedProtocolTemplate.getProtocolTemplateSteps().stream()
                     .map(protocolStepTemplate -> ProtocolStepTemplateDto.builder()
