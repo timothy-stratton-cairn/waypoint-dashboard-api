@@ -1,6 +1,10 @@
 package com.cairn.waypoint.dashboard.entity;
 
+import com.cairn.waypoint.dashboard.entity.converter.TemplateStatusConverter;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -30,4 +34,8 @@ public class HomeworkTemplate extends BaseEntity {
   @OneToMany(mappedBy = "homeworkTemplate",
       cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<HomeworkTemplateLinkedHomeworkQuestion> homeworkQuestions;
+
+  @Column(name = "status_id")
+  @Convert(converter = TemplateStatusConverter.class)
+  private TemplateStatusEnum status;
 }

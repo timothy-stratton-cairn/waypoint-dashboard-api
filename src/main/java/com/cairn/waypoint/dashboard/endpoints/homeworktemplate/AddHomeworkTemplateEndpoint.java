@@ -203,7 +203,7 @@ public class AddHomeworkTemplateEndpoint {
   }
 
   private ExpectedResponseDetailsListDto getExpectedResponseDetailsListDto(
-      List<ExpectedResponse> expectedResponses) {
+      Set<ExpectedResponse> expectedResponses) {
     if (expectedResponses == null || expectedResponses.isEmpty()) {
       return null;
     } else {

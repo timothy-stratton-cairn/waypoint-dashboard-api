@@ -23,7 +23,7 @@ public class ExpectedResponseDataService {
     return this.expectedResponseRepository.findById(id);
   }
 
-  public Long saveExpectedResponse(ExpectedResponse ExpectedResponse) {
-    return this.expectedResponseRepository.save(ExpectedResponse).getId();
+  public ExpectedResponse saveExpectedResponse(ExpectedResponse ExpectedResponse) {
+    return this.expectedResponseRepository.save(ExpectedResponse);
   }
 }

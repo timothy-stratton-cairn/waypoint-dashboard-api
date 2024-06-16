@@ -19,8 +19,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -118,7 +118,7 @@ public class GetHomeworkTemplateByIdEndpoint {
   }
 
   private ExpectedResponseDetailsListDto getExpectedResponseDetailsListDto(
-      List<ExpectedResponse> expectedResponses) {
+      Set<ExpectedResponse> expectedResponses) {
     if (expectedResponses.isEmpty()) {
       return null;
     } else {

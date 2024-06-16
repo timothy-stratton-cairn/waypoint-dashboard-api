@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,7 +42,7 @@ public class HomeworkQuestion extends BaseEntity {
   @OrderBy("ordinalIndex ASC")
   @JoinColumn(name = "parent_homework_question_id")
   @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private List<ExpectedResponse> expectedHomeworkResponses;
+  private Set<ExpectedResponse> expectedHomeworkResponses;
 
   private Boolean triggersProtocolCreation;
 

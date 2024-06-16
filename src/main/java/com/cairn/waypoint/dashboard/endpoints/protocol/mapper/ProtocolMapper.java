@@ -20,8 +20,10 @@ public interface ProtocolMapper {
   AccountProtocolDto toAccountProtocolDto(Protocol protocol);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "status", ignore = true)
   Protocol protocolTemplateToProtocol(ProtocolTemplate protocolTemplate);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "status", ignore = true)
   ProtocolStep protocolStepTemplateToProtocolStep(StepTemplate stepTemplate);
 }

@@ -1,7 +1,9 @@
 package com.cairn.waypoint.dashboard.service.data;
 
+import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
 import com.cairn.waypoint.dashboard.repository.HomeworkTemplateLinkedHomeworkQuestionRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,5 +20,11 @@ public class HomeworkTemplateLinkedHomeworkQuestionDataService {
       HomeworkTemplateLinkedHomeworkQuestion homeworkTemplateLinkedHomeworkQuestion) {
     return this.homeworkTemplateLinkedHomeworkQuestionRepository.save(
         homeworkTemplateLinkedHomeworkQuestion);
+  }
+
+  public List<HomeworkTemplateLinkedHomeworkQuestion> getAllLinkedHomeworkTemplatesByHomeworkQuestion(
+      HomeworkQuestion homeworkQuestion) {
+    return this.homeworkTemplateLinkedHomeworkQuestionRepository.findByHomeworkQuestion(
+        homeworkQuestion);
   }
 }

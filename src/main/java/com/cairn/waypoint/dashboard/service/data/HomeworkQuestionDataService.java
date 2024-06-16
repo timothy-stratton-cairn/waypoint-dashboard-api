@@ -31,4 +31,8 @@ public class HomeworkQuestionDataService {
   public List<HomeworkQuestion> findByTriggeredProtocol(ProtocolTemplate protocolTemplate) {
     return this.homeworkQuestionRepository.findByTriggeredProtocol(protocolTemplate);
   }
+
+  public Optional<HomeworkQuestion> findByQuestion(String question) {
+    return this.homeworkQuestionRepository.findByQuestion(question);
+  }
 }

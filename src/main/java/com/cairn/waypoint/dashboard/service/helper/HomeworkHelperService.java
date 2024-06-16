@@ -11,7 +11,7 @@ import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
-import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +65,7 @@ public class HomeworkHelperService {
 
 
   private ExpectedResponseListDto getExpectedResponseListDto(
-      List<ExpectedResponse> expectedResponses) {
+      Set<ExpectedResponse> expectedResponses) {
     if (expectedResponses.isEmpty()) {
       return null;
     } else {
