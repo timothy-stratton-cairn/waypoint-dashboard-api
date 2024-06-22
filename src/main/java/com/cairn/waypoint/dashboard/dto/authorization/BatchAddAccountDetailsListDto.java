@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.dto;
+package com.cairn.waypoint.dashboard.dto.authorization;
 
 import java.util.List;
 import lombok.Builder;

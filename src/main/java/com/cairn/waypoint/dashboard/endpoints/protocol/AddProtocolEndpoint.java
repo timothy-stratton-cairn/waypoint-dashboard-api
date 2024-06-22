@@ -1,6 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
-import com.cairn.waypoint.dashboard.dto.HouseholdDetailsDto;
+import com.cairn.waypoint.dashboard.dto.authorization.HouseholdDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AddProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
@@ -136,6 +136,9 @@ public class AddProtocolEndpoint {
       Protocol protocolToBeCreated = setupProtocolToBeCreated(protocolTemplateOptional.get(),
           principal.getName());
 
+      if (addProtocolDetailsDto.getProtocolName() != null) {
+        protocolToBeCreated.setName(addProtocolDetailsDto.getProtocolName());
+      }
       protocolToBeCreated.setGoal(addProtocolDetailsDto.getGoal());
       protocolToBeCreated.setDueDate(addProtocolDetailsDto.getDueDate());
 

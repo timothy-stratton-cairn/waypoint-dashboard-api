@@ -138,6 +138,11 @@
       <groupId>com.amazonaws</groupId>
       <version>${aws-java-sdk-s3.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-sqs</artifactId>
+      <version>1.12.744</version>
+    </dependency>
 
     <dependency>
       <artifactId>poi</artifactId>

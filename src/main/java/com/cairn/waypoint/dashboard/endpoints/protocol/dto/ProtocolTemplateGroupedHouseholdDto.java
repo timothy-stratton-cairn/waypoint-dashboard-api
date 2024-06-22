@@ -1,6 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol.dto;
 
-import com.cairn.waypoint.dashboard.dto.HouseholdAccountListDto;
+import com.cairn.waypoint.dashboard.dto.authorization.HouseholdAccountListDto;
 import lombok.Builder;
 import lombok.Data;
 

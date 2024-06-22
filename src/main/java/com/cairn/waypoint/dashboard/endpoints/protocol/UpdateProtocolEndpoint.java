@@ -135,6 +135,10 @@ public class UpdateProtocolEndpoint {
       UpdateProtocolDetailsDto updateProtocolDetailsDto, String modifiedBy) {
     protocolToUpdate.setModifiedBy(modifiedBy);
 
+    if (updateProtocolDetailsDto.getProtocolName() != null) {
+      protocolToUpdate.setName(updateProtocolDetailsDto.getProtocolName());
+    }
+
     if (updateProtocolDetailsDto.getComment() != null) {
       protocolToUpdate.getComments()
           .forEach(protocolCommentary -> protocolCommentary.setActive(Boolean.FALSE));

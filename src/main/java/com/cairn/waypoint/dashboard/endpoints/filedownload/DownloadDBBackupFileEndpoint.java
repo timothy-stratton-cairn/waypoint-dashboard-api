@@ -1,8 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.filedownload;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
-import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
 import com.cairn.waypoint.dashboard.utility.fileupload.S3FileUpload;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,7 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -28,25 +25,23 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Tag(name = "File Download")
-public class DownloadFileEndpoint {
+public class DownloadDBBackupFileEndpoint {
 
-  public static final String PATH = "/api/file/homework-response/{fileGuid}";
+  public static final String PATH = "/api/file/db-backup/{s3Key}";
   private final S3FileUpload s3FileUpload;
-  private final HomeworkResponseDataService homeworkResponseDataService;
-  @Value("${waypoint.dashboard.s3.homework-response-key-prefix}")
-  private String homeworkResponseKeyPrefix;
 
-  public DownloadFileEndpoint(S3FileUpload s3FileUpload,
-      HomeworkResponseDataService homeworkResponseDataService) {
+  @Value("${waypoint.dashboard.s3.database-dump-prefix}")
+  private String databaseDumpPrefix;
+
+  public DownloadDBBackupFileEndpoint(S3FileUpload s3FileUpload) {
     this.s3FileUpload = s3FileUpload;
-    this.homeworkResponseDataService = homeworkResponseDataService;
   }
 
   @GetMapping(PATH)
   @PreAuthorize("permitAll()")
   @Operation(
-      summary = "Retrieves a file added as a Homework Response by the provided GUID.",
-      description = "Retrieves a file added as a Homework Response by the provided GUID.",
+      summary = "Retrieves a database backup file from S3 and downloads to requester's browser.",
+      description = "Retrieves a database backup file from S3 and downloads to requester's browser.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
@@ -54,32 +49,21 @@ public class DownloadFileEndpoint {
           @ApiResponse(responseCode = "404", description = "Not Found",
               content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
-  public ResponseEntity<?> downloadFile(@PathVariable("fileGuid") String fileGuid) {
-    log.info("Downloading homework response file with GUID [{}] from S3", fileGuid);
+  public ResponseEntity<?> downloadFile(@PathVariable("s3Key") String s3Key) {
+    log.info("Downloading file [{}] from S3", s3Key);
+    try {
+      Resource resource = (Resource) s3FileUpload.downloadFile(databaseDumpPrefix + s3Key);
 
-    Optional<HomeworkResponse> homeworkResponse = homeworkResponseDataService.getHomeworkResponseByFileGuid(
-        fileGuid);
-
-    if (homeworkResponse.isPresent()) {
-      try {
-        Resource resource = (Resource) s3FileUpload.downloadFile(
-            homeworkResponse.get().getResponse());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION,
-            "attachment; filename=" + homeworkResponse.get().getResponse()
-                .replace(homeworkResponseKeyPrefix, ""));
-        return ResponseEntity.ok()
-            .headers(headers)
-            .contentLength(resource.getFile().length())
-            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-            .body(resource);
-      } catch (IOException e) {
-        return generateFailureResponse("Error Downloading the File", HttpStatus.NOT_FOUND);
-      }
-    } else {
-      return generateFailureResponse("No Homework Response associated with provided guid",
-          HttpStatus.NOT_FOUND);
+      HttpHeaders headers = new HttpHeaders();
+      headers.add(HttpHeaders.CONTENT_DISPOSITION,
+          "attachment; filename=" + s3Key);
+      return ResponseEntity.ok()
+          .headers(headers)
+          .contentLength(resource.getFile().length())
+          .contentType(MediaType.APPLICATION_OCTET_STREAM)
+          .body(resource);
+    } catch (IOException e) {
+      return generateFailureResponse("Error Downloading the File", HttpStatus.NOT_FOUND);
     }
   }
 

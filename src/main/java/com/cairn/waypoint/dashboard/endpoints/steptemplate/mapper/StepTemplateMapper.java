@@ -5,6 +5,7 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.UpdateStepTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
@@ -16,6 +17,7 @@ public interface StepTemplateMapper {
 
   StepTemplate toEntity(AddStepTemplateDetailsDto addStepTemplateDetailsDto);
 
+  @Mapping(target = "status", source = "templateStatus")
   StepTemplate toEntity(
       UpdateStepTemplateDetailsDto updateStepTemplateDetailsDto);
 }

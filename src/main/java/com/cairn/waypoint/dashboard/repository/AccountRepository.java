@@ -1,8 +1,8 @@
 package com.cairn.waypoint.dashboard.repository;
 
-import com.cairn.waypoint.dashboard.dto.AccountDetailsDto;
-import com.cairn.waypoint.dashboard.dto.AccountListDto;
-import com.cairn.waypoint.dashboard.dto.BatchAddAccountDetailsListDto;
+import com.cairn.waypoint.dashboard.dto.authorization.AccountDetailsDto;
+import com.cairn.waypoint.dashboard.dto.authorization.AccountListDto;
+import com.cairn.waypoint.dashboard.dto.authorization.BatchAddAccountDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.ops.dto.ClientCreationResponseListDto;
 import java.util.List;
 import java.util.Optional;
@@ -25,11 +25,11 @@ public class AccountRepository {
   }
 
   @SuppressWarnings("deprecation")
-  public Optional<AccountDetailsDto> getAccountById(Long accountId) {
-    final String PATH = "/api/account/{accountId}";
+  public Optional<AccountDetailsDto> getAccountByIdOrUsername(String accountIdOrUsername) {
+    final String PATH = "/api/account/{accountIdOrUsername}";
 
     return webClient.get()
-        .uri(PATH, accountId)
+        .uri(PATH, accountIdOrUsername)
         .header("Authorization",
             "Bearer " + ((Jwt) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal()).getTokenValue())

@@ -19,6 +19,7 @@ public interface ProtocolTemplateMapper {
   ProtocolTemplate toEntity(AddProtocolTemplateDetailsDto addProtocolTemplateDetailsDto);
 
   @Mapping(target = "protocolTemplateSteps", ignore = true)
+  @Mapping(target = "status", source = "templateStatus")
   ProtocolTemplate toEntity(
       UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto);
 }

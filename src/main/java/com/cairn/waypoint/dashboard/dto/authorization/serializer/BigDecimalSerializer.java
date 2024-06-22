@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.dto.serializer;
+package com.cairn.waypoint.dashboard.dto.authorization.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

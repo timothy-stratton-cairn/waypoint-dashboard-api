@@ -20,10 +20,10 @@ public class UpdateProtocolTemplateDetailsDto {
   private LinkedHashSet<Long> associatedStepTemplateIds;
 
   @JsonIgnore
-  public TemplateStatusEnum getStatus() {
+  public TemplateStatusEnum getTemplateStatus() {
     try {
       return TemplateStatusEnum.valueOf(status);
-    } catch (IllegalArgumentException e) {
+    } catch (NullPointerException | IllegalArgumentException e) {
       return null;
     }
   }

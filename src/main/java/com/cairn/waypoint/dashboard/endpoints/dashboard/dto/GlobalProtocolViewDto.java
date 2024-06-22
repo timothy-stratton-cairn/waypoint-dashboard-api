@@ -1,7 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.dashboard.dto;
 
-import com.cairn.waypoint.dashboard.dto.HouseholdListDto;
-import com.cairn.waypoint.dashboard.dto.serializer.BigDecimalSerializer;
+import com.cairn.waypoint.dashboard.dto.authorization.HouseholdListDto;
+import com.cairn.waypoint.dashboard.dto.authorization.serializer.BigDecimalSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;

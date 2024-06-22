@@ -1,5 +1,7 @@
 package com.cairn.waypoint.dashboard.configuration.security;
 
+import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadDBBackupFileEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadFileEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -19,7 +21,8 @@ public class JWTSecurityConfig {
         .authorizeHttpRequests((authorize) -> authorize
             .requestMatchers("/swagger-ui/**").permitAll()
             .requestMatchers("/v3/api-docs/**").permitAll()
-            .requestMatchers("/api/file/homework-response/**").permitAll()
+            .requestMatchers(DownloadFileEndpoint.PATH).permitAll()
+            .requestMatchers(DownloadDBBackupFileEndpoint.PATH).permitAll()
             .anyRequest().authenticated()
         )
         .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));

@@ -1,7 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.ops;
 
-import com.cairn.waypoint.dashboard.dto.BatchAddAccountDetailsDto;
-import com.cairn.waypoint.dashboard.dto.BatchAddAccountDetailsListDto;
+import com.cairn.waypoint.dashboard.dto.authorization.BatchAddAccountDetailsDto;
+import com.cairn.waypoint.dashboard.dto.authorization.BatchAddAccountDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.AddHomeworkTemplateEndpoint;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.AddHomeworkQuestionDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.AddHomeworkTemplateDetailsDto;

@@ -47,7 +47,9 @@ public class UpdateHomeworkQuestionDetailsDto {
       + "a List of Response Options, "
       + "and a Triggering Response.")
   public boolean isValidTriggeringRequest() {
-    if (!this.triggerProtocolCreation) {
+    if (this.triggerProtocolCreation == null) {
+      return true;
+    } else if (!this.triggerProtocolCreation) {
       return true;
     } else if (this.triggeredProtocolId == null) {
       return false;
@@ -64,16 +66,21 @@ public class UpdateHomeworkQuestionDetailsDto {
       "Invalid Request: If Question Type is 'SELECT_OPTION' or 'MULTI_SELECT_OPTION', "
           + "a list of expected responses must be provided.")
   public boolean isValidSelectOptionRequest() {
-    return !((this.questionType.equals(QuestionTypeEnum.SELECT_OPTION) || this.questionType.equals(
-        QuestionTypeEnum.MULTI_SELECT_OPTION))
-        && this.responseOptions.isEmpty());
+    if (this.questionType == null) {
+      return true;
+    } else {
+      return !(
+          (this.questionType.equals(QuestionTypeEnum.SELECT_OPTION) || this.questionType.equals(
+              QuestionTypeEnum.MULTI_SELECT_OPTION))
+              && this.responseOptions.isEmpty());
+    }
   }
 
   @JsonIgnore
-  public TemplateStatusEnum getStatus() {
+  public TemplateStatusEnum getTemplateStatus() {
     try {
       return TemplateStatusEnum.valueOf(status);
-    } catch (IllegalArgumentException e) {
+    } catch (NullPointerException | IllegalArgumentException e) {
       return null;
     }
   }

@@ -59,7 +59,7 @@ public class S3FileUpload implements FileUpload {
   }
 
   @Override
-  public Object downloadFile(String fileName, String baseKey) throws IOException {
+  public Object downloadFile(String fileName) throws IOException {
     S3Object object = s3Client.getObject(bucketName, fileName);
     try (S3ObjectInputStream s3is = object.getObjectContent()) {
       File tempFile = File.createTempFile(fileName, FilenameUtils.getExtension(fileName));

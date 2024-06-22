@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddProtocolDetailsDto {
 
+  private String protocolName;
   private Long protocolTemplateId;
   private String goal;
   private String comment;

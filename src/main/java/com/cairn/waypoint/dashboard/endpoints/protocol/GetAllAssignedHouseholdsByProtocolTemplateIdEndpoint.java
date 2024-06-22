@@ -1,6 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
-import com.cairn.waypoint.dashboard.dto.HouseholdListDto;
+import com.cairn.waypoint.dashboard.dto.authorization.HouseholdListDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedHouseholdDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolTemplateGroupedHouseholdListDto;

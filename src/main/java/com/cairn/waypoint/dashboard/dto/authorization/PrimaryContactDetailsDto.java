@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.dto;
+package com.cairn.waypoint.dashboard.dto.authorization;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HouseholdAccountDetailsDto {
+public class PrimaryContactDetailsDto {
 
-  private Long clientAccountId;
+  private Long accountId;
   private String firstName;
   private String lastName;
+  private String phoneNumber;
+  private String email;
 }

@@ -1,4 +1,4 @@
-package com.cairn.waypoint.dashboard.dto;
+package com.cairn.waypoint.dashboard.dto.authorization;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HouseholdAccountDetailsListDto {
+public class PrimaryContactDetailsListDto {
 
-  private List<HouseholdAccountDetailsDto> accounts;
+  private List<PrimaryContactDetailsDto> accounts;
   private Integer numberOfAccounts;
 
   private Integer getNumberOfAccounts() {

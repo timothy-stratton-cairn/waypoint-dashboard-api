@@ -11,6 +11,7 @@ import lombok.Data;
 @Builder
 public class UpdateProtocolDetailsDto {
 
+  private String protocolName;
   private String goal;
   private String goalProgress;
   private String comment;

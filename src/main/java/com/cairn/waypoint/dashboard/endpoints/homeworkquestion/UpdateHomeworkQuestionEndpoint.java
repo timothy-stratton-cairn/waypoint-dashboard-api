@@ -106,8 +106,10 @@ public class UpdateHomeworkQuestionEndpoint {
       return generateFailureResponse("Protocol Template with ID [" +
               updateHomeworkQuestionDetailsDto.getTriggeredProtocolId() + "] does not exist",
           HttpStatus.NOT_FOUND);
-    } else if (Arrays.stream(QuestionTypeEnum.values()).noneMatch(
-        questionType -> questionType.equals(updateHomeworkQuestionDetailsDto.getQuestionType()))) {
+    } else if (updateHomeworkQuestionDetailsDto.getQuestionType() != null &&
+        Arrays.stream(QuestionTypeEnum.values()).noneMatch(
+            questionType -> questionType.equals(
+                updateHomeworkQuestionDetailsDto.getQuestionType()))) {
       return generateFailureResponse("Provided Question Type [" +
               updateHomeworkQuestionDetailsDto.getQuestionType() + "] does not exist",
           HttpStatus.NOT_FOUND);
@@ -133,7 +135,7 @@ public class UpdateHomeworkQuestionEndpoint {
       }
 
       if (updateHomeworkQuestionDetailsDto.getStatus() != null) {
-        homeworkQuestionToUpdate.setStatus(updateHomeworkQuestionDetailsDto.getStatus());
+        homeworkQuestionToUpdate.setStatus(updateHomeworkQuestionDetailsDto.getTemplateStatus());
       }
 
       protocolTemplateOptional.ifPresent(homeworkQuestionToUpdate::setTriggeredProtocol);

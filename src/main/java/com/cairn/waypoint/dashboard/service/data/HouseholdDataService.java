@@ -1,7 +1,7 @@
 package com.cairn.waypoint.dashboard.service.data;
 
-import com.cairn.waypoint.dashboard.dto.HouseholdDetailsDto;
-import com.cairn.waypoint.dashboard.dto.HouseholdListDto;
+import com.cairn.waypoint.dashboard.dto.authorization.HouseholdDetailsDto;
+import com.cairn.waypoint.dashboard.dto.authorization.HouseholdListDto;
 import com.cairn.waypoint.dashboard.repository.HouseholdRepository;
 import java.util.List;
 import java.util.Optional;

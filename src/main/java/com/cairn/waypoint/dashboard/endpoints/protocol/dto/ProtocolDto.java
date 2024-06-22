@@ -1,6 +1,6 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol.dto;
 
-import com.cairn.waypoint.dashboard.dto.serializer.BigDecimalSerializer;
+import com.cairn.waypoint.dashboard.dto.authorization.serializer.BigDecimalSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import java.math.BigDecimal;
