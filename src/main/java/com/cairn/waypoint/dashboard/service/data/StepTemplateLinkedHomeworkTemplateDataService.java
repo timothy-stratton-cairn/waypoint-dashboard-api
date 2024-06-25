@@ -23,6 +23,12 @@ public class StepTemplateLinkedHomeworkTemplateDataService {
         stepTemplateLinkedHomeworkTemplates);
   }
 
+  public StepTemplateLinkedHomeworkTemplate save(
+      StepTemplateLinkedHomeworkTemplate stepTemplateLinkedHomeworkTemplate) {
+    return this.stepTemplateLinkedHomeworkTemplateRepository.save(
+        stepTemplateLinkedHomeworkTemplate);
+  }
+
   public List<StepTemplateLinkedHomeworkTemplate> findAllByHomeworkTemplate(
       HomeworkTemplate homeworkTemplate) {
     return this.stepTemplateLinkedHomeworkTemplateRepository.findByHomeworkTemplate(

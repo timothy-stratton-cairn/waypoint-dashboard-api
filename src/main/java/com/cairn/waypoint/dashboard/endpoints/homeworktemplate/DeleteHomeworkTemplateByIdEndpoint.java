@@ -6,6 +6,7 @@ import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateLinkedHomeworkTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,14 +35,17 @@ public class DeleteHomeworkTemplateByIdEndpoint {
   private final HomeworkTemplateDataService homeworkTemplateDataService;
   private final HomeworkDataService homeworkDataService;
   private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
+  private final StepTemplateLinkedHomeworkTemplateDataService stepTemplateLinkedHomeworkTemplateDataService;
 
   public DeleteHomeworkTemplateByIdEndpoint(
       HomeworkTemplateDataService homeworkTemplateDataService,
       HomeworkDataService homeworkDataService,
-      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
+      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService,
+      StepTemplateLinkedHomeworkTemplateDataService stepTemplateLinkedHomeworkTemplateDataService) {
     this.homeworkTemplateDataService = homeworkTemplateDataService;
     this.homeworkDataService = homeworkDataService;
     this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
+    this.stepTemplateLinkedHomeworkTemplateDataService = stepTemplateLinkedHomeworkTemplateDataService;
   }
 
   @DeleteMapping(PATH)
@@ -80,6 +84,16 @@ public class DeleteHomeworkTemplateByIdEndpoint {
 
   public ResponseEntity<String> generateSuccessResponse(
       HomeworkTemplate returnedHomeworkTemplate, String modifiedBy) {
+    stepTemplateLinkedHomeworkTemplateDataService.findAllByHomeworkTemplate(
+            returnedHomeworkTemplate).stream()
+        .map(stepTemplateLinkedHomeworkTemplate -> {
+          stepTemplateLinkedHomeworkTemplate.setModifiedBy(modifiedBy);
+          stepTemplateLinkedHomeworkTemplate.setActive(Boolean.FALSE);
+
+          return stepTemplateLinkedHomeworkTemplate;
+        })
+        .forEach(stepTemplateLinkedHomeworkTemplateDataService::save);
+
     List<Homework> associatedHomeworks = homeworkDataService.getHomeworkByHomeworkTemplate(
         returnedHomeworkTemplate);
 
