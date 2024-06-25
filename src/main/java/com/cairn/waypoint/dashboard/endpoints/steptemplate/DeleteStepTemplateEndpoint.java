@@ -85,8 +85,12 @@ public class DeleteStepTemplateEndpoint {
 
   public ResponseEntity<String> generateSuccessResponse(
       StepTemplate stepTemplateToDelete, String modifiedBy) {
-    protocolTemplateLinkedStepTemplateDataService.deleteCollectionOfProtocolTemplateLinkedStepTemplates(
-        protocolTemplateLinkedStepTemplateDataService.getProtocolTemplateLinkedStepTemplateByStepTemplate(stepTemplateToDelete));
+    protocolTemplateLinkedStepTemplateDataService.getProtocolTemplateLinkedStepTemplateByStepTemplate(stepTemplateToDelete).stream()
+        .peek(protocolTemplateLinkedStepTemplate -> {
+          protocolTemplateLinkedStepTemplate.setModifiedBy(modifiedBy);
+          protocolTemplateLinkedStepTemplate.setActive(Boolean.FALSE);
+        })
+        .forEach(this.protocolTemplateLinkedStepTemplateDataService::saveProtocolTemplateLinkedStepTemplate);
 
     List<ProtocolStep> protocolStepList = protocolStepDataService.getProtocolStepsByStepTemplateId(
         stepTemplateToDelete.getId());

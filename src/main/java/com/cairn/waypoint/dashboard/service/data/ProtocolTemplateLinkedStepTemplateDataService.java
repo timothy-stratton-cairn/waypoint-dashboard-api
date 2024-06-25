@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.service.data;
 
-import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.repository.ProtocolTemplateLinkedStepTemplateRepository;
@@ -26,6 +25,10 @@ public class ProtocolTemplateLinkedStepTemplateDataService {
 
     this.protocolTemplateLinkedStepTemplateRepository.saveAll(
         protocolTemplateLinkedStepTemplates);
+  }
+
+  public ProtocolTemplateLinkedStepTemplate saveProtocolTemplateLinkedStepTemplate(ProtocolTemplateLinkedStepTemplate protocolTemplateLinkedStepTemplate) {
+    return this.protocolTemplateLinkedStepTemplateRepository.save(protocolTemplateLinkedStepTemplate);
   }
 
   public List<ProtocolTemplateLinkedStepTemplate> getProtocolTemplateLinkedStepTemplateByStepTemplate(
