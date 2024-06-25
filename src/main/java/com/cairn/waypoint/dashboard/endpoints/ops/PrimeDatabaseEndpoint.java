@@ -3,10 +3,10 @@ package com.cairn.waypoint.dashboard.endpoints.ops;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
-import com.cairn.waypoint.dashboard.entity.TemplateCategory;
+import com.cairn.waypoint.dashboard.entity.StepTemplateCategory;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
-import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,24 +32,25 @@ public class PrimeDatabaseEndpoint {
 
   private final StepTemplateDataService stepTemplateDataService;
   private final ProtocolTemplateDataService protocolTemplateDataService;
-  private final TemplateCategory gatherDataCategory;
-  private final TemplateCategory runAnalysisCategory;
-  private final TemplateCategory craftRecommendationsCategory;
-  private final TemplateCategory shareEducationCategory;
+  private final StepTemplateCategory gatherDataCategory;
+  private final StepTemplateCategory runAnalysisCategory;
+  private final StepTemplateCategory craftRecommendationsCategory;
+  private final StepTemplateCategory shareEducationCategory;
   private List<StepTemplate> stepTemplates;
   private List<ProtocolTemplate> protocolTemplates;
 
   public PrimeDatabaseEndpoint(StepTemplateDataService stepTemplateDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
-      TemplateCategoryDataService templateCategoryDataService) {
+      StepTemplateCategoryDataService stepTemplateCategoryDataService) {
     this.stepTemplateDataService = stepTemplateDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
 
-    gatherDataCategory = templateCategoryDataService.findByName("Gather Data").get();
-    runAnalysisCategory = templateCategoryDataService.findByName("Run Analysis").get();
-    craftRecommendationsCategory = templateCategoryDataService.findByName("Craft Recommendations")
+    gatherDataCategory = stepTemplateCategoryDataService.findByName("Gather Data").get();
+    runAnalysisCategory = stepTemplateCategoryDataService.findByName("Run Analysis").get();
+    craftRecommendationsCategory = stepTemplateCategoryDataService.findByName(
+            "Craft Recommendations")
         .get();
-    shareEducationCategory = templateCategoryDataService.findByName("Share Education").get();
+    shareEducationCategory = stepTemplateCategoryDataService.findByName("Share Education").get();
   }
 
   @Transactional

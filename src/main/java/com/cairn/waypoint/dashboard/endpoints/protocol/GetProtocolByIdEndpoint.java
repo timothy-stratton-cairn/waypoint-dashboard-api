@@ -9,6 +9,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.RecurrenceDetailsDto;
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
@@ -101,6 +102,14 @@ public class GetProtocolByIdEndpoint {
             .needsAttention(returnedProtocol.getMarkedForAttention())
             .lastStatusUpdateTimestamp(returnedProtocol.getLastStatusUpdateTimestamp())
             .status(returnedProtocol.getStatus().name())
+            .nextInstance(RecurrenceDetailsDto.builder()
+                .recurrenceType(returnedProtocol.getRecurrenceType().name())
+                .triggeringStatus(returnedProtocol.getTriggeringStatus() == null ? null
+                    : returnedProtocol.getTriggeringStatus().name())
+                .willReoccurInYears(returnedProtocol.getReoccurInYears())
+                .willReoccurInMonths(returnedProtocol.getReoccurInMonths())
+                .willReoccurInDays(returnedProtocol.getReoccurInDays())
+                .build())
             .completionPercentage(
                 ProtocolCalculationHelperService.getProtocolCompletionPercentage(returnedProtocol))
             .assignedHouseholdId(returnedProtocol.getAssignedHouseholdId())
@@ -129,7 +138,8 @@ public class GetProtocolByIdEndpoint {
                                         .map(Homework::getId)
                                         .collect(Collectors.toSet()))
                                     .build() : null)
-                            .category(protocolStep.getCategory().getTemplateCategory().getName())
+                            .category(
+                                protocolStep.getCategory().getStepTemplateCategory().getName())
                             .build())
                         .collect(Collectors.toList()))
                     .build())

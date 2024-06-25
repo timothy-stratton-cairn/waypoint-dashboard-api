@@ -11,4 +11,5 @@ public class ProtocolTemplateDto {
   private String name;
   private String description;
   private String status;
+  private String templateCategory;
 }

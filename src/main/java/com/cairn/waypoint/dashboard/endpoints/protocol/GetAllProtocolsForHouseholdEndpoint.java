@@ -123,7 +123,7 @@ public class GetAllProtocolsForHouseholdEndpoint {
                                                                 .collect(Collectors.toSet()))
                                                         .build() : null)
                                             .category(
-                                                protocolStep.getCategory().getTemplateCategory()
+                                                protocolStep.getCategory().getStepTemplateCategory()
                                                     .getName())
                                             .build())
                                         .collect(Collectors.toList()))

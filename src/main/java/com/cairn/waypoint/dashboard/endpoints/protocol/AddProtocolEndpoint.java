@@ -11,6 +11,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.RecurrenceDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.Protocol;
@@ -37,6 +38,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -139,8 +141,16 @@ public class AddProtocolEndpoint {
       if (addProtocolDetailsDto.getProtocolName() != null) {
         protocolToBeCreated.setName(addProtocolDetailsDto.getProtocolName());
       }
+
+      if (addProtocolDetailsDto.getDueDate() != null) {//Override the default due date if present
+        protocolToBeCreated.setDueDate(addProtocolDetailsDto.getDueDate());
+      } else if (protocolTemplateOptional.get().getDefaultDueByInYears() == null
+          && protocolTemplateOptional.get().getDefaultDueByInMonths() == null
+          && protocolTemplateOptional.get().getDefaultDueByInDays() == null) {
+        protocolToBeCreated.setDueDate(null);
+      }
+
       protocolToBeCreated.setGoal(addProtocolDetailsDto.getGoal());
-      protocolToBeCreated.setDueDate(addProtocolDetailsDto.getDueDate());
 
       protocolToBeCreated.setProtocolSteps(setupProtocolSteps(protocolTemplateOptional.get(),
           principal.getName()));
@@ -181,6 +191,9 @@ public class AddProtocolEndpoint {
               .description(createdProtocol.getDescription())
               .goal(createdProtocol.getGoal())
               .goalProgress(createdProtocol.getGoalProgress())
+              .createdAt(createdProtocol.getCreated())
+              .dueBy(createdProtocol.getDueDate())
+              .completedOn(createdProtocol.getCompletionDate())
               .protocolComments(ProtocolCommentListDto.builder()
                   .comments(createdProtocol.getComments() == null || createdProtocol.getComments()
                       .isEmpty() ?
@@ -196,6 +209,15 @@ public class AddProtocolEndpoint {
                   .build())
               .needsAttention(createdProtocol.getMarkedForAttention())
               .lastStatusUpdateTimestamp(createdProtocol.getLastStatusUpdateTimestamp())
+              .status(createdProtocol.getStatus().name())
+              .nextInstance(RecurrenceDetailsDto.builder()
+                  .recurrenceType(createdProtocol.getRecurrenceType().name())
+                  .triggeringStatus(createdProtocol.getTriggeringStatus() == null ? null
+                      : createdProtocol.getTriggeringStatus().name())
+                  .willReoccurInYears(createdProtocol.getReoccurInYears())
+                  .willReoccurInMonths(createdProtocol.getReoccurInMonths())
+                  .willReoccurInDays(createdProtocol.getReoccurInDays())
+                  .build())
               .completionPercentage(
                   ProtocolCalculationHelperService.getProtocolCompletionPercentage(createdProtocol))
               .assignedHouseholdId(createdProtocol.getAssignedHouseholdId())
@@ -226,7 +248,8 @@ public class AddProtocolEndpoint {
                                           .map(Homework::getId)
                                           .collect(Collectors.toSet()))
                                       .build() : null)
-                              .category(protocolStep.getCategory().getTemplateCategory().getName())
+                              .category(
+                                  protocolStep.getCategory().getStepTemplateCategory().getName())
                               .build())
                           .collect(Collectors.toList()))
                       .build())
@@ -258,6 +281,16 @@ public class AddProtocolEndpoint {
     protocolToBeCreated.setMarkedForAttention(Boolean.FALSE);
     protocolToBeCreated.setLastStatusUpdateTimestamp(LocalDateTime.now());
     protocolToBeCreated.setStatus(ProtocolStatusEnum.IN_PROGRESS);
+    protocolToBeCreated.setDueDate(
+        LocalDate.now() //Set DueDate based on the default on the template
+            .plusYears(protocolTemplate.getDefaultDueByInYears())
+            .plusMonths(protocolTemplate.getDefaultDueByInMonths())
+            .plusDays(protocolTemplate.getDefaultDueByInDays()));
+    protocolToBeCreated.setRecurrenceType(protocolTemplate.getDefaultRecurrenceType());
+    protocolToBeCreated.setTriggeringStatus(protocolTemplate.getDefaultTriggeringStatus());
+    protocolToBeCreated.setReoccurInYears(protocolTemplate.getDefaultReoccurInYears());
+    protocolToBeCreated.setReoccurInMonths(protocolTemplate.getDefaultReoccurInMonths());
+    protocolToBeCreated.setReoccurInDays(protocolTemplate.getDefaultReoccurInDays());
 
     return protocolToBeCreated;
   }
@@ -274,7 +307,7 @@ public class AddProtocolEndpoint {
           protocolStep.setOrdinalIndex(stepTemplateLink.getOrdinalIndex());
           protocolStep.setCategory(StepCategory.builder()
               .modifiedBy(modifiedBy)
-              .templateCategory(stepTemplateLink.getStepTemplate().getCategory())
+              .stepTemplateCategory(stepTemplateLink.getStepTemplate().getCategory())
               .build());
           protocolStep.setStatus(StepStatusEnum.TODO);
 

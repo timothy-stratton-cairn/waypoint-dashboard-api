@@ -85,15 +85,15 @@ public class UpdateProtocolStatusEndpoint {
           .valueOf(updateProtocolDetailsDto.getNewProtocolStatus()));
 
       updatedProtocol = protocolDataService.updateProtocol(protocolToUpdate);
+
+      return ResponseEntity.status(HttpStatus.OK)
+          .body("Protocol with ID [" + updatedProtocol.getId() + "] and name ["
+              + updatedProtocol.getName() + "] updated successfully");
     } catch (IllegalArgumentException e) {
       return generateFailureResponse("Provided Protocol Status [ " +
               updateProtocolDetailsDto.getNewProtocolStatus() + "does not exist",
           HttpStatus.BAD_REQUEST);
     }
-
-    return ResponseEntity.status(HttpStatus.OK)
-        .body("Protocol with ID [" + updatedProtocol.getId() + "] and name ["
-            + updatedProtocol.getName() + "] updated successfully");
   }
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {

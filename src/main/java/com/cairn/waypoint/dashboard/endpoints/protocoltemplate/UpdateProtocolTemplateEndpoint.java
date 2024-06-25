@@ -110,6 +110,28 @@ public class UpdateProtocolTemplateEndpoint {
       return generateFailureResponse("Protocol Template with name [" +
           updateProtocolTemplateDetailsDto.getName() + "] already exists", HttpStatus.CONFLICT);
     } else {
+      try {
+        updateProtocolTemplateDetailsDto.getDefaultTriggeringStatus();
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Triggering Status with name [" +
+                updateProtocolTemplateDetailsDto.getDefaultTriggeringStatusValue() + "] does not exist",
+            HttpStatus.NOT_FOUND);
+      }
+      try {
+        updateProtocolTemplateDetailsDto.getDefaultRecurrenceType();
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Recurrence Type with name [" +
+                updateProtocolTemplateDetailsDto.getRecurrenceTypeValue() + "] does not exist",
+            HttpStatus.NOT_FOUND);
+      }
+      try {
+        updateProtocolTemplateDetailsDto.getTemplateCategory();
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Template Category with name [" +
+                updateProtocolTemplateDetailsDto.getTemplateCategoryValue() + "] does not exist",
+            HttpStatus.NOT_FOUND);
+      }
+
       LinkedHashSet<StepTemplate> stepTemplates;
 
       try {

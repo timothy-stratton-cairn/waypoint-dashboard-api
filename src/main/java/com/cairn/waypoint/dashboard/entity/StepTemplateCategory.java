@@ -4,8 +4,10 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,12 +22,18 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
-@Table(name = "protocol_step_category")
-public class StepCategory extends BaseEntity {
+@Table(name = "protocol_step_template_category")
+public class StepTemplateCategory extends BaseEntity {
 
-  @JoinColumn(name = "protocol_step_template_category_id")
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private StepTemplateCategory stepTemplateCategory;
+  private String name;
+  private String description;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  @JoinColumn(name = "parent_protocol_step_template_category_id")
+  private StepTemplateCategory parentCategory;
+
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "parentCategory", cascade = CascadeType.MERGE)
+  private Set<StepTemplateCategory> childCategories;
 
   private Long responsibleUserId;
   private Long responsibleRoleId;

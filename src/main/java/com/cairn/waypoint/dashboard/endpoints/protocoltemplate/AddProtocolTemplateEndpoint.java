@@ -5,6 +5,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AddProtocolTe
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AssociatedStepTemplatesListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolStepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.RecurrenceTypeDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.StepTemplateCategoryDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTemplateMapper;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
@@ -88,6 +89,30 @@ public class AddProtocolTemplateEndpoint {
       return generateFailureResponse("Protocol Template with name [" +
           addProtocolTemplateDetailsDto.getName() + "] already exists", HttpStatus.CONFLICT);
     } else {
+      try {
+        if (addProtocolTemplateDetailsDto.getDefaultTriggeringStatusValue() != null) {
+          addProtocolTemplateDetailsDto.getDefaultTriggeringStatus();
+        }
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Triggering Status with name [" +
+                addProtocolTemplateDetailsDto.getDefaultTriggeringStatusValue() + "] does not exist",
+            HttpStatus.NOT_FOUND);
+      }
+      try {
+        addProtocolTemplateDetailsDto.getDefaultRecurrenceType();
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Recurrence Type with name [" +
+                addProtocolTemplateDetailsDto.getRecurrenceTypeValue() + "] does not exist",
+            HttpStatus.NOT_FOUND);
+      }
+      try {
+        addProtocolTemplateDetailsDto.getTemplateCategory();
+      } catch (IllegalArgumentException e) {
+        return generateFailureResponse("Template Category with name [" +
+                addProtocolTemplateDetailsDto.getTemplateCategoryValue() + "] does not exist",
+            HttpStatus.NOT_FOUND);
+      }
+
       LinkedHashSet<StepTemplate> stepTemplates;
       try {
         stepTemplates = this.stepTemplateDataService
@@ -110,6 +135,18 @@ public class AddProtocolTemplateEndpoint {
               .name(createdProtocolTemplate.getName())
               .description(createdProtocolTemplate.getDescription())
               .status(createdProtocolTemplate.getStatus().name())
+              .defaultDueByInYears(createdProtocolTemplate.getDefaultDueByInYears())
+              .defaultDueByInMonths(createdProtocolTemplate.getDefaultDueByInMonths())
+              .defaultDueByInDays(createdProtocolTemplate.getDefaultDueByInDays())
+              .defaultProtocolRecurrence(RecurrenceTypeDetailsDto.builder()
+                  .recurrenceType(createdProtocolTemplate.getDefaultRecurrenceType().name())
+                  .defaultTriggeringStatus(
+                      createdProtocolTemplate.getDefaultTriggeringStatus() == null ? null
+                          : createdProtocolTemplate.getDefaultTriggeringStatus().name())
+                  .defaultReoccurInYears(createdProtocolTemplate.getDefaultReoccurInYears())
+                  .defaultReoccurInMonths(createdProtocolTemplate.getDefaultReoccurInMonths())
+                  .defaultReoccurInDays(createdProtocolTemplate.getDefaultReoccurInDays())
+                  .build())
               .associatedSteps(AssociatedStepTemplatesListDto.builder()
                   .steps(createdProtocolTemplate.getProtocolTemplateSteps().stream()
                       .map(protocolStepTemplate -> ProtocolStepTemplateDto.builder()

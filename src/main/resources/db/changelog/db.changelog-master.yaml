@@ -53,4 +53,8 @@ databaseChangeLog:
       file: db/changelog/2024-06-11-update-protocol-step-homework-table.yaml
   - include:
       file: db/changelog/2024-06-12-add-template-statuses-to-system.yaml
+  - include:
+      file: db/changelog/2024-06-24-add-protocol-template-categories-to-system.yaml
+  - include:
+      file: db/changelog/2024-06-24-add-protocol-triggers-to-system.yaml
 

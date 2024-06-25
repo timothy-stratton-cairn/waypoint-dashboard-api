@@ -26,6 +26,7 @@ public class ProtocolDetailsDto {
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastStatusUpdateTimestamp;
   private String status;
+  private RecurrenceDetailsDto nextInstance;
   private Long assignedHouseholdId;
 
   @JsonSerialize(using = BigDecimalSerializer.class)

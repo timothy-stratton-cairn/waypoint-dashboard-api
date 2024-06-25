@@ -1,33 +1,24 @@
 package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.TemplateCategory;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateCategoryEnum;
 import com.cairn.waypoint.dashboard.repository.TemplateCategoryRepository;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TemplateCategoryDataService {
 
-  private final TemplateCategoryRepository templateCategoryRepository;
+  public static final List<TemplateCategory> availableCategories = new ArrayList<>();
 
-  public TemplateCategoryDataService(TemplateCategoryRepository templateCategoryRepository) {
-    this.templateCategoryRepository = templateCategoryRepository;
-  }
+  @SuppressWarnings({"unused", "UnusedAssignment"})
+  public TemplateCategoryDataService(
+      TemplateCategoryRepository templateCategoryRepository) {
+    TemplateCategoryDataService.availableCategories.addAll(templateCategoryRepository.findAll());
 
-  public List<TemplateCategory> getAllParentTemplateCategories() {
-    return this.templateCategoryRepository.findByParentCategoryIsNull();
-  }
-
-  public Optional<TemplateCategory> getTemplateCategoryById(Long stepTemplateCategoryId) {
-    return this.templateCategoryRepository.findById(stepTemplateCategoryId);
-  }
-
-  public Optional<TemplateCategory> findByName(String categoryName) {
-    return this.templateCategoryRepository.findByName(categoryName);
-  }
-
-  public TemplateCategory saveTemplateCategory(TemplateCategory templateCategory) {
-    return this.templateCategoryRepository.save(templateCategory);
+    //Initialize the Enum
+    TemplateCategoryEnum unused = TemplateCategoryEnum.LIFECYCLE;
+    unused = TemplateCategoryEnum.EVENT_DRIVEN;
   }
 }

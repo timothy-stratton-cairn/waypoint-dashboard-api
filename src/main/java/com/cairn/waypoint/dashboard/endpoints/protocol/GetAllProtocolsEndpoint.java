@@ -114,7 +114,8 @@ public class GetAllProtocolsEndpoint {
                                                     .collect(Collectors.toSet()))
                                             .build() : null)
                                     .category(
-                                        protocolStep.getCategory().getTemplateCategory().getName())
+                                        protocolStep.getCategory().getStepTemplateCategory()
+                                            .getName())
                                     .build())
                                 .collect(Collectors.toList()))
                             .build())

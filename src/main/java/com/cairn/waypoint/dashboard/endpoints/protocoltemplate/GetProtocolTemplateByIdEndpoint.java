@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.AssociatedStepTemplatesListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolStepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.ProtocolTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.RecurrenceTypeDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.StepTemplateCategoryDto;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
@@ -80,6 +81,19 @@ public class GetProtocolTemplateByIdEndpoint {
             .name(returnedProtocolTemplate.getName())
             .description(returnedProtocolTemplate.getDescription())
             .status(returnedProtocolTemplate.getStatus().name())
+            .templateCategory(returnedProtocolTemplate.getTemplateCategory().name())
+            .defaultDueByInYears(returnedProtocolTemplate.getDefaultDueByInYears())
+            .defaultDueByInMonths(returnedProtocolTemplate.getDefaultDueByInMonths())
+            .defaultDueByInDays(returnedProtocolTemplate.getDefaultDueByInDays())
+            .defaultProtocolRecurrence(RecurrenceTypeDetailsDto.builder()
+                .recurrenceType(returnedProtocolTemplate.getDefaultRecurrenceType().name())
+                .defaultTriggeringStatus(
+                    returnedProtocolTemplate.getDefaultTriggeringStatus() == null ? null
+                        : returnedProtocolTemplate.getDefaultTriggeringStatus().name())
+                .defaultReoccurInYears(returnedProtocolTemplate.getDefaultReoccurInYears())
+                .defaultReoccurInMonths(returnedProtocolTemplate.getDefaultReoccurInMonths())
+                .defaultReoccurInDays(returnedProtocolTemplate.getDefaultReoccurInDays())
+                .build())
             .associatedSteps(AssociatedStepTemplatesListDto.builder()
                 .steps(returnedProtocolTemplate.getProtocolTemplateSteps().stream()
                     .map(protocolStepTemplate -> ProtocolStepTemplateDto.builder()

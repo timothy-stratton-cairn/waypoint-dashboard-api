@@ -20,13 +20,13 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.SuccessfulStepTem
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.UpdateStepTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
-import com.cairn.waypoint.dashboard.entity.TemplateCategory;
+import com.cairn.waypoint.dashboard.entity.StepTemplateCategory;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.AccountDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
-import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.utility.fileupload.S3FileUpload;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -72,7 +72,7 @@ public class ImportDataEndpoint {
   private final AddProtocolEndpoint addProtocolEndpoint;
   private final AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint;
   private final ProtocolTemplateDataService protocolTemplateDataService;
-  private final TemplateCategoryDataService templateCategoryDataService;
+  private final StepTemplateCategoryDataService stepTemplateCategoryDataService;
   private final AccountDataService accountDataService;
   private final HomeworkTemplateDataService homeworkTemplateDataService;
   private final S3FileUpload s3FileUpload;
@@ -86,7 +86,7 @@ public class ImportDataEndpoint {
       AddProtocolEndpoint addProtocolEndpoint,
       AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint,
       ProtocolTemplateDataService protocolTemplateDataService,
-      TemplateCategoryDataService templateCategoryDataService,
+      StepTemplateCategoryDataService stepTemplateCategoryDataService,
       AccountDataService accountDataService,
       HomeworkTemplateDataService homeworkTemplateDataService,
       S3FileUpload s3FileUpload,
@@ -97,7 +97,7 @@ public class ImportDataEndpoint {
     this.addHomeworkTemplateEndpoint = addHomeworkTemplateEndpoint;
     this.addProtocolTemplateEndpoint = addProtocolTemplateEndpoint;
     this.protocolTemplateDataService = protocolTemplateDataService;
-    this.templateCategoryDataService = templateCategoryDataService;
+    this.stepTemplateCategoryDataService = stepTemplateCategoryDataService;
     this.accountDataService = accountDataService;
     this.homeworkTemplateDataService = homeworkTemplateDataService;
     this.s3FileUpload = s3FileUpload;
@@ -249,11 +249,11 @@ public class ImportDataEndpoint {
         continue;
       }
 
-      Optional<TemplateCategory> stepCategoryOptional;
-      if ((stepCategoryOptional = this.templateCategoryDataService.findByName(
+      Optional<StepTemplateCategory> stepCategoryOptional;
+      if ((stepCategoryOptional = this.stepTemplateCategoryDataService.findByName(
           getCellValue(row.getCell(5)))).isEmpty()) {
         stepCategoryOptional = Optional.of(
-            this.templateCategoryDataService.saveTemplateCategory(TemplateCategory.builder()
+            this.stepTemplateCategoryDataService.saveTemplateCategory(StepTemplateCategory.builder()
                 .modifiedBy(principal.getName())
                 .name(getCellValue(row.getCell(5)))
                 .description(getCellValue(row.getCell(5)))

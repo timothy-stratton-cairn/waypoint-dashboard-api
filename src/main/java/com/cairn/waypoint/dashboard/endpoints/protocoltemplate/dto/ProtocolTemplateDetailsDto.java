@@ -12,5 +12,10 @@ public class ProtocolTemplateDetailsDto {
   private String name;
   private String description;
   private String status;
+  private String templateCategory;
+  private Integer defaultDueByInYears;
+  private Integer defaultDueByInMonths;
+  private Integer defaultDueByInDays;
+  private RecurrenceTypeDetailsDto defaultProtocolRecurrence;
   private AssociatedStepTemplatesListDto associatedSteps;
 }

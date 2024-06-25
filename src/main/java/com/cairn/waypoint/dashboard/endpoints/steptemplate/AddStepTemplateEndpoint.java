@@ -11,13 +11,13 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMa
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTask;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.entity.StepTemplateCategory;
 import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
-import com.cairn.waypoint.dashboard.entity.TemplateCategory;
 import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTaskDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
-import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -50,16 +50,16 @@ public class AddStepTemplateEndpoint {
   private final StepTemplateDataService stepTemplateDataService;
   private final StepTaskDataService stepTaskDataService;
   private final HomeworkTemplateDataService homeworkTemplateDataService;
-  private final TemplateCategoryDataService templateCategoryDataService;
+  private final StepTemplateCategoryDataService stepTemplateCategoryDataService;
 
   public AddStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService,
       StepTaskDataService stepTaskDataService,
       HomeworkTemplateDataService homeworkTemplateDataService,
-      TemplateCategoryDataService templateCategoryDataService) {
+      StepTemplateCategoryDataService stepTemplateCategoryDataService) {
     this.stepTemplateDataService = stepTemplateDataService;
     this.stepTaskDataService = stepTaskDataService;
     this.homeworkTemplateDataService = homeworkTemplateDataService;
-    this.templateCategoryDataService = templateCategoryDataService;
+    this.stepTemplateCategoryDataService = stepTemplateCategoryDataService;
   }
 
   @PostMapping(PATH)
@@ -95,7 +95,7 @@ public class AddStepTemplateEndpoint {
 
     Optional<StepTask> linkedStepTask = Optional.empty();
     List<HomeworkTemplate> linkedHomeworkTemplates = new ArrayList<>();
-    Optional<TemplateCategory> stepTemplateCategory = Optional.empty();
+    Optional<StepTemplateCategory> stepTemplateCategory = Optional.empty();
 
     if (this.stepTemplateDataService.findStepTemplateByName(addStepTemplateDetailsDto.getName())
         .isPresent()) {
@@ -114,7 +114,7 @@ public class AddStepTemplateEndpoint {
               addStepTemplateDetailsDto.getLinkedHomeworkTemplateIds() + "] not found",
           HttpStatus.NOT_FOUND);
     } else if (addStepTemplateDetailsDto.getStepTemplateCategoryId() != null &&
-        (stepTemplateCategory = this.templateCategoryDataService.getTemplateCategoryById(
+        (stepTemplateCategory = this.stepTemplateCategoryDataService.getTemplateCategoryById(
             addStepTemplateDetailsDto.getStepTemplateCategoryId())).isEmpty()) {
       return generateFailureResponse("Step Template Category with ID [" +
               addStepTemplateDetailsDto.getStepTemplateCategoryId() + "] not found",
@@ -174,13 +174,13 @@ public class AddStepTemplateEndpoint {
   }
 
   private StepTemplateCategoryDetailsDto getStepTemplateCategoryDetailsDto(
-      TemplateCategory templateCategory) {
+      StepTemplateCategory stepTemplateCategory) {
     StepTemplateCategoryDetailsDto stepTemplateCategoryDetailsDto = null;
-    if (templateCategory != null) {
+    if (stepTemplateCategory != null) {
       stepTemplateCategoryDetailsDto = StepTemplateCategoryDetailsDto.builder()
-          .id(templateCategory.getId())
-          .name(templateCategory.getName())
-          .description(templateCategory.getDescription())
+          .id(stepTemplateCategory.getId())
+          .name(stepTemplateCategory.getName())
+          .description(stepTemplateCategory.getDescription())
           .build();
     }
     return stepTemplateCategoryDetailsDto;
@@ -188,14 +188,14 @@ public class AddStepTemplateEndpoint {
 
   private StepTemplate createStepTemplate(AddStepTemplateDetailsDto addStepTemplateDetailsDto,
       String modifiedBy, StepTask linkedStepTask, List<HomeworkTemplate> linkedHomeworkTemplates,
-      TemplateCategory templateCategory) {
+      StepTemplateCategory stepTemplateCategory) {
 
     StepTemplate stepTemplateToCreate = StepTemplateMapper.INSTANCE
         .toEntity(addStepTemplateDetailsDto);
 
     stepTemplateToCreate.setModifiedBy(modifiedBy);
     stepTemplateToCreate.setLinkedTask(linkedStepTask);
-    stepTemplateToCreate.setCategory(templateCategory);
+    stepTemplateToCreate.setCategory(stepTemplateCategory);
     stepTemplateToCreate.setStatus(TemplateStatusEnum.INACTIVE);
 
     StepTemplate createdStepTemplate = this.stepTemplateDataService.saveStepTemplate(

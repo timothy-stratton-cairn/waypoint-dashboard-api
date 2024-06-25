@@ -110,7 +110,7 @@ public class ProtocolTemplateHelperService {
           protocolStep.setOrdinalIndex(ordinalIndexStart.getAndIncrement());
           protocolStep.setCategory(StepCategory.builder()
               .modifiedBy(modifiedBy)
-              .templateCategory(stepTemplate.getCategory())
+              .stepTemplateCategory(stepTemplate.getCategory())
               .build());
           protocolStep.setStatus(StepStatusEnum.TODO);
           protocolStep.setParentProtocol(parentProtocol);

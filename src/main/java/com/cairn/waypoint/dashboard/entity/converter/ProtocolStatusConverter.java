@@ -13,16 +13,24 @@ public class ProtocolStatusConverter implements AttributeConverter<ProtocolStatu
 
   @Override
   public Long convertToDatabaseColumn(ProtocolStatusEnum protocolStatusEnum) {
-    return protocolStatusEnum.getInstance().getId();
+    if (protocolStatusEnum != null) {
+      return protocolStatusEnum.getInstance().getId();
+    } else {
+      return null;
+    }
   }
 
   @Override
   public ProtocolStatusEnum convertToEntityAttribute(Long id) {
-    ProtocolStatus retrievedStatus = ProtocolStatusDataService.availableStatuses.stream()
-        .filter(protocolStatus -> Objects.equals(protocolStatus.getId(), id))
-        .findFirst()
-        .orElseThrow(EntityNotFoundException::new);
+    if (id != null) {
+      ProtocolStatus retrievedStatus = ProtocolStatusDataService.availableStatuses.stream()
+          .filter(protocolStatus -> Objects.equals(protocolStatus.getId(), id))
+          .findFirst()
+          .orElseThrow(EntityNotFoundException::new);
 
-    return ProtocolStatusEnum.valueOf(retrievedStatus.getName().toUpperCase().replace(' ', '_'));
+      return ProtocolStatusEnum.valueOf(retrievedStatus.getName().toUpperCase().replace(' ', '_'));
+    } else {
+      return null;
+    }
   }
 }

@@ -39,7 +39,7 @@ public class StepTemplate extends BaseEntity {
 
   @JoinColumn(name = "protocol_step_template_category_id")
   @OneToOne(fetch = FetchType.LAZY)
-  private TemplateCategory category;
+  private StepTemplateCategory category;
 
   @OneToMany(mappedBy = "stepTemplate",
       cascade = {CascadeType.MERGE, CascadeType.PERSIST})

@@ -14,10 +14,9 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "template_category")
-public class TemplateCategory extends BaseEntity {
+@Table(name = "recurrence_type")
+public class RecurrenceType extends BaseEntity {
 
   private String name;
   private String description;
-
 }

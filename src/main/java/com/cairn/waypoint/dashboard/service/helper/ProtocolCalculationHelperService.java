@@ -8,6 +8,7 @@ import com.cairn.waypoint.dashboard.entity.StepStatus;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -26,26 +27,32 @@ public class ProtocolCalculationHelperService {
           .map(StepStatus::getWeight)
           .collect(Collectors.toList());
 
-      List<BigDecimal> stepHomeworkCompletionPercentages = returnedProtocol.getProtocolSteps()
-          .stream()
-          .map(ProtocolStep::getLinkedHomework)
-          .flatMap(Set::stream)
-          .map(ProtocolStepLinkedHomework::getHomework)
-          .filter(Objects::nonNull)
-          .map(Homework::getHomeworkQuestions)
-          .map(homeworkResponses -> {
-            long responseCount = homeworkResponses.stream()
-                .filter(homeworkResponse -> homeworkResponse.getHomeworkQuestion().getRequired()
-                    && homeworkResponse.getResponse() != null && !homeworkResponse.getResponse()
-                    .isEmpty())
-                .count();
-            long requiredCount = homeworkResponses.stream()
-                .filter(homeworkResponse -> homeworkResponse.getHomeworkQuestion().getRequired())
-                .count();
+      List<BigDecimal> stepHomeworkCompletionPercentages;
 
-            return BigDecimal.valueOf((double) responseCount / requiredCount);
-          })
-          .collect(Collectors.toList());
+      try {
+        stepHomeworkCompletionPercentages = returnedProtocol.getProtocolSteps()
+            .stream()
+            .map(ProtocolStep::getLinkedHomework)
+            .flatMap(Set::stream)
+            .map(ProtocolStepLinkedHomework::getHomework)
+            .filter(Objects::nonNull)
+            .map(Homework::getHomeworkQuestions)
+            .map(homeworkResponses -> {
+              long responseCount = homeworkResponses.stream()
+                  .filter(homeworkResponse -> homeworkResponse.getHomeworkQuestion().getRequired()
+                      && homeworkResponse.getResponse() != null && !homeworkResponse.getResponse()
+                      .isEmpty())
+                  .count();
+              long requiredCount = homeworkResponses.stream()
+                  .filter(homeworkResponse -> homeworkResponse.getHomeworkQuestion().getRequired())
+                  .count();
+
+              return BigDecimal.valueOf((double) responseCount / requiredCount);
+            })
+            .collect(Collectors.toList());
+      } catch (NullPointerException e) {
+        stepHomeworkCompletionPercentages = Arrays.asList(BigDecimal.ZERO);
+      }
 
       return Stream.of(stepCompletionPercentages, stepHomeworkCompletionPercentages)
           .flatMap(Collection::stream)

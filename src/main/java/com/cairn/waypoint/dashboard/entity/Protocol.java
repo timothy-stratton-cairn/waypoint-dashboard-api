@@ -1,7 +1,9 @@
 package com.cairn.waypoint.dashboard.entity;
 
 import com.cairn.waypoint.dashboard.entity.converter.ProtocolStatusConverter;
+import com.cairn.waypoint.dashboard.entity.converter.RecurrenceTypeConverter;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
+import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -59,6 +61,17 @@ public class Protocol extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private ProtocolTemplate protocolTemplate;
 
+  @Column(name = "recurrence_type_id")
+  @Convert(converter = RecurrenceTypeConverter.class)
+  private RecurrenceTypeEnum recurrenceType;
+
+  @Column(name = "triggering_protocol_status_id")
+  @Convert(converter = ProtocolStatusConverter.class)
+  private ProtocolStatusEnum triggeringStatus;
+
+  private Integer reoccurInYears;
+  private Integer reoccurInMonths;
+  private Integer reoccurInDays;
 
   @OrderBy("ordinalIndex ASC")
   @JoinColumn(name = "parent_protocol_id")

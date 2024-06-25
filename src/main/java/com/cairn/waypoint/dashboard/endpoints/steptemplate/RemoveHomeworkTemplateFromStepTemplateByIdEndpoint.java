@@ -98,8 +98,10 @@ public class RemoveHomeworkTemplateFromStepTemplateByIdEndpoint {
           .filter(stepTemplateLinkedHomeworkTemplate -> Set.of(homeworkTemplateIds)
               .contains(stepTemplateLinkedHomeworkTemplate.getHomeworkTemplate().getId()))
           .forEach(
-              stepTemplateLinkedHomeworkTemplate -> stepTemplateLinkedHomeworkTemplate.setActive(
-                  Boolean.FALSE));
+              stepTemplateLinkedHomeworkTemplate -> {
+                stepTemplateLinkedHomeworkTemplate.setActive(Boolean.FALSE);
+                stepTemplateLinkedHomeworkTemplate.setModifiedBy(principal.getName());
+              });
 
       this.stepTemplateDataService.saveStepTemplate(stepTemplateToBeUpdated.get());
 
@@ -109,8 +111,10 @@ public class RemoveHomeworkTemplateFromStepTemplateByIdEndpoint {
       associatedProtocolSteps
           .forEach(protocolStep -> {
             if (protocolStep.getLinkedHomework() != null) {
-              protocolStep.getLinkedHomework().forEach(protocolStepLinkedHomework ->
-                  protocolStepLinkedHomework.setActive(Boolean.FALSE));
+              protocolStep.getLinkedHomework().forEach(protocolStepLinkedHomework -> {
+                protocolStepLinkedHomework.setActive(Boolean.FALSE);
+                protocolStepLinkedHomework.setModifiedBy(principal.getName());
+              });
             }
           });
 

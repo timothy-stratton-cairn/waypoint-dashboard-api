@@ -3,8 +3,8 @@ package com.cairn.waypoint.dashboard.endpoints.steptemplatecategory;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.ChildTemplateCategoryDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplatecategory.dto.ChildTemplateCategoryListDto;
-import com.cairn.waypoint.dashboard.entity.TemplateCategory;
-import com.cairn.waypoint.dashboard.service.data.TemplateCategoryDataService;
+import com.cairn.waypoint.dashboard.entity.StepTemplateCategory;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,11 +30,11 @@ public class GetAllStepTemplateCategoriesByParentCategoryIdEndpoint {
 
   public static final String PATH = "/api/protocol-step-template-category/{templateCategoryId}/children";
 
-  private final TemplateCategoryDataService templateCategoryDataService;
+  private final StepTemplateCategoryDataService stepTemplateCategoryDataService;
 
   public GetAllStepTemplateCategoriesByParentCategoryIdEndpoint(
-      TemplateCategoryDataService templateCategoryDataService) {
-    this.templateCategoryDataService = templateCategoryDataService;
+      StepTemplateCategoryDataService stepTemplateCategoryDataService) {
+    this.stepTemplateCategoryDataService = stepTemplateCategoryDataService;
   }
 
   @GetMapping(PATH)
@@ -60,9 +60,9 @@ public class GetAllStepTemplateCategoriesByParentCategoryIdEndpoint {
         "User [{}] is Retrieving All Step Template Categories that are children of Parent Step Template Category with ID [{}]",
         principal.getName(), templateCategoryId);
 
-    Optional<TemplateCategory> optionalParentTemplateCategory;
+    Optional<StepTemplateCategory> optionalParentTemplateCategory;
 
-    if ((optionalParentTemplateCategory = this.templateCategoryDataService.getTemplateCategoryById(
+    if ((optionalParentTemplateCategory = this.stepTemplateCategoryDataService.getTemplateCategoryById(
         templateCategoryId)).isEmpty()) {
       return generateFailureResponse("Step Template Category with ID [" +
           templateCategoryId + "] does not exist", HttpStatus.NOT_FOUND);
