@@ -1,8 +1,11 @@
 package com.cairn.waypoint.dashboard.service.data;
 
+import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
+import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.repository.ProtocolTemplateLinkedStepTemplateRepository;
 import java.util.Collection;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +26,11 @@ public class ProtocolTemplateLinkedStepTemplateDataService {
 
     this.protocolTemplateLinkedStepTemplateRepository.saveAll(
         protocolTemplateLinkedStepTemplates);
+  }
+
+  public List<ProtocolTemplateLinkedStepTemplate> getProtocolTemplateLinkedStepTemplateByStepTemplate(
+      StepTemplate stepTemplate) {
+    return this.protocolTemplateLinkedStepTemplateRepository.getProtocolTemplateLinkedStepTemplateByStepTemplate(stepTemplate);
   }
 
 }

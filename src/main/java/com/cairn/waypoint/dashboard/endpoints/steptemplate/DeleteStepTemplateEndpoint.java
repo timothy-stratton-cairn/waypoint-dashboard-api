@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateLinkedStepTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,11 +34,14 @@ public class DeleteStepTemplateEndpoint {
 
   private final StepTemplateDataService stepTemplateDataService;
   private final ProtocolStepDataService protocolStepDataService;
+  private final ProtocolTemplateLinkedStepTemplateDataService protocolTemplateLinkedStepTemplateDataService;
 
   public DeleteStepTemplateEndpoint(StepTemplateDataService stepTemplateDataService,
-      ProtocolStepDataService protocolStepDataService) {
+      ProtocolStepDataService protocolStepDataService,
+      ProtocolTemplateLinkedStepTemplateDataService protocolTemplateLinkedStepTemplateDataService) {
     this.stepTemplateDataService = stepTemplateDataService;
     this.protocolStepDataService = protocolStepDataService;
+    this.protocolTemplateLinkedStepTemplateDataService = protocolTemplateLinkedStepTemplateDataService;
   }
 
   @Transactional
@@ -81,6 +85,9 @@ public class DeleteStepTemplateEndpoint {
 
   public ResponseEntity<String> generateSuccessResponse(
       StepTemplate stepTemplateToDelete, String modifiedBy) {
+    protocolTemplateLinkedStepTemplateDataService.deleteCollectionOfProtocolTemplateLinkedStepTemplates(
+        protocolTemplateLinkedStepTemplateDataService.getProtocolTemplateLinkedStepTemplateByStepTemplate(stepTemplateToDelete));
+
     List<ProtocolStep> protocolStepList = protocolStepDataService.getProtocolStepsByStepTemplateId(
         stepTemplateToDelete.getId());
 
