@@ -12,7 +12,7 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.RecurrenceDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
+import com.cairn.waypoint.dashboard.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
@@ -66,6 +66,8 @@ public class AddProtocolEndpoint {
 
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
   private final HouseholdDataService householdDataService;
+
+  private final ProtocolMapper protocolMapper = ProtocolMapper.INSTANCE;
 
   public AddProtocolEndpoint(ProtocolDataService protocolDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
@@ -185,75 +187,7 @@ public class AddProtocolEndpoint {
           addProtocolDetailsDto.getProtocolTemplateId(),
           addProtocolDetailsDto.getAssignedHouseholdId());
       return ResponseEntity.status(HttpStatus.CREATED)
-          .body(ProtocolDetailsDto.builder()
-              .id(createdProtocol.getId())
-              .name(createdProtocol.getName())
-              .description(createdProtocol.getDescription())
-              .goal(createdProtocol.getGoal())
-              .goalProgress(createdProtocol.getGoalProgress())
-              .createdAt(createdProtocol.getCreated())
-              .dueBy(createdProtocol.getDueDate())
-              .completedOn(createdProtocol.getCompletionDate())
-              .protocolComments(ProtocolCommentListDto.builder()
-                  .comments(createdProtocol.getComments() == null || createdProtocol.getComments()
-                      .isEmpty() ?
-                      null : createdProtocol.getComments().stream()
-                      .map(protocolComment -> ProtocolCommentDto.builder()
-                          .commentId(protocolComment.getId())
-                          .takenAt(protocolComment.getCreated())
-                          .takenBy(protocolComment.getOriginalCommenter())
-                          .comment(protocolComment.getComment())
-                          .commentType(protocolComment.getCommentType().name())
-                          .build())
-                      .toList())
-                  .build())
-              .needsAttention(createdProtocol.getMarkedForAttention())
-              .lastStatusUpdateTimestamp(createdProtocol.getLastStatusUpdateTimestamp())
-              .status(createdProtocol.getStatus().name())
-              .nextInstance(RecurrenceDetailsDto.builder()
-                  .recurrenceType(createdProtocol.getRecurrenceType().name())
-                  .triggeringStatus(createdProtocol.getTriggeringStatus() == null ? null
-                      : createdProtocol.getTriggeringStatus().name())
-                  .willReoccurInYears(createdProtocol.getReoccurInYears())
-                  .willReoccurInMonths(createdProtocol.getReoccurInMonths())
-                  .willReoccurInDays(createdProtocol.getReoccurInDays())
-                  .build())
-              .completionPercentage(
-                  ProtocolCalculationHelperService.getProtocolCompletionPercentage(createdProtocol))
-              .assignedHouseholdId(createdProtocol.getAssignedHouseholdId())
-              .associatedSteps(
-                  AssociatedStepsListDto.builder()
-                      .steps(createdProtocol.getProtocolSteps().stream()
-                          .map(protocolStep -> ProtocolStepDto.builder()
-                              .id(protocolStep.getId())
-                              .name(protocolStep.getName())
-                              .description(protocolStep.getDescription())
-                              .stepNotes(ProtocolStepNoteListDto.builder()
-                                  .notes(protocolStep.getNotes() == null || protocolStep.getNotes()
-                                      .isEmpty() ?
-                                      null : protocolStep.getNotes().stream()
-                                      .map(protocolStepNote -> ProtocolStepNoteDto.builder()
-                                          .noteId(protocolStepNote.getId())
-                                          .takenAt(protocolStepNote.getCreated())
-                                          .takenBy(protocolStepNote.getOriginalCommenter())
-                                          .note(protocolStepNote.getNote())
-                                          .build())
-                                      .toList())
-                                  .build())
-                              .status(protocolStep.getStatus().getInstance().getName())
-                              .linkedHomeworks(protocolStep.getLinkedHomework() != null ?
-                                  LinkedHomeworksDto.builder()
-                                      .homeworkIds(protocolStep.getLinkedHomework().stream().map(
-                                              ProtocolStepLinkedHomework::getHomework)
-                                          .map(Homework::getId)
-                                          .collect(Collectors.toSet()))
-                                      .build() : null)
-                              .category(
-                                  protocolStep.getCategory().getStepTemplateCategory().getName())
-                              .build())
-                          .collect(Collectors.toList()))
-                      .build())
-              .build());
+          .body(protocolMapper.toDetailsDto(createdProtocol));
     }
   }
 

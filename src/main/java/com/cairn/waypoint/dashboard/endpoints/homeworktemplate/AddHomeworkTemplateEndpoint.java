@@ -20,6 +20,7 @@ import com.cairn.waypoint.dashboard.service.data.ExpectedResponseDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.helper.HomeworkTemplateHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -162,86 +163,7 @@ public class AddHomeworkTemplateEndpoint {
       log.info("Homework Template with ID [{}] was successfully created",
           createdHomeworkTemplate.getId());
       return ResponseEntity.status(HttpStatus.CREATED)
-          .body(
-              HomeworkTemplateDetailsDto.builder()
-                  .id(createdHomeworkTemplate.getId())
-                  .name(createdHomeworkTemplate.getName())
-                  .description(createdHomeworkTemplate.getDescription())
-                  .status(createdHomeworkTemplate.getStatus().name())
-                  .isMultiResponse(createdHomeworkTemplate.getMultiResponse())
-                  .homeworkQuestions(HomeworkQuestionDetailsListDto.builder()
-                      .questions(createdHomeworkTemplate.getHomeworkQuestions().stream()
-                          .map(
-                              homeworkTemplateLinkedHomeworkQuestion -> HomeworkQuestionDetailsDto.builder()
-                                  .questionAbbreviation(
-                                      homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                          .getQuestionAbbreviation())
-                                  .question(
-                                      homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                          .getQuestion())
-                                  .questionType(
-                                      homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                          .getQuestionType().name())
-                                  .isRequired(
-                                      homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                          .getRequired())
-                                  .expectedHomeworkResponses(this.getExpectedResponseDetailsListDto(
-                                      homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                          .getExpectedHomeworkResponses()))
-                                  .triggersProtocolCreation(
-                                      homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                          .getTriggersProtocolCreation())
-                                  .triggeringResponse(this.getExpectedResponseDetailsDto(
-                                      homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                          .getTriggeringResponse()))
-                                  .triggeredProtocol(this.getTriggeredProtocol(
-                                      homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                          .getTriggeredProtocol()))
-                                  .build())
-                          .toList())
-                      .build())
-                  .build());
-    }
-  }
-
-  private ExpectedResponseDetailsListDto getExpectedResponseDetailsListDto(
-      Set<ExpectedResponse> expectedResponses) {
-    if (expectedResponses == null || expectedResponses.isEmpty()) {
-      return null;
-    } else {
-      return ExpectedResponseDetailsListDto.builder()
-          .responses(expectedResponses.stream()
-              .map(expectedResponse -> ExpectedResponseDetailsDto.builder()
-                  .response(expectedResponse.getResponse())
-                  .tooltip(expectedResponse.getTooltip())
-                  .build())
-              .toList())
-          .build();
-    }
-  }
-
-  private ExpectedResponseDetailsDto getExpectedResponseDetailsDto(
-      ExpectedResponse expectedResponse) {
-    if (Objects.isNull(expectedResponse)) {
-      return null;
-    } else {
-      return ExpectedResponseDetailsDto.builder()
-          .response(expectedResponse.getResponse())
-          .tooltip(expectedResponse.getTooltip())
-          .build();
-    }
-  }
-
-  private TriggeredProtocolTemplateDetailsDto getTriggeredProtocol(
-      ProtocolTemplate protocolTemplate) {
-    if (Objects.isNull(protocolTemplate)) {
-      return null;
-    } else {
-      return TriggeredProtocolTemplateDetailsDto.builder()
-          .id(protocolTemplate.getId())
-          .name(protocolTemplate.getName())
-          .description(protocolTemplate.getDescription())
-          .build();
+          .body(HomeworkTemplateHelperService.getHomeworkTemplateDetailsDto(createdHomeworkTemplate));
     }
   }
 

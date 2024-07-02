@@ -18,12 +18,12 @@ spring:
     name: waypoint-dashboard-api
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-#    url: jdbc:mysql://192.168.1.52:3306/dashboard?useSSL=false
-#    username: tstratton
-#    password: Tlotrap2d.
-    url: jdbc:mysql://host.docker.internal:3306/dashboard?useSSL=false
-    username: docker
-    password:
+    url: jdbc:mysql://192.168.1.52:3306/dashboard?useSSL=false
+    username: tstratton
+    password: Tlotrap2d.
+#    url: jdbc:mysql://host.docker.internal:3306/dashboard?useSSL=false
+#    username: docker
+#    password:
     hikari:
       poolName: Hikari
       auto-commit: true
@@ -49,4 +49,4 @@ server:
 logging:
   level:
     org.springframework.security: INFO
-    org.springframework.web.servlet.mvc.method.annotation: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation: INFO

@@ -1,6 +1,6 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
-import com.cairn.waypoint.dashboard.endpoints.protocol.mapper.ProtocolMapper;
+import com.cairn.waypoint.dashboard.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.entity.Protocol;

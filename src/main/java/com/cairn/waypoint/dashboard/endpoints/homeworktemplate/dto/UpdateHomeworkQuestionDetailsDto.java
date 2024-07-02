@@ -1,6 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto;
 
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
+import com.cairn.waypoint.dashboard.service.helper.HomeworkQuestionHelperService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.AssertTrue;
@@ -43,16 +44,8 @@ public class UpdateHomeworkQuestionDetailsDto {
       + "a List of Response Options, "
       + "and a Triggering Response.")
   public boolean isValidTriggeringRequest() {
-    if (!this.triggerProtocolCreation) {
-      return true;
-    } else if (this.triggeredProtocolId == null) {
-      return false;
-    } else if (this.responseOptions != null && this.responseOptions.isEmpty()) {
-      return false;
-    } else {
-      return this.responseOptions != null && this.triggeringResponse != null
-          && this.responseOptions.contains(this.triggeringResponse);
-    }
+    return HomeworkQuestionHelperService.getIsValidTriggerRequest(this.triggerProtocolCreation, this.triggeredProtocolId,
+        this.responseOptions, this.triggeringResponse);
   }
 
   @JsonIgnore
