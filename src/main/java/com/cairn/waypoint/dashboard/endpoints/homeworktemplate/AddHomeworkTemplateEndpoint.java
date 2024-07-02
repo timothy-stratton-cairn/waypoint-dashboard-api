@@ -308,6 +308,7 @@ public class AddHomeworkTemplateEndpoint {
         .questionType(addHomeworkQuestionDetailsDto.getQuestionType())
         .required(addHomeworkQuestionDetailsDto.getIsRequired())
         .triggersProtocolCreation(addHomeworkQuestionDetailsDto.getTriggerProtocolCreation())
+        .status(TemplateStatusEnum.INACTIVE)
         .triggeredProtocol(protocolTemplate)
         .build();
 
