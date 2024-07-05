@@ -54,9 +54,10 @@ public class ProtocolTemplate extends BaseEntity {
   private Integer defaultDueByInMonths;
   private Integer defaultDueByInDays;
 
+  @Builder.Default
   @Column(name = "default_recurrence_type_id")
   @Convert(converter = RecurrenceTypeConverter.class)
-  private RecurrenceTypeEnum defaultRecurrenceType;
+  private RecurrenceTypeEnum defaultRecurrenceType = RecurrenceTypeEnum.MANUAL;
 
   @Column(name = "default_triggering_protocol_status_id")
   @Convert(converter = ProtocolStatusConverter.class)
