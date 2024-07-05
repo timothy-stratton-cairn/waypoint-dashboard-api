@@ -16,6 +16,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -41,9 +42,10 @@ public class HomeworkQuestion extends BaseEntity {
 
   private Boolean required;
 
+  @Builder.Default
   @Column(name = "status_id")
   @Convert(converter = TemplateStatusConverter.class)
-  private TemplateStatusEnum status;
+  private TemplateStatusEnum status = TemplateStatusEnum.INACTIVE;
 
   @OrderBy("ordinalIndex ASC")
   @JoinColumn(name = "parent_homework_question_id")

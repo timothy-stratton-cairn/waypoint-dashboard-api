@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplateCategory;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateCategoryEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
@@ -457,23 +458,28 @@ public class PrimeDatabaseEndpoint {
         ProtocolTemplate.builder()
             .name("New Client")
             .description("Protocol to be Assigned to a New Client")
+            .templateCategory(TemplateCategoryEnum.LIFECYCLE)
             .build(),
         ProtocolTemplate.builder()
             .name("Job Change + Retirement")
             .description("Protocol to be Assigned to a Client who has changed Jobs or Retired")
+            .templateCategory(TemplateCategoryEnum.LIFECYCLE)
             .build(),
         ProtocolTemplate.builder()
             .name("Inheritance + Capital Influx")
             .description(
                 "Protocol to be Assigned to a Client after an Inheritance or Capital Influx")
+            .templateCategory(TemplateCategoryEnum.LIFECYCLE)
             .build(),
         ProtocolTemplate.builder()
             .name("Pre-Purchase House Purchase")
             .description("Protocol to be Assigned to Client who are about to Purchase a Home")
+            .templateCategory(TemplateCategoryEnum.LIFECYCLE)
             .build(),
         ProtocolTemplate.builder()
             .name("Post-Purchase House Purchase")
             .description("Protocol to be Assigned to Client who have just Purchased a Home")
+            .templateCategory(TemplateCategoryEnum.LIFECYCLE)
             .build()
     );
   }

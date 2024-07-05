@@ -10,6 +10,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,8 @@ public class HomeworkTemplate extends BaseEntity {
       cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<HomeworkTemplateLinkedHomeworkQuestion> homeworkQuestions;
 
+  @Builder.Default
   @Column(name = "status_id")
   @Convert(converter = TemplateStatusConverter.class)
-  private TemplateStatusEnum status;
+  private TemplateStatusEnum status = TemplateStatusEnum.INACTIVE;
 }

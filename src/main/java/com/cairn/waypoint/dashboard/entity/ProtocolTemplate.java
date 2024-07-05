@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -40,9 +41,10 @@ public class ProtocolTemplate extends BaseEntity {
       cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<ProtocolTemplateLinkedStepTemplate> protocolTemplateSteps;
 
+  @Builder.Default
   @Column(name = "status_id")
   @Convert(converter = TemplateStatusConverter.class)
-  private TemplateStatusEnum status;
+  private TemplateStatusEnum status = TemplateStatusEnum.INACTIVE;
 
   @Column(name = "category_id")
   @Convert(converter = TemplateCategoryConverter.class)
@@ -52,9 +54,10 @@ public class ProtocolTemplate extends BaseEntity {
   private Integer defaultDueByInMonths;
   private Integer defaultDueByInDays;
 
+  @Builder.Default
   @Column(name = "default_recurrence_type_id")
   @Convert(converter = RecurrenceTypeConverter.class)
-  private RecurrenceTypeEnum defaultRecurrenceType;
+  private RecurrenceTypeEnum defaultRecurrenceType = RecurrenceTypeEnum.MANUAL;
 
   @Column(name = "default_triggering_protocol_status_id")
   @Convert(converter = ProtocolStatusConverter.class)
