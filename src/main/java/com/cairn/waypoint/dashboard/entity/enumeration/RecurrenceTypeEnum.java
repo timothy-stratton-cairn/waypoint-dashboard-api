@@ -5,7 +5,7 @@ import com.cairn.waypoint.dashboard.service.data.RecurrenceTypeDataService;
 import jakarta.persistence.EntityNotFoundException;
 
 public enum RecurrenceTypeEnum {
-  ON_COMPLETION, ON_SCHEDULE, MANUAL;
+  ON_STATUS, ON_SCHEDULE, MANUAL;
 
   private RecurrenceType instance;
 

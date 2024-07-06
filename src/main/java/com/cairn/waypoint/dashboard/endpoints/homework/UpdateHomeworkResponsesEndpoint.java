@@ -112,7 +112,7 @@ public class UpdateHomeworkResponsesEndpoint {
 
       Homework updatedHomework = homeworkDataService.saveHomework(homeworkToSave);
 
-      ProtocolStep protocolStepToUpdate = updatedHomework.getAssociatedProtocolStep();
+      ProtocolStep protocolStepToUpdate = updatedHomework.getProtocolStepLinkedHomework().getStep();
 
       if (updatedHomework.getHomeworkQuestions().stream().anyMatch(homeworkResponse ->
           homeworkResponse.getHomeworkQuestion().getRequired() &&

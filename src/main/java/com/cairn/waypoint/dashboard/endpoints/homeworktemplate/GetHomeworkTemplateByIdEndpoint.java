@@ -3,8 +3,6 @@ package com.cairn.waypoint.dashboard.endpoints.homeworktemplate;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDetailsListDto;
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkQuestionDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkQuestionDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.TriggeredProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
@@ -80,7 +78,8 @@ public class GetHomeworkTemplateByIdEndpoint {
 
   public ResponseEntity<HomeworkTemplateDetailsDto> generateSuccessResponse(
       HomeworkTemplate returnedHomeworkTemplate) {
-    return ResponseEntity.ok(HomeworkTemplateHelperService.getHomeworkTemplateDetailsDto(returnedHomeworkTemplate));
+    return ResponseEntity.ok(
+        HomeworkTemplateHelperService.getHomeworkTemplateDetailsDto(returnedHomeworkTemplate));
   }
 
   private ExpectedResponseDetailsListDto getExpectedResponseDetailsListDto(

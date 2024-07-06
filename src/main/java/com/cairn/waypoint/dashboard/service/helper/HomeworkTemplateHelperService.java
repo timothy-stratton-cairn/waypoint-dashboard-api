@@ -13,7 +13,9 @@ import java.util.Objects;
 import java.util.Set;
 
 public class HomeworkTemplateHelperService {
-  public static HomeworkTemplateDetailsDto getHomeworkTemplateDetailsDto(HomeworkTemplate homeworkTemplate) {
+
+  public static HomeworkTemplateDetailsDto getHomeworkTemplateDetailsDto(
+      HomeworkTemplate homeworkTemplate) {
     return
         com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateDetailsDto.builder()
             .id(homeworkTemplate.getId())
@@ -37,15 +39,17 @@ public class HomeworkTemplateHelperService {
                             .isRequired(
                                 homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
                                     .getRequired())
-                            .expectedHomeworkResponses(HomeworkTemplateHelperService.getExpectedResponseDetailsListDto(
-                                homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                    .getExpectedHomeworkResponses()))
+                            .expectedHomeworkResponses(
+                                HomeworkTemplateHelperService.getExpectedResponseDetailsListDto(
+                                    homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
+                                        .getExpectedHomeworkResponses()))
                             .triggersProtocolCreation(
                                 homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
                                     .getTriggersProtocolCreation())
-                            .triggeringResponse(HomeworkTemplateHelperService.getExpectedResponseDetailsDto(
-                                homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                    .getTriggeringResponse()))
+                            .triggeringResponse(
+                                HomeworkTemplateHelperService.getExpectedResponseDetailsDto(
+                                    homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
+                                        .getTriggeringResponse()))
                             .triggeredProtocol(HomeworkTemplateHelperService.getTriggeredProtocol(
                                 homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
                                     .getTriggeredProtocol()))

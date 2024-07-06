@@ -20,9 +20,10 @@ public interface HomeworkMapper {
   @Mapping(source = "homeworkTemplate.description", target = "description")
   @Mapping(source = "modifiedBy", target = "modifiedBy")
   @Mapping(source = "homeworkTemplate", target = "homeworkTemplate")
-  @Mapping(source = "protocolStep", target = "associatedProtocolStep")
+  @Mapping(source = "protocolStep", target = "protocolStepLinkedHomework.homework")
   @Mapping(source = "householdId", target = "assignedHouseholdId")
 //  @Mapping(source = "modifiedBy", target = "homeworkQuestions.modifiedBy")
-  Homework templateToInstance(HomeworkTemplate homeworkTemplate, String modifiedBy, ProtocolStep protocolStep, Long householdId);
+  Homework templateToInstance(HomeworkTemplate homeworkTemplate, String modifiedBy,
+      ProtocolStep protocolStep, Long householdId);
 
 }

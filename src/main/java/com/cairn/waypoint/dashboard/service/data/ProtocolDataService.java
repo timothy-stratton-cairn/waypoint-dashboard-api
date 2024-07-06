@@ -3,6 +3,7 @@ package com.cairn.waypoint.dashboard.service.data;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
+import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import com.cairn.waypoint.dashboard.repository.ProtocolCommentaryRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolStepRepository;
@@ -86,6 +87,10 @@ public class ProtocolDataService {
   }
 
   public Protocol updateProtocol(Protocol protocolToBeUpdated) {
-    return this.protocolRepository.save(protocolToBeUpdated);
+    return this.protocolRepository.saveAndFlush(protocolToBeUpdated);
+  }
+
+  public List<Protocol> getAllScheduledProtocols() {
+    return this.protocolRepository.findByRecurrenceType(RecurrenceTypeEnum.ON_SCHEDULE);
   }
 }

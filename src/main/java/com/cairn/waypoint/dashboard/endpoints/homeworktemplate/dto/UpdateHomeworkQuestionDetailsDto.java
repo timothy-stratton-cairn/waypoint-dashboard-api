@@ -44,7 +44,8 @@ public class UpdateHomeworkQuestionDetailsDto {
       + "a List of Response Options, "
       + "and a Triggering Response.")
   public boolean isValidTriggeringRequest() {
-    return HomeworkQuestionHelperService.getIsValidTriggerRequest(this.triggerProtocolCreation, this.triggeredProtocolId,
+    return HomeworkQuestionHelperService.getIsValidTriggerRequest(this.triggerProtocolCreation,
+        this.triggeredProtocolId,
         this.responseOptions, this.triggeringResponse);
   }
 

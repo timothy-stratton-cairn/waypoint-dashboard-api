@@ -4,7 +4,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -33,18 +32,16 @@ public class Homework extends BaseEntity {
   private String name;
   private String description;
 
-  @OneToMany(mappedBy = "homework", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @OneToMany(mappedBy = "homework", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,
+      CascadeType.PERSIST})
   private Set<HomeworkResponse> homeworkQuestions;
 
   @JoinColumn(name = "homework_template_id", nullable = false)
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private HomeworkTemplate homeworkTemplate;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-  @JoinTable(name = "protocol_step_linked_homework",
-      joinColumns = @JoinColumn(name = "homework_id", referencedColumnName = "id"),
-      inverseJoinColumns = @JoinColumn(name = "protocol_step_id", referencedColumnName = "id"))
-  private ProtocolStep associatedProtocolStep;
+  @OneToOne(mappedBy = "homework", cascade = CascadeType.ALL, optional = false)
+  private ProtocolStepLinkedHomework protocolStepLinkedHomework;
 
   private Long assignedHouseholdId;
 

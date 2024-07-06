@@ -19,7 +19,10 @@ public interface HomeworkResponseMapper {
   @Mapping(target = "active", ignore = true)
   @Mapping(source = "modifiedBy", target = "modifiedBy")
   HomeworkResponse homeworkTemplateLinkedHomeworkQuestionToHomeworkResponse(
-      HomeworkTemplateLinkedHomeworkQuestion homeworkTemplateLinkedHomeworkQuestion, String modifiedBy);
+      HomeworkTemplateLinkedHomeworkQuestion homeworkTemplateLinkedHomeworkQuestion,
+      String modifiedBy);
 
-  HashSet<HomeworkResponse> homeworkTemplateLinkedHomeworkQuestionSetToHomeworkResponseSet(Set<HomeworkTemplateLinkedHomeworkQuestion> homeworkTemplateLinkedHomeworkQuestionSet, String modifiedBy);
+  HashSet<HomeworkResponse> homeworkTemplateLinkedHomeworkQuestionSetToHomeworkResponseSet(
+      Set<HomeworkTemplateLinkedHomeworkQuestion> homeworkTemplateLinkedHomeworkQuestionSet,
+      String modifiedBy);
 }

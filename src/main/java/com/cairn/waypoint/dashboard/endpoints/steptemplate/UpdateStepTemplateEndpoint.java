@@ -15,6 +15,7 @@ import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import com.cairn.waypoint.dashboard.service.data.StepTaskDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
@@ -65,7 +66,8 @@ public class UpdateStepTemplateEndpoint {
       HomeworkTemplateDataService homeworkTemplateDataService,
       StepTemplateCategoryDataService stepTemplateCategoryDataService,
       ProtocolStepDataService protocolStepDataService,
-      ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService) {
+      ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService,
+      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
     this.stepTemplateDataService = stepTemplateDataService;
     this.stepTaskDataService = stepTaskDataService;
     this.homeworkTemplateDataService = homeworkTemplateDataService;
@@ -74,7 +76,7 @@ public class UpdateStepTemplateEndpoint {
     this.protocolDataService = protocolDataService;
 
     protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService,
-        stepTemplateDataService, homeworkDataService);
+        stepTemplateDataService, homeworkDataService, protocolStepLinkedHomeworkService);
   }
 
   @Transactional

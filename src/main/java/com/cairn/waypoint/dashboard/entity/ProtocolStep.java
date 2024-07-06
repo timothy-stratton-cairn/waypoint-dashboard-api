@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,7 +45,7 @@ public class ProtocolStep extends BaseEntity {
   private StepStatusEnum status;
 
   @JoinColumn(name = "step_category_id")
-  @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private StepCategory category;
 
   @JoinColumn(name = "step_template_id", nullable = false)
@@ -55,11 +56,31 @@ public class ProtocolStep extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private StepTask linkedTask;
 
-  @OneToMany(mappedBy = "step",
-      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "step", cascade = CascadeType.ALL)
   private Set<ProtocolStepLinkedHomework> linkedHomework;
 
   @JoinColumn(name = "parent_protocol_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Protocol parentProtocol;
+
+  public Set<ProtocolStepLinkedHomework> getLinkedHomework() {
+    if (linkedHomework == null) {
+      linkedHomework = new HashSet<>();
+    }
+    return linkedHomework;
+  }
+
+  public void addLinkedHomework(ProtocolStepLinkedHomework linkedHomework) {
+    if (this.linkedHomework == null) {
+      this.linkedHomework = new HashSet<>();
+    }
+    this.linkedHomework.add(linkedHomework);
+  }
+
+  public Set<ProtocolStepNote> getNotes() {
+    if (notes == null) {
+      notes = new HashSet<>();
+    }
+    return notes;
+  }
 }

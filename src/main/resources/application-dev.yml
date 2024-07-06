@@ -6,6 +6,8 @@ waypoint:
       import-data-key-prefix: import-data/
       homework-response-key-prefix: homework/
       database-dump-prefix: database-dump/
+    protocol-triggering:
+      schedule: 0 * * * * *
 
 spring:
   security:

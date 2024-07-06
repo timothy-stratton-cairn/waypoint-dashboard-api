@@ -27,8 +27,8 @@ public class HomeworkHelperService {
         .name(homework.getName())
         .description(homework.getDescription())
         .parentProtocolId(
-            homework.getAssociatedProtocolStep().getParentProtocol().getId())
-        .parentProtocolStepId(homework.getAssociatedProtocolStep().getId())
+            homework.getProtocolStepLinkedHomework().getStep().getParentProtocol().getId())
+        .parentProtocolStepId(homework.getProtocolStepLinkedHomework().getStep().getId())
         .assignedHouseholdId(homework.getAssignedHouseholdId())
         .homeworkQuestions(HomeworkQuestionListDto.builder()
             .questions(homework.getHomeworkQuestions().stream()

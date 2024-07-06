@@ -17,7 +17,7 @@ public class RecurrenceTypeDataService {
     RecurrenceTypeDataService.availableStatuses.addAll(recurrenceTypeRepository.findAll());
 
     //Initialize the Enum
-    RecurrenceTypeEnum unused = RecurrenceTypeEnum.ON_COMPLETION;
+    RecurrenceTypeEnum unused = RecurrenceTypeEnum.ON_STATUS;
     unused = RecurrenceTypeEnum.ON_SCHEDULE;
     unused = RecurrenceTypeEnum.MANUAL;
   }

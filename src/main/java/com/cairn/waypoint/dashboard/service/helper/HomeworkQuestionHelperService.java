@@ -31,7 +31,8 @@ public class HomeworkQuestionHelperService {
 
   public static boolean getIsValidTriggerRequest(
       Boolean triggerProtocolCreation, Long triggeredProtocolId,
-      List<UpdateExpectedResponseDetailsDto> responseOptions, UpdateExpectedResponseDetailsDto triggeringResponse) {
+      List<UpdateExpectedResponseDetailsDto> responseOptions,
+      UpdateExpectedResponseDetailsDto triggeringResponse) {
     if (!triggerProtocolCreation) {
       return true;
     } else if (triggeredProtocolId == null) {

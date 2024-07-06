@@ -27,7 +27,7 @@ public class HomeworkResponse extends BaseEntity {
   private String response;
 
   @JoinColumn(name = "homework_question_id", nullable = false)
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   private HomeworkQuestion homeworkQuestion;
 
   @JoinColumn(name = "homework_id", nullable = false)

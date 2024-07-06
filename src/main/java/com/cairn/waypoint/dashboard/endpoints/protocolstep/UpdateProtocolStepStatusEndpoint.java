@@ -4,6 +4,8 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocolstep.dto.UpdateProtocolStepStatusDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
+import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
@@ -100,6 +102,13 @@ public class UpdateProtocolStepStatusEndpoint {
       ProtocolStep protocolStepToUpdate = optionalProtocolStepToUpdate.get();
 
       protocolStepToUpdate.setStatus(updateProtocolStepStatusDto.getStatus());
+      protocolStepToUpdate.getNotes().add(ProtocolStepNote.builder()
+          .modifiedBy(principal.getName())
+          .protocolStep(protocolStepToUpdate)
+          .note(updateProtocolStepStatusDto.getCompletionCondition())
+          .originalCommenter(principal.getName())
+          .noteType(ProtocolCommentTypeEnum.CONDITIONAL_COMPLETION_NOTE)
+          .build());
 
       ProtocolStep updatedProtocolStep = this.protocolStepDataService.saveProtocolStep(
           protocolStepToUpdate);

@@ -21,8 +21,10 @@ public class ProtocolCalculationHelperService {
   public static BigDecimal getProtocolCompletionPercentage(Protocol returnedProtocol) {
     if (!returnedProtocol.getProtocolSteps().isEmpty()) {
       List<BigDecimal> stepCompletionPercentages = returnedProtocol.getProtocolSteps().stream()
-          .filter(protocolStep -> protocolStep.getLinkedHomework() == null || protocolStep.getLinkedHomework()
-              .isEmpty())
+          .filter(protocolStep -> protocolStep.getLinkedHomework() == null
+              || protocolStep.getLinkedHomework()
+              .isEmpty() || protocolStep.getStatus().equals(StepStatusEnum.CONDITIONAL_COMPLETION)
+              || protocolStep.getStatus().equals(StepStatusEnum.DONE))
           .map(ProtocolStep::getStatus)
           .map(StepStatusEnum::getInstance)
           .map(StepStatus::getWeight)

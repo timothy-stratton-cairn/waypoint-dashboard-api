@@ -3,32 +3,23 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 import com.cairn.waypoint.dashboard.dto.authorization.HouseholdDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AddProtocolDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.LinkedHomeworksDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.RecurrenceDetailsDto;
-import com.cairn.waypoint.dashboard.mapper.ProtocolMapper;
-import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
+import com.cairn.waypoint.dashboard.mapper.ProtocolMapper;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
-import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -41,6 +32,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -72,12 +64,14 @@ public class AddProtocolEndpoint {
   public AddProtocolEndpoint(ProtocolDataService protocolDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateDataService stepTemplateDataService,
-      HomeworkDataService homeworkDataService, HouseholdDataService householdDataService) {
+      HomeworkDataService homeworkDataService, HouseholdDataService householdDataService,
+      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
     this.protocolDataService = protocolDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
-        protocolDataService, stepTemplateDataService, homeworkDataService);
+        protocolDataService, stepTemplateDataService, homeworkDataService,
+        protocolStepLinkedHomeworkService);
     this.householdDataService = householdDataService;
   }
 
@@ -109,6 +103,9 @@ public class AddProtocolEndpoint {
                   schema = @Schema(implementation = ErrorMessage.class))}),
           @ApiResponse(responseCode = "409", description = "Conflict",
               content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ErrorMessage.class))}),
+          @ApiResponse(responseCode = "422", description = "Unprocessable Entity",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
   public ResponseEntity<?> assignProtocol(
       @RequestBody AddProtocolDetailsDto addProtocolDetailsDto,
@@ -136,6 +133,11 @@ public class AddProtocolEndpoint {
       return generateFailureResponse("Protocol Template with ID [" +
               addProtocolDetailsDto.getProtocolTemplateId() + "] does not exists",
           HttpStatus.NOT_FOUND);
+    } else if (!protocolTemplateOptional.get().getStatus().equals(TemplateStatusEnum.LIVE)) {
+      return generateFailureResponse("Protocol Template with ID [" +
+              addProtocolDetailsDto.getProtocolTemplateId() + "] is not live"
+              + " and cannot be assigned",
+          HttpStatus.UNPROCESSABLE_ENTITY);
     } else {
       Protocol protocolToBeCreated = setupProtocolToBeCreated(protocolTemplateOptional.get(),
           principal.getName());
@@ -150,6 +152,14 @@ public class AddProtocolEndpoint {
           && protocolTemplateOptional.get().getDefaultDueByInMonths() == null
           && protocolTemplateOptional.get().getDefaultDueByInDays() == null) {
         protocolToBeCreated.setDueDate(null);
+      }
+
+      if (Objects.nonNull(addProtocolDetailsDto.getRecurrenceType())) {
+        protocolToBeCreated.setRecurrenceType(addProtocolDetailsDto.getRecurrenceType());
+        protocolToBeCreated.setTriggeringStatus(addProtocolDetailsDto.getTriggeringStatus());
+        protocolToBeCreated.setReoccurInYears(addProtocolDetailsDto.getReoccurInYears());
+        protocolToBeCreated.setReoccurInMonths(addProtocolDetailsDto.getReoccurInMonths());
+        protocolToBeCreated.setReoccurInDays(addProtocolDetailsDto.getReoccurInDays());
       }
 
       protocolToBeCreated.setGoal(addProtocolDetailsDto.getGoal());
@@ -214,17 +224,25 @@ public class AddProtocolEndpoint {
     protocolToBeCreated.setProtocolTemplate(protocolTemplate);
     protocolToBeCreated.setMarkedForAttention(Boolean.FALSE);
     protocolToBeCreated.setLastStatusUpdateTimestamp(LocalDateTime.now());
-    protocolToBeCreated.setStatus(ProtocolStatusEnum.IN_PROGRESS);
     protocolToBeCreated.setDueDate(
-        LocalDate.now() //Set DueDate based on the default on the template
-            .plusYears(protocolTemplate.getDefaultDueByInYears())
-            .plusMonths(protocolTemplate.getDefaultDueByInMonths())
-            .plusDays(protocolTemplate.getDefaultDueByInDays()));
+        protocolTemplate.getDefaultDueByInYears() == null
+            && protocolTemplate.getDefaultDueByInMonths() == null
+            && protocolTemplate.getDefaultDueByInDays() == null ?
+            null :
+            LocalDate.now() //Set DueDate based on the default on the template
+                .plusYears(protocolTemplate.getDefaultDueByInYears() == null ? 0
+                    : protocolTemplate.getDefaultDueByInYears())
+                .plusMonths(protocolTemplate.getDefaultDueByInMonths() == null ? 0
+                    : protocolTemplate.getDefaultDueByInMonths())
+                .plusDays(protocolTemplate.getDefaultDueByInDays() == null ? 0
+                    : protocolTemplate.getDefaultDueByInDays()));
     protocolToBeCreated.setRecurrenceType(protocolTemplate.getDefaultRecurrenceType());
     protocolToBeCreated.setTriggeringStatus(protocolTemplate.getDefaultTriggeringStatus());
     protocolToBeCreated.setReoccurInYears(protocolTemplate.getDefaultReoccurInYears());
     protocolToBeCreated.setReoccurInMonths(protocolTemplate.getDefaultReoccurInMonths());
     protocolToBeCreated.setReoccurInDays(protocolTemplate.getDefaultReoccurInDays());
+    //IMPORTANT - Must go AFTER setRecurrenceType()
+    protocolToBeCreated.setStatus(ProtocolStatusEnum.IN_PROGRESS);
 
     return protocolToBeCreated;
   }

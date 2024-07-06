@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -83,6 +84,12 @@ public class UpdateProtocolStatusEndpoint {
       protocolToUpdate.setModifiedBy(modifiedBy);
       protocolToUpdate.setStatus(ProtocolStatusEnum
           .valueOf(updateProtocolDetailsDto.getNewProtocolStatus()));
+
+      if (ProtocolStatusEnum
+          .valueOf(updateProtocolDetailsDto.getNewProtocolStatus())
+          == ProtocolStatusEnum.COMPLETED) {
+        protocolToUpdate.setCompletionDate(LocalDate.now());
+      }
 
       updatedProtocol = protocolDataService.updateProtocol(protocolToUpdate);
 
