@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountRolesListDto {
+public class RoleListDto {
 
-  private List<String> roles;
+  private List<RoleDto> roles;
+  private Integer numOfRoles;
 
   public Integer getNumOfRoles() {
-    return roles != null ? roles.size() : 0;
+    return roles.size();
   }
-
 }
