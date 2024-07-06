@@ -167,6 +167,14 @@ public class UpdateProtocolEndpoint {
       protocolToUpdate.setDueDate(updateProtocolDetailsDto.getDueDate());
     }
 
+    if (Objects.nonNull(updateProtocolDetailsDto.getRecurrenceType())) {
+      protocolToUpdate.setRecurrenceType(updateProtocolDetailsDto.getRecurrenceType());
+      protocolToUpdate.setTriggeringStatus(updateProtocolDetailsDto.getTriggeringStatus());
+      protocolToUpdate.setReoccurInYears(updateProtocolDetailsDto.getReoccurInYears());
+      protocolToUpdate.setReoccurInMonths(updateProtocolDetailsDto.getReoccurInMonths());
+      protocolToUpdate.setReoccurInDays(updateProtocolDetailsDto.getReoccurInDays());
+    }
+
     return protocolToUpdate;
   }
 

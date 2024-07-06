@@ -27,13 +27,16 @@ public class ProtocolTemplateLinkedStepTemplateDataService {
         protocolTemplateLinkedStepTemplates);
   }
 
-  public ProtocolTemplateLinkedStepTemplate saveProtocolTemplateLinkedStepTemplate(ProtocolTemplateLinkedStepTemplate protocolTemplateLinkedStepTemplate) {
-    return this.protocolTemplateLinkedStepTemplateRepository.save(protocolTemplateLinkedStepTemplate);
+  public ProtocolTemplateLinkedStepTemplate saveProtocolTemplateLinkedStepTemplate(
+      ProtocolTemplateLinkedStepTemplate protocolTemplateLinkedStepTemplate) {
+    return this.protocolTemplateLinkedStepTemplateRepository.save(
+        protocolTemplateLinkedStepTemplate);
   }
 
   public List<ProtocolTemplateLinkedStepTemplate> getProtocolTemplateLinkedStepTemplateByStepTemplate(
       StepTemplate stepTemplate) {
-    return this.protocolTemplateLinkedStepTemplateRepository.getProtocolTemplateLinkedStepTemplateByStepTemplate(stepTemplate);
+    return this.protocolTemplateLinkedStepTemplateRepository.getProtocolTemplateLinkedStepTemplateByStepTemplate(
+        stepTemplate);
   }
 
 }

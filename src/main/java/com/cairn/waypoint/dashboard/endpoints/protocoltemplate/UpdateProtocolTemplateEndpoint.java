@@ -3,11 +3,18 @@ package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.UpdateProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTemplateMapper;
+import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
+import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateLinkedStepTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
@@ -50,17 +57,25 @@ public class UpdateProtocolTemplateEndpoint {
   private final ProtocolTemplateLinkedStepTemplateDataService protocolTemplateLinkedStepTemplateDataService;
 
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
+  private final HomeworkTemplateDataService homeworkTemplateDataService;
+  private final HomeworkQuestionDataService homeworkQuestionDataService;
 
   public UpdateProtocolTemplateEndpoint(ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateDataService stepTemplateDataService,
       ProtocolTemplateLinkedStepTemplateDataService protocolTemplateLinkedStepTemplateDataService,
-      ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService) {
+      ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService,
+      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService,
+      HomeworkTemplateDataService homeworkTemplateDataService,
+      HomeworkQuestionDataService homeworkQuestionDataService) {
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.stepTemplateDataService = stepTemplateDataService;
     this.protocolTemplateLinkedStepTemplateDataService = protocolTemplateLinkedStepTemplateDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
-        protocolDataService, stepTemplateDataService, homeworkDataService);
+        protocolDataService, stepTemplateDataService, homeworkDataService,
+        protocolStepLinkedHomeworkService);
+    this.homeworkTemplateDataService = homeworkTemplateDataService;
+    this.homeworkQuestionDataService = homeworkQuestionDataService;
   }
 
   @Transactional
@@ -136,7 +151,7 @@ public class UpdateProtocolTemplateEndpoint {
 
       try {
         stepTemplates = populateAssociatedProtocolStepTemplateIfExists(
-            updateProtocolTemplateDetailsDto);
+            updateProtocolTemplateDetailsDto, protocolTemplateToBeUpdated.get());
       } catch (EntityNotFoundException e) {
         return generateFailureResponse(e.getMessage(), HttpStatus.NOT_FOUND);
       }
@@ -160,13 +175,16 @@ public class UpdateProtocolTemplateEndpoint {
   }
 
   private LinkedHashSet<StepTemplate> populateAssociatedProtocolStepTemplateIfExists(
-      UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto) {
+      UpdateProtocolTemplateDetailsDto updateProtocolTemplateDetailsDto,
+      ProtocolTemplate protocolTemplate) {
     if (updateProtocolTemplateDetailsDto.getAssociatedStepTemplateIds() != null) {
       return this.stepTemplateDataService
           .getStepTemplateEntitiesFromIdCollection(
               updateProtocolTemplateDetailsDto.getAssociatedStepTemplateIds());
     } else {
-      return null;
+      return protocolTemplate.getProtocolTemplateSteps().stream()
+          .map(ProtocolTemplateLinkedStepTemplate::getStepTemplate)
+          .collect(Collectors.toCollection(LinkedHashSet::new));
     }
   }
 
@@ -179,7 +197,8 @@ public class UpdateProtocolTemplateEndpoint {
 
     updatedProtocolTemplate.setModifiedBy(modifiedBy);
     updatedProtocolTemplate.setProtocolTemplateSteps(
-        updateProtocolStepTemplates(targetProtocolTemplate, stepTemplates, modifiedBy));
+        updateProtocolStepTemplates(targetProtocolTemplate, stepTemplates,
+            updatedProtocolTemplate.getStatus(), modifiedBy));
 
     this.protocolTemplateLinkedStepTemplateDataService
         .deleteCollectionOfProtocolTemplateLinkedStepTemplates(
@@ -192,15 +211,39 @@ public class UpdateProtocolTemplateEndpoint {
 
   private Set<ProtocolTemplateLinkedStepTemplate> updateProtocolStepTemplates(
       ProtocolTemplate protocolTemplate, LinkedHashSet<StepTemplate> stepTemplates,
+      TemplateStatusEnum assignedStatus,
       String modifiedBy) {
     if (stepTemplates == null) {
       return null;
     }
 
     //TODO here we need to first pulled the existing entities, reorder to the provided order
-    // and then reassociate those with the Protocol Template
+    // and then re-associate those with the Protocol Template
     AtomicInteger ordinalIndex = new AtomicInteger(0);
+
     return stepTemplates.stream()
+        .map(stepTemplate -> {
+          stepTemplate.setModifiedBy(modifiedBy);
+          stepTemplate.setStatus(assignedStatus);
+          return stepTemplateDataService.saveStepTemplate(stepTemplate);
+        })
+        .peek(stepTemplate -> stepTemplate.getStepTemplateLinkedHomeworks().stream()
+            .map(StepTemplateLinkedHomeworkTemplate::getHomeworkTemplate)
+            .forEach(homeworkTemplate -> {
+              homeworkTemplate.setModifiedBy(modifiedBy);
+              homeworkTemplate.setStatus(assignedStatus);
+              homeworkTemplateDataService.saveHomeworkTemplate(homeworkTemplate);
+            }))
+        .peek(stepTemplate -> stepTemplate.getStepTemplateLinkedHomeworks().stream()
+            .map(StepTemplateLinkedHomeworkTemplate::getHomeworkTemplate)
+            .map(HomeworkTemplate::getHomeworkQuestions)
+            .flatMap(Set::stream)
+            .map(HomeworkTemplateLinkedHomeworkQuestion::getHomeworkQuestion)
+            .forEach(homeworkQuestion -> {
+              homeworkQuestion.setModifiedBy(modifiedBy);
+              homeworkQuestion.setStatus(assignedStatus);
+              homeworkQuestionDataService.saveHomeworkQuestion(homeworkQuestion);
+            }))
         .map(stepTemplate -> ProtocolTemplateLinkedStepTemplate.builder()
             .modifiedBy(modifiedBy)
             .protocolTemplate(protocolTemplate)

@@ -4,6 +4,7 @@ import com.cairn.waypoint.dashboard.entity.converter.ProtocolStatusConverter;
 import com.cairn.waypoint.dashboard.entity.converter.RecurrenceTypeConverter;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
+import com.cairn.waypoint.dashboard.utility.protocoltriggering.StatusManager;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -58,7 +59,7 @@ public class Protocol extends BaseEntity {
   private LocalDateTime lastStatusUpdateTimestamp;
 
   @JoinColumn(name = "protocol_template_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   private ProtocolTemplate protocolTemplate;
 
   @Column(name = "recurrence_type_id")
@@ -77,4 +78,9 @@ public class Protocol extends BaseEntity {
   @JoinColumn(name = "parent_protocol_id")
   @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<ProtocolStep> protocolSteps;
+
+  public void setStatus(ProtocolStatusEnum status) {
+    this.status = status;
+    StatusManager.notify(this);
+  }
 }

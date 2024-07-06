@@ -24,11 +24,11 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "protocol_step_linked_homework")
 public class ProtocolStepLinkedHomework extends BaseEntity {
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "protocol_step_id", nullable = false)
   private ProtocolStep step;
 
-  @JoinColumn(name = "homework_id", nullable = false)
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinColumn(name = "homework_id", unique = true, nullable = false, updatable = false)
   private Homework homework;
 }

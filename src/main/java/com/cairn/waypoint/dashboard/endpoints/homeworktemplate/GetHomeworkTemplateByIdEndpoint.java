@@ -3,14 +3,13 @@ package com.cairn.waypoint.dashboard.endpoints.homeworktemplate;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDetailsListDto;
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkQuestionDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkQuestionDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.TriggeredProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+import com.cairn.waypoint.dashboard.service.helper.HomeworkTemplateHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -80,42 +79,7 @@ public class GetHomeworkTemplateByIdEndpoint {
   public ResponseEntity<HomeworkTemplateDetailsDto> generateSuccessResponse(
       HomeworkTemplate returnedHomeworkTemplate) {
     return ResponseEntity.ok(
-        HomeworkTemplateDetailsDto.builder()
-            .id(returnedHomeworkTemplate.getId())
-            .name(returnedHomeworkTemplate.getName())
-            .description(returnedHomeworkTemplate.getDescription())
-            .status(returnedHomeworkTemplate.getStatus().name())
-            .isMultiResponse(returnedHomeworkTemplate.getMultiResponse())
-            .homeworkQuestions(HomeworkQuestionDetailsListDto.builder()
-                .questions(returnedHomeworkTemplate.getHomeworkQuestions().stream()
-                    .map(
-                        homeworkTemplateLinkedHomeworkQuestion -> HomeworkQuestionDetailsDto.builder()
-                            .questionAbbreviation(
-                                homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                    .getQuestionAbbreviation())
-                            .question(homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                .getQuestion())
-                            .questionType(
-                                homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                    .getQuestionType().name())
-                            .isRequired(homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                .getRequired())
-                            .expectedHomeworkResponses(this.getExpectedResponseDetailsListDto(
-                                homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                    .getExpectedHomeworkResponses()))
-                            .triggersProtocolCreation(
-                                homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                    .getTriggersProtocolCreation())
-                            .triggeringResponse(this.getExpectedResponseDetailsDto(
-                                homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                    .getTriggeringResponse()))
-                            .triggeredProtocol(this.getTriggeredProtocol(
-                                homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
-                                    .getTriggeredProtocol()))
-                            .build())
-                    .toList())
-                .build())
-            .build());
+        HomeworkTemplateHelperService.getHomeworkTemplateDetailsDto(returnedHomeworkTemplate));
   }
 
   private ExpectedResponseDetailsListDto getExpectedResponseDetailsListDto(
