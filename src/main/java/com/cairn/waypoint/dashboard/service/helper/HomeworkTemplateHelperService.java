@@ -27,6 +27,8 @@ public class HomeworkTemplateHelperService {
                 .questions(homeworkTemplate.getHomeworkQuestions().stream()
                     .map(
                         homeworkTemplateLinkedHomeworkQuestion -> HomeworkQuestionDetailsDto.builder()
+                            .questionId(homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
+                                .getId())
                             .questionAbbreviation(
                                 homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
                                     .getQuestionAbbreviation())
@@ -53,6 +55,7 @@ public class HomeworkTemplateHelperService {
                             .triggeredProtocol(HomeworkTemplateHelperService.getTriggeredProtocol(
                                 homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
                                     .getTriggeredProtocol()))
+                            .status(homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion().getStatus().name())
                             .build())
                     .toList())
                 .build())

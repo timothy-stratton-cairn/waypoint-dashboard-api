@@ -1,7 +1,10 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto;
 
+import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
+import java.util.LinkedHashSet;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +23,16 @@ public class UpdateHomeworkTemplateDetailsDto {
   private String description;
 
   private Boolean isMultiResponse;
+  private String status;
 
-  @Valid
-  private List<UpdateHomeworkQuestionDetailsDto> homeworkQuestions;
+  private LinkedHashSet<Long> homeworkQuestionIds;
+
+  @JsonIgnore
+  public TemplateStatusEnum getTemplateStatus() {
+    try {
+      return TemplateStatusEnum.valueOf(status);
+    } catch (NullPointerException | IllegalArgumentException e) {
+      return null;
+    }
+  }
 }

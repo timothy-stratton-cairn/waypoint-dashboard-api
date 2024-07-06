@@ -7,6 +7,7 @@ import lombok.Data;
 @Builder
 public class HomeworkQuestionDetailsDto {
 
+  private Long questionId;
   private String questionAbbreviation;
   private String question;
   private String questionType;
@@ -15,4 +16,5 @@ public class HomeworkQuestionDetailsDto {
   private Boolean triggersProtocolCreation;
   private ExpectedResponseDetailsDto triggeringResponse;
   private TriggeredProtocolTemplateDetailsDto triggeredProtocol;
+  private String status;
 }
