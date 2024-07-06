@@ -148,8 +148,10 @@ public class UpdateHomeworkTemplateEndpoint {
           }
         }
       } else {
-        updatedHomeworkTemplate.getHomeworkQuestions().stream().map(HomeworkTemplateLinkedHomeworkQuestion::getHomeworkQuestion)
-            .forEach(homeworkQuestion -> homeworkQuestion.setStatus(updatedHomeworkTemplate.getStatus()));
+        updatedHomeworkTemplate.getHomeworkQuestions().stream()
+            .map(HomeworkTemplateLinkedHomeworkQuestion::getHomeworkQuestion)
+            .forEach(homeworkQuestion -> homeworkQuestion.setStatus(
+                updatedHomeworkTemplate.getStatus()));
       }
 
       this.homeworkTemplateDataService.saveHomeworkTemplate(updatedHomeworkTemplate);

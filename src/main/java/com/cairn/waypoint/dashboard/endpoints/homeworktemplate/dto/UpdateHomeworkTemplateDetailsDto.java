@@ -2,10 +2,8 @@ package com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto;
 
 import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import java.util.LinkedHashSet;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

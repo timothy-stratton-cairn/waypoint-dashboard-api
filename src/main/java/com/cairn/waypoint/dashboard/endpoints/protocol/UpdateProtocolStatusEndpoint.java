@@ -95,10 +95,10 @@ public class UpdateProtocolStatusEndpoint {
           .valueOf(updateProtocolDetailsDto.getNewProtocolStatus())
           == ProtocolStatusEnum.COMPLETED_CONDITIONALLY) {
         if (updateProtocolDetailsDto.getConditionalCompletionComment() == null ||
-        updateProtocolDetailsDto.getConditionalCompletionComment().isEmpty()) {
+            updateProtocolDetailsDto.getConditionalCompletionComment().isEmpty()) {
           return generateFailureResponse("To Conditionally Complete a Protocol,"
                   + " a comment must be provided giving the reason for the conditional completion.",
-                  HttpStatus.BAD_REQUEST);
+              HttpStatus.BAD_REQUEST);
         }
         protocolToUpdate.getComments().add(ProtocolCommentary.builder()
             .modifiedBy(modifiedBy)

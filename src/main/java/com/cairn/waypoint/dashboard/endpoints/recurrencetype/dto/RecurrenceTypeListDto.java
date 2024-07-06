@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.endpoints.recurrencetype.dto;
 
-import com.cairn.waypoint.dashboard.endpoints.stepstatus.dto.StepStatusDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;

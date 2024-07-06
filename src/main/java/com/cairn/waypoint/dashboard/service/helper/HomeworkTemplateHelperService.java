@@ -55,7 +55,8 @@ public class HomeworkTemplateHelperService {
                             .triggeredProtocol(HomeworkTemplateHelperService.getTriggeredProtocol(
                                 homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
                                     .getTriggeredProtocol()))
-                            .status(homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion().getStatus().name())
+                            .status(homeworkTemplateLinkedHomeworkQuestion.getHomeworkQuestion()
+                                .getStatus().name())
                             .build())
                     .toList())
                 .build())

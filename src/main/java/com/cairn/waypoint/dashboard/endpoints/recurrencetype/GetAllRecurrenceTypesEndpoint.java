@@ -2,10 +2,7 @@ package com.cairn.waypoint.dashboard.endpoints.recurrencetype;
 
 import com.cairn.waypoint.dashboard.endpoints.recurrencetype.dto.RecurrenceTypeDto;
 import com.cairn.waypoint.dashboard.endpoints.recurrencetype.dto.RecurrenceTypeListDto;
-import com.cairn.waypoint.dashboard.endpoints.stepstatus.dto.StepStatusDto;
-import com.cairn.waypoint.dashboard.endpoints.stepstatus.dto.StepStatusListDto;
 import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
-import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
