@@ -7,5 +7,7 @@ import lombok.Data;
 @Builder
 public class StepStatusDto {
 
+  private Long id;
   private String status;
+  private String description;
 }

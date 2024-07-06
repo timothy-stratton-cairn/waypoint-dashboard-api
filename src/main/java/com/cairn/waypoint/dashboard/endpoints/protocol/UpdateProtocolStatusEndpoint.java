@@ -3,6 +3,8 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.UpdateProtocolStatusDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -89,6 +91,22 @@ public class UpdateProtocolStatusEndpoint {
           .valueOf(updateProtocolDetailsDto.getNewProtocolStatus())
           == ProtocolStatusEnum.COMPLETED) {
         protocolToUpdate.setCompletionDate(LocalDate.now());
+      } else if (ProtocolStatusEnum
+          .valueOf(updateProtocolDetailsDto.getNewProtocolStatus())
+          == ProtocolStatusEnum.COMPLETED_CONDITIONALLY) {
+        if (updateProtocolDetailsDto.getConditionalCompletionComment() == null ||
+        updateProtocolDetailsDto.getConditionalCompletionComment().isEmpty()) {
+          return generateFailureResponse("To Conditionally Complete a Protocol,"
+                  + " a comment must be provided giving the reason for the conditional completion.",
+                  HttpStatus.BAD_REQUEST);
+        }
+        protocolToUpdate.getComments().add(ProtocolCommentary.builder()
+            .modifiedBy(modifiedBy)
+            .originalCommenter(modifiedBy)
+            .comment(updateProtocolDetailsDto.getConditionalCompletionComment())
+            .commentType(ProtocolCommentTypeEnum.CONDITIONAL_COMPLETION_NOTE)
+            .protocol(protocolToUpdate)
+            .build());
       }
 
       updatedProtocol = protocolDataService.updateProtocol(protocolToUpdate);
@@ -98,7 +116,7 @@ public class UpdateProtocolStatusEndpoint {
               + updatedProtocol.getName() + "] updated successfully");
     } catch (IllegalArgumentException e) {
       return generateFailureResponse("Provided Protocol Status [ " +
-              updateProtocolDetailsDto.getNewProtocolStatus() + "does not exist",
+              updateProtocolDetailsDto.getNewProtocolStatus() + " does not exist",
           HttpStatus.BAD_REQUEST);
     }
   }

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class UpdateProtocolStatusDto {
 
   private String newProtocolStatus;
+  private String conditionalCompletionComment;
 }

@@ -61,4 +61,6 @@ databaseChangeLog:
       file: db/changelog/2024-07-05-add-protocol-status-to-system.yaml
   - include:
       file: db/changelog/2024-07-05-update-protocol-step-statuses-to-active.yaml
+  - include:
+      file: db/changelog/2024-07-05-add-conditional-completion-protocol-status.yaml
 

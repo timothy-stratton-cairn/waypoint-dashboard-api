@@ -5,7 +5,7 @@ import com.cairn.waypoint.dashboard.service.data.ProtocolStatusDataService;
 import jakarta.persistence.EntityNotFoundException;
 
 public enum ProtocolStatusEnum {
-  IN_PROGRESS, COMPLETED, COMPLETED_WITH_TRIGGERED_RECURRENCE, ARCHIVED;
+  IN_PROGRESS, COMPLETED, COMPLETED_WITH_TRIGGERED_RECURRENCE, COMPLETED_CONDITIONALLY, ARCHIVED;
 
   private ProtocolStatus instance;
 

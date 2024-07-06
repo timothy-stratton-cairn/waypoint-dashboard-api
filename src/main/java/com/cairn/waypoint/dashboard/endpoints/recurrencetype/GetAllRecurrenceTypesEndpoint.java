@@ -1,7 +1,10 @@
-package com.cairn.waypoint.dashboard.endpoints.stepstatus;
+package com.cairn.waypoint.dashboard.endpoints.recurrencetype;
 
+import com.cairn.waypoint.dashboard.endpoints.recurrencetype.dto.RecurrenceTypeDto;
+import com.cairn.waypoint.dashboard.endpoints.recurrencetype.dto.RecurrenceTypeListDto;
 import com.cairn.waypoint.dashboard.endpoints.stepstatus.dto.StepStatusDto;
 import com.cairn.waypoint.dashboard.endpoints.stepstatus.dto.StepStatusListDto;
+import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,33 +24,33 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Tag(name = "Protocol Step Status")
-public class GetAllStepStatusesEndpoint {
+public class GetAllRecurrenceTypesEndpoint {
 
-  public static final String PATH = "/api/protocol-step/status";
+  public static final String PATH = "/api/protocol-template/recurrence-type";
 
   @GetMapping(PATH)
-  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.step.status.full', 'SCOPE_admin.full')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_protocol.template.full', 'SCOPE_admin.full')")
   @Operation(
-      summary = "Retrieves all step statuses.",
-      description = "Retrieves all step statuses. Requires the `protocol.step.status.full` permission.",
+      summary = "Retrieves all recurrence types.",
+      description = "Retrieves all recurrence types. Requires the `protocol.template.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
               content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = StepStatusListDto.class))}),
+                  schema = @Schema(implementation = RecurrenceTypeListDto.class))}),
           @ApiResponse(responseCode = "401", description = "Unauthorized",
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})})
-  public ResponseEntity<StepStatusListDto> getAllStepStatuses(Principal principal) {
-    log.info("User [{}] is Retrieving All Step Statuses", principal.getName());
+  public ResponseEntity<RecurrenceTypeListDto> getAllRecurrenceTypes(Principal principal) {
+    log.info("User [{}] is Retrieving All Recurrence Types", principal.getName());
     return ResponseEntity.ok(
-        StepStatusListDto.builder()
-            .statuses(Stream.of(StepStatusEnum.values())
-                .map(stepStatusEnum -> StepStatusDto.builder()
-                    .id(stepStatusEnum.getInstance().getId())
-                    .status(stepStatusEnum.name())
-                    .description(stepStatusEnum.getInstance().getDescription())
+        RecurrenceTypeListDto.builder()
+            .recurrenceTypes(Stream.of(RecurrenceTypeEnum.values())
+                .map(recurrenceTypeEnum -> RecurrenceTypeDto.builder()
+                    .id(recurrenceTypeEnum.getInstance().getId())
+                    .recurrenceType(recurrenceTypeEnum.name())
+                    .description(recurrenceTypeEnum.getInstance().getDescription())
                     .build())
                 .toList())
             .build()
