@@ -14,18 +14,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-#          issuer-uri: http://192.168.1.52:8082
           issuer-uri: http://host.docker.internal:8082
   application:
     name: waypoint-dashboard-api
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://192.168.1.52:3306/dashboard?useSSL=false
-    username: tstratton
-    password: Tlotrap2d.
-#    url: jdbc:mysql://host.docker.internal:3306/dashboard?useSSL=false
-#    username: docker
-#    password:
+    url: jdbc:mysql://host.docker.internal:3306/dashboard?useSSL=false
+    username: docker
+    password:
     hikari:
       poolName: Hikari
       auto-commit: true

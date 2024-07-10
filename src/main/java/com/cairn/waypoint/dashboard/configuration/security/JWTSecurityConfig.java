@@ -19,10 +19,11 @@ public class JWTSecurityConfig {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers("/swagger-ui/**").permitAll()
-            .requestMatchers("/v3/api-docs/**").permitAll()
             .requestMatchers(DownloadFileEndpoint.PATH).permitAll()
             .requestMatchers(DownloadDBBackupFileEndpoint.PATH).permitAll()
+            .requestMatchers("/swagger-ui/**").permitAll()
+            .requestMatchers("/v3/api-docs/**").permitAll()
+            .requestMatchers("/health").permitAll()
             .anyRequest().authenticated()
         )
         .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));

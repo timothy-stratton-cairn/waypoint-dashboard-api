@@ -8,7 +8,13 @@ waypoint:
       database-dump-prefix: ${DB_DUMP_KEY_PREFIX}
     protocol-triggering:
       schedule: 0 0 0 * * *
-
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        #Endpoints need to be configured in WebSecurityConfiguration class
+        include: health
 spring:
   security:
     oauth2:
