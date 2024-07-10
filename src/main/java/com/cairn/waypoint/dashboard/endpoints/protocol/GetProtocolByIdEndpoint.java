@@ -140,6 +140,7 @@ public class GetProtocolByIdEndpoint {
                                     .build() : null)
                             .category(
                                 protocolStep.getCategory().getStepTemplateCategory().getName())
+                            .stepTemplateId(protocolStep.getTemplate().getId())
                             .build())
                         .collect(Collectors.toList()))
                     .build())

@@ -121,6 +121,7 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                                     .category(
                                         protocolStep.getCategory().getStepTemplateCategory()
                                             .getName())
+                                    .stepTemplateId(protocolStep.getTemplate().getId())
                                     .build())
                                 .collect(Collectors.toList()))
                             .build())

@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Protocol Step Template Category")
 public class AddStepTemplateCategoryEndpoint {
 
-
   public static final String PATH = "/api/protocol-step-template-category";
 
   private final StepTemplateCategoryDataService stepTemplateCategoryDataService;

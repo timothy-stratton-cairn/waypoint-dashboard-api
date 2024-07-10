@@ -12,6 +12,7 @@ public class ProtocolStepDto {
   private String description;
   private String status;
   private String category;
+  private Long stepTemplateId;
   private LinkedHomeworksDto linkedHomeworks;
   private ProtocolStepNoteListDto stepNotes;
 }

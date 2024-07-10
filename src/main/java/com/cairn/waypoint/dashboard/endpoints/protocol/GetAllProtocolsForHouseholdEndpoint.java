@@ -125,6 +125,7 @@ public class GetAllProtocolsForHouseholdEndpoint {
                                             .category(
                                                 protocolStep.getCategory().getStepTemplateCategory()
                                                     .getName())
+                                            .stepTemplateId(protocolStep.getTemplate().getId())
                                             .build())
                                         .collect(Collectors.toList()))
                                     .build())
