@@ -3,11 +3,13 @@ package com.cairn.waypoint.dashboard.service.data;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
+import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import com.cairn.waypoint.dashboard.repository.ProtocolCommentaryRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolStepRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -92,5 +94,12 @@ public class ProtocolDataService {
 
   public List<Protocol> getAllScheduledProtocols() {
     return this.protocolRepository.findByRecurrenceType(RecurrenceTypeEnum.ON_SCHEDULE);
+  }
+
+  public List<Protocol> getAllUpcomingProtocols(LocalDate limitingDate) {
+    return this.protocolRepository.findAllUpcomingProtocolsToDate(limitingDate,
+        ProtocolStatusEnum.IN_PROGRESS.getInstance().getId(),
+        ProtocolStatusEnum.COMPLETED.getInstance().getId(),
+        RecurrenceTypeEnum.ON_SCHEDULE.getInstance().getId());
   }
 }

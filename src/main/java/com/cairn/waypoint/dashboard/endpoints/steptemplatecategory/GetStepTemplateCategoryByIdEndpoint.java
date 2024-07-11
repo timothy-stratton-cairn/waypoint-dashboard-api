@@ -49,7 +49,8 @@ public class GetStepTemplateCategoryByIdEndpoint {
   @GetMapping(PATH)
   public ResponseEntity<?> getStepTemplateCategoryById(@PathVariable Long stepTemplateCategoryId,
       Principal principal) {
-    log.info("User [{}] is Retrieving Protocol Step Template Category with ID [{}]", principal.getName(),
+    log.info("User [{}] is Retrieving Protocol Step Template Category with ID [{}]",
+        principal.getName(),
         stepTemplateCategoryId);
 
     final ResponseEntity<?>[] response = new ResponseEntity<?>[1];
