@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Tag(name = "File Download")
-public class DownloadFileEndpoint {
+public class DownloadHomeworkResponseEndpoint {
 
   public static final String PATH = "/api/file/homework-response/{fileGuid}";
   private final S3FileUpload s3FileUpload;
@@ -36,7 +36,7 @@ public class DownloadFileEndpoint {
   @Value("${waypoint.dashboard.s3.homework-response-key-prefix}")
   private String homeworkResponseKeyPrefix;
 
-  public DownloadFileEndpoint(S3FileUpload s3FileUpload,
+  public DownloadHomeworkResponseEndpoint(S3FileUpload s3FileUpload,
       HomeworkResponseDataService homeworkResponseDataService) {
     this.s3FileUpload = s3FileUpload;
     this.homeworkResponseDataService = homeworkResponseDataService;

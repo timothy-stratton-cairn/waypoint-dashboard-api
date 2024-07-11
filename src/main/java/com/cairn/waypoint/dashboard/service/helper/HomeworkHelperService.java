@@ -1,6 +1,6 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
-import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadFileEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadHomeworkResponseEndpoint;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.ExpectedResponseDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.ExpectedResponseListDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkDto;
@@ -39,7 +39,7 @@ public class HomeworkHelperService {
                     .question(homeworkResponse.getHomeworkQuestion().getQuestion())
                     .userResponse(homeworkResponse.getHomeworkQuestion().getQuestionType().equals(
                         QuestionTypeEnum.FILE) ? homeworkResponse.getFileGuid() == null ? null
-                        : baseUrl + DownloadFileEndpoint.PATH
+                        : baseUrl + DownloadHomeworkResponseEndpoint.PATH
                             .replace("{fileGuid}", homeworkResponse.getFileGuid()) :
                         homeworkResponse.getResponse())
                     .isRequired(homeworkResponse.getHomeworkQuestion().getRequired())

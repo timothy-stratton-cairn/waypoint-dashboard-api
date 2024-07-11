@@ -24,7 +24,8 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = false, exclude = {"parentProtocol", "notes", "linkedHomework"})
+@EqualsAndHashCode(callSuper = false, exclude = {"parentProtocol", "notes", "attachments",
+    "linkedHomework"})
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
@@ -37,6 +38,10 @@ public class ProtocolStep extends BaseEntity {
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocolStep", cascade = {CascadeType.MERGE,
       CascadeType.PERSIST})
   private Set<ProtocolStepNote> notes;
+
+  @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocolStep", cascade = {CascadeType.MERGE,
+      CascadeType.PERSIST})
+  private Set<ProtocolStepAttachment> attachments;
 
   private Integer ordinalIndex;
 
@@ -82,5 +87,12 @@ public class ProtocolStep extends BaseEntity {
       notes = new HashSet<>();
     }
     return notes;
+  }
+
+  public Set<ProtocolStepAttachment> getAttachments() {
+    if (attachments == null) {
+      attachments = new HashSet<>();
+    }
+    return attachments;
   }
 }

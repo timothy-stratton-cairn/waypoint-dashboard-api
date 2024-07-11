@@ -110,6 +110,7 @@ public interface ProtocolMapper {
                             .build())
                         .toList())
                     .build())
+                //TODO here we can add the attachments but it's not straightforward as the baseURL comes from properties
                 .status(protocolStep.getStatus().getInstance().getName())
                 .linkedHomeworks(protocolStep.getLinkedHomework() != null ?
                     LinkedHomeworksDto.builder()

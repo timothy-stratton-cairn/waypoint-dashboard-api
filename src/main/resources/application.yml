@@ -6,6 +6,7 @@ waypoint:
       import-data-key-prefix: ${IMPORT_KEY_PREFIX}
       homework-response-key-prefix: ${HOMEWORK_RESPONSE_KEY_PREFIX}
       database-dump-prefix: ${DB_DUMP_KEY_PREFIX}
+      step-attachment-key-prefix: ${STEP_ATTACHMENT_KEY_PREFIX}
     protocol-triggering:
       schedule: 0 0 0 * * *
 management:

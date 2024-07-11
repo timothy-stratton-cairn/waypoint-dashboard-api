@@ -15,4 +15,5 @@ public class ProtocolStepDto {
   private Long stepTemplateId;
   private LinkedHomeworksDto linkedHomeworks;
   private ProtocolStepNoteListDto stepNotes;
+  private ProtocolStepAttachmentListDto stepAttachments;
 }

@@ -63,4 +63,6 @@ databaseChangeLog:
       file: db/changelog/2024-07-05-update-protocol-step-statuses-to-active.yaml
   - include:
       file: db/changelog/2024-07-05-add-conditional-completion-protocol-status.yaml
+  - include:
+      file: db/changelog/2024-07-10-add-protocol-step-attachments-to-protocol-step-notes-table.yaml
 

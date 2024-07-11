@@ -1,10 +1,13 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
+import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadStepAttachmentEndpoint;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.LinkedHomeworksDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepAttachmentDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepAttachmentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
@@ -24,6 +27,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,8 +41,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class GetAllUpcomingProtocolsEndpoint {
 
   public static final String PATH = "/api/protocol/upcoming";
-
   private final ProtocolDataService protocolDataService;
+  @Value("${waypoint.dashboard.base-url}")
+  private String baseUrl;
 
   public GetAllUpcomingProtocolsEndpoint(ProtocolDataService protocolDataService) {
     this.protocolDataService = protocolDataService;
@@ -112,6 +117,18 @@ public class GetAllUpcomingProtocolsEndpoint {
                                                 .takenBy(protocolStepNote.getOriginalCommenter())
                                                 .note(protocolStepNote.getNote())
                                                 .build())
+                                            .toList())
+                                        .build())
+                                    .stepAttachments(ProtocolStepAttachmentListDto.builder()
+                                        .attachments(protocolStep.getAttachments().stream()
+                                            .map(
+                                                protocolStepAttachment -> ProtocolStepAttachmentDto.builder()
+                                                    .filename(protocolStepAttachment.getFilename())
+                                                    .downloadUrl(baseUrl
+                                                        + DownloadStepAttachmentEndpoint.PATH.replace(
+                                                        "{fileGuid}",
+                                                        protocolStepAttachment.getFileGuid()))
+                                                    .build())
                                             .toList())
                                         .build())
                                     .status(protocolStep.getStatus().getInstance().getName())
