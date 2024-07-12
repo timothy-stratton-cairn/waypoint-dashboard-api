@@ -147,6 +147,10 @@ public class UpdateHomeworkTemplateEndpoint {
             }
           }
         }
+      } else if (updateHomeworkTemplateDetailsDto.getHomeworkQuestionIds() != null) {
+        updatedHomeworkTemplate.getHomeworkQuestions()
+            .forEach(homeworkTemplateLinkedHomeworkQuestion ->
+                homeworkTemplateLinkedHomeworkQuestion.setActive(Boolean.FALSE));
       } else {
         updatedHomeworkTemplate.getHomeworkQuestions().stream()
             .map(HomeworkTemplateLinkedHomeworkQuestion::getHomeworkQuestion)

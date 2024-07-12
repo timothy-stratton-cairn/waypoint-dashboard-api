@@ -9,6 +9,7 @@ waypoint:
       step-attachment-key-prefix: step-attachments/
     protocol-triggering:
       schedule: 0 * * * * *
+    email-notification-queue-url: https://sqs.us-east-1.amazonaws.com/471112975273/dev-test-queue
 
 spring:
   security:

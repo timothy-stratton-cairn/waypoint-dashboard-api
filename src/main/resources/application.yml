@@ -9,6 +9,7 @@ waypoint:
       step-attachment-key-prefix: ${STEP_ATTACHMENT_KEY_PREFIX}
     protocol-triggering:
       schedule: 0 0 0 * * *
+    email-notification-queue-url: ${EMAIL_NOTIFICATION_QUEUE_URL}
 management:
   endpoints:
     web:
