@@ -52,7 +52,7 @@ public class AttachFileToProtocolStepEndpoint {
   }
 
   @Transactional
-  @PostMapping(PATH)
+  @PostMapping(value = PATH, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to attach a file a protocol step.",
