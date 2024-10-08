@@ -85,6 +85,7 @@ public class GetProtocolByIdEndpoint {
   public ResponseEntity<ProtocolDetailsDto> generateSuccessResponse(Protocol returnedProtocol) {
     return ResponseEntity.ok(
         ProtocolDetailsDto.builder()
+        
             .id(returnedProtocol.getId())
             .name(returnedProtocol.getName())
             .description(returnedProtocol.getDescription())
@@ -93,6 +94,7 @@ public class GetProtocolByIdEndpoint {
             .createdAt(returnedProtocol.getCreated())
             .dueBy(returnedProtocol.getDueDate())
             .completedOn(returnedProtocol.getCompletionDate())
+            
             .protocolComments(ProtocolCommentListDto.builder()
                 .comments(returnedProtocol.getComments().stream()
                     .map(protocolComment -> ProtocolCommentDto.builder()
@@ -104,9 +106,12 @@ public class GetProtocolByIdEndpoint {
                         .build())
                     .toList())
                 .build())
+            
+            
             .needsAttention(returnedProtocol.getMarkedForAttention())
             .lastStatusUpdateTimestamp(returnedProtocol.getLastStatusUpdateTimestamp())
             .status(returnedProtocol.getStatus().name())
+            
             .nextInstance(RecurrenceDetailsDto.builder()
                 .recurrenceType(returnedProtocol.getRecurrenceType().name())
                 .triggeringStatus(returnedProtocol.getTriggeringStatus() == null ? null
@@ -115,9 +120,12 @@ public class GetProtocolByIdEndpoint {
                 .willReoccurInMonths(returnedProtocol.getReoccurInMonths())
                 .willReoccurInDays(returnedProtocol.getReoccurInDays())
                 .build())
+            
+            
             .completionPercentage(
                 ProtocolCalculationHelperService.getProtocolCompletionPercentage(returnedProtocol))
             .assignedHouseholdId(returnedProtocol.getAssignedHouseholdId())
+            
             .associatedSteps(
                 AssociatedStepsListDto.builder()
                     .steps(returnedProtocol.getProtocolSteps().stream()
@@ -161,6 +169,8 @@ public class GetProtocolByIdEndpoint {
                             .build())
                         .collect(Collectors.toList()))
                     .build())
+            
+            
             .build());
   }
 

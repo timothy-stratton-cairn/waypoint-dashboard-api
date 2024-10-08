@@ -16,10 +16,12 @@ import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
+import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
@@ -90,7 +92,7 @@ public interface ProtocolMapper {
         .build();
   }
 
-  @Named("protocolSteps")
+  /*@Named("protocolSteps")
   default AssociatedStepsListDto protocolSteps(Set<ProtocolStep> protocolSteps) {
     return AssociatedStepsListDto.builder()
         .steps(protocolSteps.stream()
@@ -125,5 +127,75 @@ public interface ProtocolMapper {
                 .build())
             .collect(Collectors.toList()))
         .build();
+  }*/
+  @Named("protocolSteps")
+  default AssociatedStepsListDto protocolSteps(Set<ProtocolStep> protocolSteps) {
+      if (protocolSteps == null || protocolSteps.isEmpty()) {
+          return AssociatedStepsListDto.builder().steps(null).build();
+      }
+
+      return AssociatedStepsListDto.builder()
+          .steps(protocolSteps.stream()
+              .map(this::mapProtocolStepToDto)
+              .collect(Collectors.toList()))
+          .build();
   }
+
+  private ProtocolStepDto mapProtocolStepToDto(ProtocolStep protocolStep) {
+      return ProtocolStepDto.builder()
+          .id(protocolStep.getId())
+          .name(protocolStep.getName())
+          .description(protocolStep.getDescription())
+          .stepNotes(mapProtocolStepNotesToDto(protocolStep.getNotes()))
+          .status(mapProtocolStepStatus(protocolStep))
+          .linkedHomeworks(mapLinkedHomeworks(protocolStep))
+          .category(protocolStep.getCategory().getStepTemplateCategory().getName())
+          .stepTemplateId(protocolStep.getTemplate().getId())
+          .build();
+  }
+
+  private ProtocolStepNoteListDto mapProtocolStepNotesToDto(Set<ProtocolStepNote> notes) {
+      if (notes == null || notes.isEmpty()) {
+          return ProtocolStepNoteListDto.builder().notes(null).build();
+      }
+
+      return ProtocolStepNoteListDto.builder()
+          .notes(notes.stream()
+              .map(this::mapProtocolStepNoteToDto)
+              .collect(Collectors.toList()))
+          .build();
+  }
+
+  private ProtocolStepNoteDto mapProtocolStepNoteToDto(ProtocolStepNote protocolStepNote) {
+      return ProtocolStepNoteDto.builder()
+          .noteId(protocolStepNote.getId())
+          .takenAt(protocolStepNote.getCreated())
+          .takenBy(protocolStepNote.getOriginalCommenter())
+          .note(protocolStepNote.getNote())
+          .build();
+  }
+
+  private String mapProtocolStepStatus(ProtocolStep protocolStep) {
+      return Optional.ofNullable(protocolStep)
+          .map(ProtocolStep::getStatus)
+          .map(status -> status.getInstance().getName())
+          .orElse(null);
+  }
+
+  private LinkedHomeworksDto mapLinkedHomeworks(ProtocolStep protocolStep) {
+      if (protocolStep.getLinkedHomework() == null || protocolStep.getLinkedHomework().isEmpty()) {
+          return null;
+      }
+
+      Set<Long> homeworkIds = protocolStep.getLinkedHomework().stream()
+          .map(ProtocolStepLinkedHomework::getHomework)
+          .map(Homework::getId)
+          .collect(Collectors.toSet());
+
+      return LinkedHomeworksDto.builder()
+          .homeworkIds(homeworkIds)
+          .build();
+  }
+
+  
 }
