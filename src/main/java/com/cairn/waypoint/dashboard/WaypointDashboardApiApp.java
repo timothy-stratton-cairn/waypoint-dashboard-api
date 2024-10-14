@@ -22,7 +22,7 @@ public class WaypointDashboardApiApp {
 
   public static void main(String[] args) {
     SpringApplication app = new SpringApplication(WaypointDashboardApiApp.class);
-    app.setAdditionalProfiles("default");
+    app.setAdditionalProfiles("dev");
     app.run(args);
     log.info("App is running...");
   }

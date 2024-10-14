@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: update-protocol-and-homework-tables
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol
+              ADD COLUMN `assigned_household_id` bigint NOT NULL AFTER `protocol_status_id`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE homework
+              ADD COLUMN `assigned_household_id` bigint NOT NULL AFTER `description`;
+  - changeSet:
+      id: drop-protocol-user-and-homework-user-tables
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE `protocol_user`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE `homework_user`;

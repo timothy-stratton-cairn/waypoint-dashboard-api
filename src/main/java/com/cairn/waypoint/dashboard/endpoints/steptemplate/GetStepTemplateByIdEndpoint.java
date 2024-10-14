@@ -6,6 +6,7 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateD
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTaskDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper.StepTemplateMapper;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
@@ -111,17 +112,7 @@ public class GetStepTemplateByIdEndpoint {
           .build();
     }
 
-    return ResponseEntity.ok(
-        StepTemplateDetailsDto.builder()
-            .id(returnedStepTemplate.getId())
-            .name(returnedStepTemplate.getName())
-            .description(returnedStepTemplate.getDescription())
-            .status(returnedStepTemplate.getStatus().name())
-            .linkedStepTask(stepTaskDetailsDto)
-            .linkedHomeworkTemplates(homeworkTemplateDetailsListDto)
-            .category(categoryDetailsDto)
-            .build()
-    );
+    return ResponseEntity.ok(StepTemplateMapper.INSTANCE.toDetailsDto(returnedStepTemplate));
   }
 
   public ResponseEntity<ErrorMessage> generateFailureResponse(Long stepTemplateId) {

@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: remove-ordinal-index-from-homework-question-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE homework_question
+              DROP COLUMN `ordinal_index`;

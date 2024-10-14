@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: create-protocol-template-category-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `template_category`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `template_category` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` text DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy25h64bjwo05923f32f` (`name`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  - changeSet:
+      id: add-column-to-protocol-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_template
+              ADD `category_id` bigint DEFAULT NULL AFTER `status_id`,
+              ADD CONSTRAINT `FK22tpvuk2d68kxt02f4v4v4v2nt` FOREIGN KEY (`category_id`) REFERENCES `template_category` (`id`);
+  - changeSet:
+      id: add-template-categories
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO template_category (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Lifecycle', 'Template is life-cycle based', 1)
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO template_category (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Event Driven', 'Template is event-driven', 1)
+  - changeSet:
+      id: add-statuses
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: UPDATE protocol_template SET category_id = (SELECT id FROM template_category WHERE name = 'Lifecycle');

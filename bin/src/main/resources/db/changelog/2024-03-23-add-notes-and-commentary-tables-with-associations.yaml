@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-notes-and-commentary-tables
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_commentary` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) NOT NULL,
+              `original_commenter` text NOT NULL,
+              `comment` varchar(255) NOT NULL,
+              `protocol_id` bigint NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r774` FOREIGN KEY (`protocol_id`) REFERENCES `protocol` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step_note` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) NOT NULL,
+              `original_commenter` varchar(255) NOT NULL,
+              `note` text NOT NULL,
+              `protocol_step_id` bigint NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r794` FOREIGN KEY (`protocol_step_id`) REFERENCES `protocol_step` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  - changeSet:
+      id: populate-notes-and-commentary-tables-with-existing-notes-and-comments
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO `protocol_commentary` (`created`, `updated`, `modified_by`, `original_commenter`, `comment`, `protocol_id`, `active`)
+              SELECT NOW(), NOW(), 'liquibase', `modified_by`, `comment`, id, 1 FROM protocol WHERE `comment` IS NOT NULL
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO `protocol_step_note` (`created`, `updated`, `modified_by`, `original_commenter`, `note`, `protocol_step_id`, `active`)
+              SELECT NOW(), NOW(), 'liquibase', `modified_by`, `notes`, id, 1 FROM protocol_step WHERE `notes` IS NOT NULL
+  - changeSet:
+      id: drop-comment-and-note-columns-from-protocol-and-protocol-step-tables
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `protocol` DROP COLUMN `comment`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `protocol_step` DROP COLUMN `notes`;

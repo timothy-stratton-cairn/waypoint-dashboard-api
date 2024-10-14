@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-protocol-status
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO protocol_status (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Completed With Triggered Recurrence', 'Protocol was completed by the triggering system. A new recurrence was made and the previous occurrence was automatically completed', 1)
+        - sql:
+            dbms: 'h2, mysql'
+            sql: UPDATE recurrence_type SET name = 'On Status', description = 'New occurrence triggers on the configured status' WHERE name = 'On Completion'

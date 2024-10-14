@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: create-protocol-status-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_status`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_status` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` text DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy25h64bjwo059g92h5` (`name`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  - changeSet:
+      id: add-column-to-protocol-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol 
+              ADD `protocol_status_id` bigint DEFAULT NULL AFTER `completion_date`,
+              ADD CONSTRAINT `FK22tpvuk2d68kxt0qmydhl02nt` FOREIGN KEY (`protocol_status_id`) REFERENCES `protocol_status` (`id`);
+  - changeSet:
+      id: add-protocol-statuses
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO protocol_status (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'In Progress', 'Protocol is In Progress', 1)
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO protocol_status (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Completed', 'Protocol is Completed, but not yet Archived', 1)
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO protocol_status (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Archived', 'Protocol is Archived', 1)
+        - sql:
+            dbms: 'h2, mysql'
+            sql: UPDATE protocol SET protocol_status_id = (SELECT id FROM protocol_status WHERE name = 'In Progress');

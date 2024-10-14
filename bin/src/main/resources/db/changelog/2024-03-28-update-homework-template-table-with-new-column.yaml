@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-multi-response-column-to-homework-template
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE homework_template
+              ADD `multi_response` bit(1) NOT NULL AFTER `description`;
