@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-columns-and-rename-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_homework RENAME protocol_step_linked_homework;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_linked_homework DROP FOREIGN KEY `FK587suy45fy6ipqxoxcvpyq4a3`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_linked_homework DROP FOREIGN KEY `FKlsmp50ewlw802qyyavo1pqgr3`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_linked_homework DROP KEY `FKlsmp50ewlw802qyyavo1pqgr3`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_linked_homework DROP PRIMARY KEY;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_linked_homework
+              ADD `id` bigint NOT NULL AUTO_INCREMENT FIRST,
+              ADD `created` datetime DEFAULT CURRENT_TIMESTAMP AFTER `id`,
+              ADD `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER `created`,
+              ADD `modified_by` varchar(255) DEFAULT NULL AFTER `updated`,
+              ADD `active` bit(1) DEFAULT NULL AFTER `homework_id`,
+              ADD PRIMARY KEY (`id`),
+              ADD KEY `FKos6qejhkyqx3ugym74exy2857` (`protocol_step_id`, `homework_id`);
+        - sql:
+            dbms: 'h2, mysql'
+            sql: UPDATE protocol_step_linked_homework SET modified_by = 'system', active = 1 WHERE 1=1

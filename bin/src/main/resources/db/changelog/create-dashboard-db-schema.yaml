@@ -1,0 +1,406 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: create-homework-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `homework_template`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `homework_template` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy8i564bjwo0592y52l` (`name`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-step-task-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_step_task`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step_task` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `executable_reference` varchar(1000) DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy82y54bjwo059g752l` (`name`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_template`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_template` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy8i52b53wo059g752l` (`name`)
+              ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `comment` varchar(255) DEFAULT NULL,
+              `protocol_template_id` bigint DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r735` FOREIGN KEY (`protocol_template_id`) REFERENCES `protocol_template` (`id`)
+              ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-step-status-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_step_status`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step_status` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy25h64bjwo059g752l` (`name`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-step-template-category-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_step_template_category`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step_template_category` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `responsible_user_id` bigint DEFAULT NULL,
+              `responsible_role_id` bigint DEFAULT NULL,
+              `accountable_user_id` bigint DEFAULT NULL,
+              `accountable_role_id` bigint DEFAULT NULL,
+              `consulted_user_id` bigint DEFAULT NULL,
+              `consulted_role_id` bigint DEFAULT NULL,
+              `informed_user_id` bigint DEFAULT NULL,
+              `informed_role_id` bigint DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy8i564bj33h69g752l` (`name`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-step-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_step_template`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step_template` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `linked_step_task_id` bigint DEFAULT NULL,
+              `linked_homework_template_id` bigint DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy8i564bjwo059g722l` (`name`),
+              CONSTRAINT `FK22tpvuk2d68kxt0qmydhlvt56` FOREIGN KEY (`linked_homework_template_id`) REFERENCES `homework_template` (`id`),
+              CONSTRAINT `FK4g4uwhxfuvdd01wx304a4xbx8` FOREIGN KEY (`linked_step_task_id`) REFERENCES `protocol_step_task` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-step-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_step`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `notes` varchar(255) DEFAULT NULL,
+              `ordinal_index` int NOT NULL,
+              `step_template_id` bigint NOT NULL,
+              `linked_step_task_id` bigint DEFAULT NULL,
+              `parent_protocol_id` bigint NOT NULL,
+              `step_status_id` bigint DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `FKsuie9h1b5jwc3lx3kjd3n0ns5` (`parent_protocol_id`),
+              CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r7i5` FOREIGN KEY (`step_status_id`) REFERENCES `protocol_step_status` (`id`),
+              CONSTRAINT `FKbyta9ws8xsvjgdqc9dqx94c5` FOREIGN KEY (`linked_step_task_id`) REFERENCES `protocol_step_task` (`id`),
+              CONSTRAINT `FKm1b5qn5t96nc5ermsf3uhhhxj` FOREIGN KEY (`step_template_id`) REFERENCES `protocol_step_template` (`id`),
+              CONSTRAINT `FKsuie9h1b5jwc3lx3kjd3n0ns5` FOREIGN KEY (`parent_protocol_id`) REFERENCES `protocol` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-homework-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `homework`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `homework` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `homework_template_id` bigint NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              CONSTRAINT `FKsumwaex33g39yqw3i5rvjyh3u` FOREIGN KEY (`homework_template_id`) REFERENCES `homework_template` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-homework-question-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `homework_question`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `homework_question` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `question_abbreviation` varchar(255) DEFAULT NULL,
+              `question` varchar(255) DEFAULT NULL,
+              `next_homework_question_id` bigint DEFAULT NULL,
+              `parent_homework_template_id` bigint NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              CONSTRAINT `FKk4776ya7tn1j64uwosh9984it` FOREIGN KEY (`next_homework_question_id`) REFERENCES `homework_question` (`id`),
+              CONSTRAINT `FKmykehcokwv5bieihrwp5vgt1v` FOREIGN KEY (`parent_homework_template_id`) REFERENCES `homework_template` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-homework-response-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `homework_response`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `homework_response` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `response` varchar(255) DEFAULT NULL,
+              `homework_id` bigint NOT NULL,
+              `homework_question_id` bigint NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `FKp5h432bwdql5g96h4yclkvso5` (`homework_id`),
+              CONSTRAINT `FK8kr97pv37hbfpbjumcw0td6ua` FOREIGN KEY (`homework_question_id`) REFERENCES `homework_question` (`id`),
+              CONSTRAINT `FKp5h432bwdql5g96h4yclkvso5` FOREIGN KEY (`homework_id`) REFERENCES `homework` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-homework-template-homework-question-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `homework_template_homework_question`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `homework_template_homework_question` (
+              `homework_question_id` bigint NOT NULL,
+              `homework_template_id` bigint NOT NULL,
+              PRIMARY KEY (`homework_question_id`,`homework_template_id`),
+              KEY `FKlsmp50ewlw802qyyavo1pqgrm` (`homework_template_id`),
+              CONSTRAINT `FK587suy45fy6ipqxoxcvpyq4as` FOREIGN KEY (`homework_question_id`) REFERENCES `homework_question` (`id`),
+              CONSTRAINT `FKlsmp50ewlw802qyyavo1pqgrm` FOREIGN KEY (`homework_template_id`) REFERENCES `homework_template` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-step-template-homework-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `step_template_homework_template`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `step_template_homework_template` (
+              `protocol_step_template_id` bigint NOT NULL,
+              `homework_template_id` bigint NOT NULL,
+              PRIMARY KEY (`protocol_step_template_id`,`homework_template_id`),
+              KEY `FKlsmp50ewlw802qyyavo1pqgr2` (`homework_template_id`),
+              CONSTRAINT `FK587suy45fy6ipqxoxcvpyq4a2` FOREIGN KEY (`protocol_step_template_id`) REFERENCES `protocol_step_template` (`id`),
+              CONSTRAINT `FKlsmp50ewlw802qyyavo1pqgr2` FOREIGN KEY (`homework_template_id`) REFERENCES `homework_template` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-homework-user-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `homework_user`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `homework_user` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `homework_id` bigint NOT NULL,
+              `user_id` bigint NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `FKos6qejhkyqx3ugym74exyrc55` (`homework_id`),
+              CONSTRAINT `FKos6qejhkyqx3ugym74exyrc55` FOREIGN KEY (`homework_id`) REFERENCES `homework` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-step-task-protocol-step-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_step_task_protocol_step`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step_task_protocol_step` (
+              `protocol_step_id` bigint NOT NULL,
+              `protocol_step_task_id` bigint NOT NULL,
+              KEY `FK3wjtbaxb7odfm9hjcli3k0ipm` (`protocol_step_id`),
+              KEY `FK7ejvfexov6s7p2tpgj0fj982u` (`protocol_step_task_id`),
+              CONSTRAINT `FK3wjtbaxb7odfm9hjcli3k0ipm` FOREIGN KEY (`protocol_step_id`) REFERENCES `protocol_step` (`id`),
+              CONSTRAINT `FK7ejvfexov6s7p2tpgj0fj982u` FOREIGN KEY (`protocol_step_task_id`) REFERENCES `protocol_step_task` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-user-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_user`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_user` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `protocol_id` bigint NOT NULL,
+              `user_id` bigint NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `FK5cttlnehswd4hrchqqp0ocy5a` (`protocol_id`),
+              CONSTRAINT `FK5cttlnehswd4hrchqqp0ocy5a` FOREIGN KEY (`protocol_id`) REFERENCES `protocol` (`id`)
+              ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-step-homework-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_step_homework`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step_homework` (
+              `protocol_step_id` bigint NOT NULL,
+              `homework_id` bigint NOT NULL,
+              PRIMARY KEY (`protocol_step_id`,`homework_id`),
+              KEY `FKlsmp50ewlw802qyyavo1pqgr3` (`homework_id`),
+              CONSTRAINT `FK587suy45fy6ipqxoxcvpyq4a3` FOREIGN KEY (`protocol_step_id`) REFERENCES `protocol_step` (`id`),
+              CONSTRAINT `FKlsmp50ewlw802qyyavo1pqgr3` FOREIGN KEY (`homework_id`) REFERENCES `homework` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+  - changeSet:
+      id: create-protocol-template-linked-step-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `protocol_template_linked_step_template`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_template_linked_step_template` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `protocol_template_id` bigint NOT NULL,
+              `step_template_id` bigint NOT NULL,
+              `ordinal_index` int NOT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              KEY `FKos6qejhkyqx3ugym74exyrc55` (`protocol_template_id`, `step_template_id`),
+              CONSTRAINT `FKos6qejhkyqx3ugym74exyrc35` FOREIGN KEY (`protocol_template_id`) REFERENCES `protocol_template` (`id`),
+              CONSTRAINT `FKos6qejhkyqx3ugym74exyrc45` FOREIGN KEY (`step_template_id`) REFERENCES `protocol_step_template` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-column-to-protocol-step-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_template ADD `protocol_step_template_category_id` bigint DEFAULT NULL AFTER `linked_homework_template_id`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_template ADD CONSTRAINT `FK22tpvuk2d68kxt0qmydhlv242` FOREIGN KEY (`protocol_step_template_category_id`) REFERENCES `protocol_step_template_category` (`id`);
+  - changeSet:
+      id: create-protocol-step-category-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_step_category` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `protocol_step_template_category_id` bigint NOT NULL,
+              `responsible_user_id` bigint DEFAULT NULL,
+              `responsible_role_id` bigint DEFAULT NULL,
+              `accountable_user_id` bigint DEFAULT NULL,
+              `accountable_role_id` bigint DEFAULT NULL,
+              `consulted_user_id` bigint DEFAULT NULL,
+              `consulted_role_id` bigint DEFAULT NULL,
+              `informed_user_id` bigint DEFAULT NULL,
+              `informed_role_id` bigint DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              CONSTRAINT `FK22tpvuk2d68kxt0qmydhlv325` FOREIGN KEY (`protocol_step_template_category_id`) REFERENCES `protocol_step_template_category` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  - changeSet:
+      id: add-column-to-protocol-step-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step ADD `step_category_id` bigint DEFAULT NULL AFTER `step_status_id`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step ADD CONSTRAINT `FK22tpvuk2d68kxt0qmydhlv758` FOREIGN KEY (`step_category_id`) REFERENCES `protocol_step_category` (`id`);
+

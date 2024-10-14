@@ -1,0 +1,69 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: drop-columns-and-tables
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS homework_template_homework_question;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE homework_question
+              DROP FOREIGN KEY `FKk4776ya7tn1j64uwosh9984it`,
+              DROP COLUMN `next_homework_question_id`;
+  - changeSet:
+      id: create-homework-question-type-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `homework_question_type` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `type` varchar(255) DEFAULT NULL,
+              `type_class_reference` varchar(500) DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy25h64bjwo059g7254` (`type`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  - changeSet:
+      id: create-homework-question-expected-response-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `homework_question_expected_response` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` varchar(255) DEFAULT NULL,
+              `ordinal_index` int NOT NULL,
+              `parent_homework_question_id` bigint DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy25h64bjwo059g7854` (`name`),
+              CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r1155` FOREIGN KEY (`parent_homework_question_id`) REFERENCES `homework_question` (`id`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  - changeSet:
+      id: add-columns
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE homework_question
+              ADD `homework_question_type_id` bigint NOT NULL AFTER `question`,
+              ADD `required` bit(1) NOT NULL AFTER `homework_question_type_id`,
+              ADD `triggers_protocol_creation` bit(1) NOT NULL AFTER `required`,
+              ADD `triggering_response_id` bigint DEFAULT NULL AFTER `triggers_protocol_creation`,
+              ADD `triggered_protocol_template_id` bigint DEFAULT NULL AFTER `triggering_response_id`,
+              ADD `ordinal_index` int NOT NULL AFTER `triggered_protocol_template_id`,
+              ADD CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r3572` FOREIGN KEY (`homework_question_type_id`) REFERENCES `homework_question_type` (`id`),
+              ADD CONSTRAINT `FK4lbs8w4uppklsv5i66cs5r1515` FOREIGN KEY (`triggering_response_id`) REFERENCES `homework_question_expected_response` (`id`),
+              ADD CONSTRAINT `FK4lbs8w4uppklsv5i66cs563843` FOREIGN KEY (`triggered_protocol_template_id`) REFERENCES `protocol_template` (`id`);

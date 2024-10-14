@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-protocol-status
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO protocol_status (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Completed Conditionally', 'Protocol was completed conditionally, with a provided reason.', 1)

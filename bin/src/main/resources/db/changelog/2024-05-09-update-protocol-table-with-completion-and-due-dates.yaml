@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: update-protocol-table-completion-due-dates
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol
+              ADD COLUMN `due_date` date DEFAULT NULL AFTER `goal_progress`,
+              ADD COLUMN `completion_date` date DEFAULT NULL AFTER `due_date`;

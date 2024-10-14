@@ -1,0 +1,90 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: create-protocol-status-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `template_status`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `template_status` (
+              `id` bigint NOT NULL AUTO_INCREMENT,
+              `created` datetime DEFAULT CURRENT_TIMESTAMP,
+              `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              `modified_by` varchar(255) DEFAULT NULL,
+              `name` varchar(255) DEFAULT NULL,
+              `description` text DEFAULT NULL,
+              `active` bit(1) DEFAULT NULL,
+              PRIMARY KEY (`id`),
+              UNIQUE KEY `UK_c71yadhy25h64bjwo059g923g5` (`name`)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  - changeSet:
+      id: add-column-to-protocol-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_template
+              ADD `status_id` bigint DEFAULT NULL AFTER `description`,
+              ADD CONSTRAINT `FK22tpvuk2d68kxt0qmyd2gg42nt` FOREIGN KEY (`status_id`) REFERENCES `template_status` (`id`);
+  - changeSet:
+      id: add-column-to-step-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE protocol_step_template
+              ADD `status_id` bigint DEFAULT NULL AFTER `protocol_step_template_category_id`,
+              ADD CONSTRAINT `FK22tpvuk2d68kxt0qmy23gg42nt` FOREIGN KEY (`status_id`) REFERENCES `template_status` (`id`);
+  - changeSet:
+      id: add-column-to-homework-template-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE homework_template
+              ADD `status_id` bigint DEFAULT NULL AFTER `multi_response`,
+              ADD CONSTRAINT `FK22tpvuk2d68kxt0qmy22fv52nt` FOREIGN KEY (`status_id`) REFERENCES `template_status` (`id`);
+  - changeSet:
+      id: add-column-to-homework-question-table
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE homework_question
+              ADD `status_id` bigint DEFAULT NULL AFTER `triggered_protocol_template_id`,
+              ADD CONSTRAINT `FK22tpvuk2d68kxt0q2vv5v52nt` FOREIGN KEY (`status_id`) REFERENCES `template_status` (`id`);
+  - changeSet:
+      id: add-template-statuses
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO template_status (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Inactive', 'Template has been created but is not live', 1)
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO template_status (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Live', 'Template is live and ready for use', 1)
+        - sql:
+            dbms: 'h2, mysql'
+            sql: INSERT INTO template_status (`modified_by`, `name`, `description`, `active`) VALUES ('liquibase', 'Archived', 'Template is Archived', 1)
+  - changeSet:
+      id: add-statuses
+      author: tstratton
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: UPDATE protocol_template SET status_id = (SELECT id FROM template_status WHERE name = 'LIVE');
+        - sql:
+            dbms: 'h2, mysql'
+            sql: UPDATE protocol_step_template SET status_id = (SELECT id FROM template_status WHERE name = 'LIVE');
+        - sql:
+            dbms: 'h2, mysql'
+            sql: UPDATE homework_template SET status_id = (SELECT id FROM template_status WHERE name = 'LIVE');
+        - sql:
+            dbms: 'h2, mysql'
+            sql: UPDATE homework_question SET status_id = (SELECT id FROM template_status WHERE name = 'LIVE');
+
