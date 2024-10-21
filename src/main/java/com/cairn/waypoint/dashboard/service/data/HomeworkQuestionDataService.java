@@ -32,6 +32,10 @@ public class HomeworkQuestionDataService {
     return this.homeworkQuestionRepository.findByTriggeredProtocol(protocolTemplate);
   }
 
+  public List<HomeworkQuestion> getHomeworkQuestionByCategory(Long categoryId){      
+  	  return this.homeworkQuestionRepository.getHomeworkQuestionByCategory_Id(categoryId);
+    }
+  
   public Optional<HomeworkQuestion> findByQuestion(String question) {
     return this.homeworkQuestionRepository.findByQuestion(question);
   }

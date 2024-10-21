@@ -31,6 +31,8 @@ public class Homework extends BaseEntity {
 
   private String name;
   private String description;
+  private Boolean active;
+
 
   @OneToMany(mappedBy = "homework", fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,
       CascadeType.PERSIST})

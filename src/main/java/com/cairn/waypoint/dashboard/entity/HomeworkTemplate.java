@@ -31,6 +31,7 @@ public class HomeworkTemplate extends BaseEntity {
   private String description;
 
   private Boolean multiResponse;
+  private Boolean active;
 
   @OneToMany(mappedBy = "homeworkTemplate",
       cascade = {CascadeType.MERGE, CascadeType.PERSIST})

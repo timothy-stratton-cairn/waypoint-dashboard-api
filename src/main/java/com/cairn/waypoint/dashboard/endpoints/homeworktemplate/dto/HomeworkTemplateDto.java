@@ -12,5 +12,6 @@ public class HomeworkTemplateDto {
   private String description;
   private String status;
   private Boolean isMultiResponse;
+  private Boolean active;
   private Integer numberOfQuestionsInHomework;
 }

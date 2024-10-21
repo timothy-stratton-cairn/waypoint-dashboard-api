@@ -14,4 +14,6 @@ public class HomeworkDto {
   private Long assignedHouseholdId;
   private Long parentProtocolId;
   private Long parentProtocolStepId;
+  private Long categoryId;
+  private Boolean active; 
 }

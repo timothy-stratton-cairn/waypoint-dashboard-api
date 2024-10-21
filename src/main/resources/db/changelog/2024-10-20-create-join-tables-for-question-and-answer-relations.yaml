@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+
+  - changeSet:
+      id: create-question-to-protocol-templates-table
+      author: wanderson
+      changes:
+        - sql:
+            dbms: mysql
+            sql: |
+              CREATE TABLE `question_to_protocol_templates` (
+                `template_id` BIGINT NOT NULL,
+                `question_id` BIGINT NOT NULL,
+                PRIMARY KEY (`template_id`, `question_id`),
+                CONSTRAINT `fk_question_to_protocol_templates_template` FOREIGN KEY (`template_id`) REFERENCES `protocol_templates` (`id`) ON DELETE CASCADE,
+                CONSTRAINT `fk_question_to_protocol_templates_question` FOREIGN KEY (`question_id`) REFERENCES `homework_question` (`id`) ON DELETE CASCADE
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+        - sql:
+            dbms: 'h2, mysql'
+            sql: |
+              CREATE TABLE `responses_to_protocols` (
+                `protocol_id` BIGINT NOT NULL,
+                `response_id` BIGINT NOT NULL,
+                PRIMARY KEY (`protocol_id`, `response_id`),
+                CONSTRAINT `fk_responses_to_protocols_protocol` FOREIGN KEY (`protocol_id`) REFERENCES `protocol` (`id`) ON DELETE CASCADE,
+                CONSTRAINT `fk_responses_to_protocols_response` FOREIGN KEY (`response_id`) REFERENCES `homework_response` (`id`) ON DELETE CASCADE
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  - changeSet:
+      id: insert-homework-category-entries
+      author: wanderson
+      changes:
+        - sql:
+            dbms: mysql
+            sql: |
+              INSERT INTO `homework_category` (`name`, `description`, `active`)
+              VALUES 
+                ('demographic', 'Category for demographic information', 1),
+                ('insurance', 'Category for insurance information', 1),
+                ('expenses', 'Category for expenses tracking', 1),
+                ('income', 'Category for income tracking', 1);

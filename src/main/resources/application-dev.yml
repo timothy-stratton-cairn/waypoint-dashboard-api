@@ -33,6 +33,7 @@ spring:
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
   liquibase:
+    drop-first: true
     enabled: true
   jpa:
     hibernate:

@@ -65,4 +65,13 @@ databaseChangeLog:
       file: db/changelog/2024-07-05-add-conditional-completion-protocol-status.yaml
   - include:
       file: db/changelog/2024-07-10-add-protocol-step-attachments-to-protocol-step-notes-table.yaml
+  - include:
+      file: db/changelog/2024-10-15-add-label-to-homework-question-table.yaml
+  - include:
+      file: db/changelog/2024-10-16-create-category-table.yaml
+  - include:
+      file: db/changelog/2024-10-16-add-category-to-homework.yaml
+  - include:
+      file: db/changelog/2024-10-20-create-join-tables-for-question-and-answer-relations.yaml
+
 

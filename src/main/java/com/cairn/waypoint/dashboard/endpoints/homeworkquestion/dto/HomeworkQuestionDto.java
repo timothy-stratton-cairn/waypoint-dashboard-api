@@ -11,4 +11,6 @@ public class HomeworkQuestionDto {
   private String questionAbbr;
   private String question;
   private String status;
+  private Long categoryId;
+  private Boolean active;
 }

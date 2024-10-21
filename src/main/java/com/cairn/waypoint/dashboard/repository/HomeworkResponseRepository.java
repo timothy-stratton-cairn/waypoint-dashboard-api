@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.repository;
 
+import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import java.util.List;
@@ -11,4 +12,6 @@ public interface HomeworkResponseRepository extends JpaRepository<HomeworkRespon
   Optional<HomeworkResponse> findHomeworkResponseByFileGuid(String fileGuid);
 
   List<HomeworkResponse> findHomeworkResponseByHomeworkQuestion(HomeworkQuestion homeworkQuestion);
+
+  List<HomeworkResponse> getHomeworkResponseByCategory_Id(Long categoryId);
 }

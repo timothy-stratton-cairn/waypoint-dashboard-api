@@ -11,5 +11,8 @@ public interface HomeworkQuestionRepository extends JpaRepository<HomeworkQuesti
   Optional<HomeworkQuestion> findByQuestion(String question);
 
   List<HomeworkQuestion> findByTriggeredProtocol(ProtocolTemplate protocolTemplate);
+ 
+
+  List<HomeworkQuestion> getHomeworkQuestionByCategory_Id(Long categoryId);
 
 }

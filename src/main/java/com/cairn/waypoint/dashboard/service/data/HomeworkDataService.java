@@ -1,6 +1,7 @@
 package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.Homework;
+import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.repository.HomeworkRepository;
 import java.util.List;
@@ -31,4 +32,5 @@ public class HomeworkDataService {
   public List<Homework> getHomeworkByHomeworkTemplate(HomeworkTemplate homeworkTemplate) {
     return this.homeworkRepository.findByHomeworkTemplate(homeworkTemplate);
   }
+  
 }

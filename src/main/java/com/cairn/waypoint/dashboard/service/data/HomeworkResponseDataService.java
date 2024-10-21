@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.service.data;
 
+import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.repository.HomeworkResponseRepository;
@@ -28,4 +29,8 @@ public class HomeworkResponseDataService {
       HomeworkQuestion homeworkQuestion) {
     return this.homeworkResponseRepository.findHomeworkResponseByHomeworkQuestion(homeworkQuestion);
   }
+  
+  public List<HomeworkResponse> getHomeworkResponseByCategory(Long categoryId){      
+  	  return this.homeworkResponseRepository.getHomeworkResponseByCategory_Id(categoryId);
+    }
 }

@@ -36,6 +36,12 @@ public class HomeworkResponse extends BaseEntity {
 
   private String fileGuid;
   private Integer ordinalIndex;
+  
+  @JoinColumn(name = "category_id", nullable =false )
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private HomeworkCategory category;
+  
+  private Boolean active;
 
   //usage: new HomeworkResponse().getResponse(QuestionTypeEnum.DATE.getDataType());
   @SuppressWarnings("unchecked")
