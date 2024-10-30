@@ -36,7 +36,7 @@ public class HomeworkQuestion extends BaseEntity {
   private String questionAbbreviation;
   private String question;
   private String label;
-  private String userResponse;
+  //private String userResponse;
 
   @Column(name = "homework_question_type_id")
   @Convert(converter = QuestionTypeConverter.class)

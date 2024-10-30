@@ -19,6 +19,6 @@ public class HomeworkQuestionDto {
   private String questionType;
   private Long categoryId;
   private Boolean triggersProtocolCreation;
-  private ProtocolTemplate triggeredProtocol;
+  private ProtocolTemplateDto triggeredProtocol;
   private ExpectedResponseListDto expectedHomeworkResponses;
 }

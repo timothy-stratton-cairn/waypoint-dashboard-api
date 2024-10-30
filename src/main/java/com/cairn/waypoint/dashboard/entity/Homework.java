@@ -52,5 +52,6 @@ public class Homework extends BaseEntity {
         .sorted(Comparator.comparing(HomeworkResponse::getOrdinalIndex))
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
+
 }
 

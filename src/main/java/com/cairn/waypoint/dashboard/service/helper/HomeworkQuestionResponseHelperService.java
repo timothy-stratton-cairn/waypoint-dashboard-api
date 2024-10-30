@@ -1,9 +1,11 @@
 package com.cairn.waypoint.dashboard.service.helper;
+import org.springframework.stereotype.Service;
+
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.UpdateHomeworkResponseDetailsDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.service.data.ExpectedResponseDataService;
 
-
+@Service
 @SuppressWarnings("DuplicatedCode")
 public class HomeworkQuestionResponseHelperService {
 
@@ -15,7 +17,7 @@ public class HomeworkQuestionResponseHelperService {
   
   public UpdateHomeworkResponseDetailsDto generateHomeworkQuestionResponseDto(HomeworkResponse response) {
 	  return UpdateHomeworkResponseDetailsDto.builder()
-			  .questionId(response.getHomework().getId())
+			  .questionId(response.getHomeworkQuestion().getId())
 			  .userResponse(response.getResponse())
 			  .build();
   }

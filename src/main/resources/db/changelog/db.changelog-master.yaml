@@ -75,3 +75,4 @@ databaseChangeLog:
       file: db/changelog/2024-10-20-create-join-tables-for-question-and-answer-relations.yaml
 
 
+
