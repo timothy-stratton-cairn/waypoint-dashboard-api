@@ -43,14 +43,18 @@ public class AppendStepTemplateToProtocolTemplateEndpoint {
   public AppendStepTemplateToProtocolTemplateEndpoint(
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateDataService stepTemplateDataService,
-      ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService,
-      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
+      ProtocolDataService protocolDataService
+      //HomeworkDataService homeworkDataService,
+      //ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService
+      ) {
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.stepTemplateDataService = stepTemplateDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
-        protocolDataService, stepTemplateDataService, homeworkDataService,
-        protocolStepLinkedHomeworkService);
+        protocolDataService, stepTemplateDataService
+        /*, homeworkDataService,
+        protocolStepLinkedHomeworkService
+        */);
   }
 
   @PatchMapping(PATH)

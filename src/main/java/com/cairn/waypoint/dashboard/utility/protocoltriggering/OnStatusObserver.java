@@ -4,7 +4,7 @@ import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
-import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
+//import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -21,16 +21,17 @@ public class OnStatusObserver implements StatusObserver {
   private final EntityManager entityManager;
   private final ProtocolDataService protocolDataService;
   private final ProtocolStepDataService protocolStepDataService;
-  private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
+  //private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
 
   public OnStatusObserver(EntityManager entityManager,
       ProtocolDataService protocolDataService,
-      ProtocolStepDataService protocolStepDataService,
-      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
+      ProtocolStepDataService protocolStepDataService
+      //ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService
+      ) {
     this.entityManager = entityManager;
     this.protocolDataService = protocolDataService;
     this.protocolStepDataService = protocolStepDataService;
-    this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
+    //this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
   }
 
   @Override
@@ -46,7 +47,8 @@ public class OnStatusObserver implements StatusObserver {
     log.info("Creating new occurrence of Protocol with ID [{}] based on status",
         protocolToReoccur.getId());
     createProtocolRecurrence(protocolToReoccur, protocolDataService,
-        protocolStepLinkedHomeworkService, protocolStepDataService, entityManager);
+        //protocolStepLinkedHomeworkService,
+        protocolStepDataService, entityManager);
     log.info("Protocol with ID [{}] new instance created successfully", protocolToReoccur.getId());
   }
 }

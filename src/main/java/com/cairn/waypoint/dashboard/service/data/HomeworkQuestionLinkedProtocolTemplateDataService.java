@@ -4,12 +4,11 @@ package com.cairn.waypoint.dashboard.service.data;
 import com.cairn.waypoint.dashboard.endpoints.homeworkquestion.dto.AddLinkedQuestionProtocolTemplateDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestionLinkedProtocolTemplate;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionLinkedProtocolTemplatesRepository;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolTemplateRepository;
-
+import java.util.stream.Collectors;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -39,12 +38,16 @@ public class HomeworkQuestionLinkedProtocolTemplateDataService{
 	        HomeworkQuestionLinkedProtocolTemplate link = new HomeworkQuestionLinkedProtocolTemplate();
 	        link.setQuestion(homeworkQuestion);
 	        link.setProtocolTemplate(protocolTemplate);
-	        link.setActive(dto.getActive());
-	        link.setModifiedBy(modifiedBy);
 
 	        return linkedRepository.save(link);
 	    }
-
+	 public List<HomeworkQuestion> findAllQuestionsByQuestionId(Long questionId) {
+		    List<Long> questionIds = linkedRepository.findAllByQuestion_Id(questionId).stream()
+		        .map(linkedTemplate -> linkedTemplate.getQuestion().getId()) 
+		        .collect(Collectors.toList());
+		    return this.questionRepository.findAllById(questionIds);		
+		    }
+	 
 	
 	public List<HomeworkQuestionLinkedProtocolTemplate> findAllByProtocolTemplate(
 			Long templateId){

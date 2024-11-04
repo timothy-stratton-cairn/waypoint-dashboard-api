@@ -26,7 +26,7 @@ public interface StepTemplateMapper {
   StepTemplateDto toDto(StepTemplate stepTemplate);
   StepTemplate toEntity(AddStepTemplateDetailsDto addStepTemplateDetailsDto);
   
-  @Mapping(target = "linkedHomeworkTemplates", source = "stepTemplateLinkedHomeworks")
+  //@Mapping(target = "linkedHomeworkTemplates", source = "stepTemplateLinkedHomeworks")
   @Mapping(target ="linkedStepTask", source = "linkedTask")
   StepTemplateDetailsDto toDetailsDto(StepTemplate stepTemplate);
   
@@ -35,7 +35,7 @@ public interface StepTemplateMapper {
       UpdateStepTemplateDetailsDto updateStepTemplateDetailsDto);
   
   
-  @Mapping(target = "homeworkTemplates", source = "stepTemplateLinkedHomeworks")
+ /* @Mapping(target = "homeworkTemplates", source = "stepTemplateLinkedHomeworks")
   default HomeworkTemplateDetailsListDto map(Set<StepTemplateLinkedHomeworkTemplate> stepTemplateLinkedHomeworks) {
 	  if (stepTemplateLinkedHomeworks == null || stepTemplateLinkedHomeworks.isEmpty()) {
 	        return null; 
@@ -52,6 +52,6 @@ public interface StepTemplateMapper {
           .build();
   }
   @Mapping(target = "name", source = "homeworkTemplate.name")
-  HomeworkTemplateDetailsDto toHomeworkTemplateDetailsDto(StepTemplateLinkedHomeworkTemplate entity);
+  HomeworkTemplateDetailsDto toHomeworkTemplateDetailsDto(StepTemplateLinkedHomeworkTemplate entity);*/
   
 }

@@ -3,8 +3,8 @@ package com.cairn.waypoint.dashboard.endpoints.protocoltemplate;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.dto.UpdateProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTemplateMapper;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
@@ -12,7 +12,7 @@ import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
-import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+//import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
@@ -57,7 +57,7 @@ public class UpdateProtocolTemplateEndpoint {
   private final ProtocolTemplateLinkedStepTemplateDataService protocolTemplateLinkedStepTemplateDataService;
 
   private final ProtocolTemplateHelperService protocolTemplateHelperService;
-  private final HomeworkTemplateDataService homeworkTemplateDataService;
+  //private final HomeworkTemplateDataService homeworkTemplateDataService;
   private final HomeworkQuestionDataService homeworkQuestionDataService;
 
   public UpdateProtocolTemplateEndpoint(ProtocolTemplateDataService protocolTemplateDataService,
@@ -65,16 +65,18 @@ public class UpdateProtocolTemplateEndpoint {
       ProtocolTemplateLinkedStepTemplateDataService protocolTemplateLinkedStepTemplateDataService,
       ProtocolDataService protocolDataService, HomeworkDataService homeworkDataService,
       ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService,
-      HomeworkTemplateDataService homeworkTemplateDataService,
+      //HomeworkTemplateDataService homeworkTemplateDataService,
       HomeworkQuestionDataService homeworkQuestionDataService) {
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.stepTemplateDataService = stepTemplateDataService;
     this.protocolTemplateLinkedStepTemplateDataService = protocolTemplateLinkedStepTemplateDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
-        protocolDataService, stepTemplateDataService, homeworkDataService,
-        protocolStepLinkedHomeworkService);
-    this.homeworkTemplateDataService = homeworkTemplateDataService;
+        protocolDataService, stepTemplateDataService
+        //, homeworkDataService,
+        //protocolStepLinkedHomeworkService
+        );
+    //this.homeworkTemplateDataService = homeworkTemplateDataService;
     this.homeworkQuestionDataService = homeworkQuestionDataService;
   }
 
@@ -227,7 +229,7 @@ public class UpdateProtocolTemplateEndpoint {
           stepTemplate.setStatus(assignedStatus);
           return stepTemplateDataService.saveStepTemplate(stepTemplate);
         })
-        .peek(stepTemplate -> stepTemplate.getStepTemplateLinkedHomeworks().stream()
+        /*.peek(stepTemplate -> stepTemplate.getStepTemplateLinkedHomeworks().stream()
             .map(StepTemplateLinkedHomeworkTemplate::getHomeworkTemplate)
             .forEach(homeworkTemplate -> {
               homeworkTemplate.setModifiedBy(modifiedBy);
@@ -243,7 +245,7 @@ public class UpdateProtocolTemplateEndpoint {
               homeworkQuestion.setModifiedBy(modifiedBy);
               homeworkQuestion.setStatus(assignedStatus);
               homeworkQuestionDataService.saveHomeworkQuestion(homeworkQuestion);
-            }))
+            }))*/
         .map(stepTemplate -> ProtocolTemplateLinkedStepTemplate.builder()
             .modifiedBy(modifiedBy)
             .protocolTemplate(protocolTemplate)

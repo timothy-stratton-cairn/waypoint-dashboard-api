@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Homework")
 public class GetHomeworkQuestionByTemplateIdEndpoint {
 	
-	  public static final String PATH = "/api/homework-question/protocol-template/{protocolTemplateId}";
+	  public static final String PATH = "/api/homework-question/protocol-template/{templateId}";
 
 	  private final HomeworkQuestionDataService homeworkQuestionDataService;
 	  private final HomeworkQuestionHelperService homeworkQuestionHelperService;

@@ -1,11 +1,9 @@
 package com.cairn.waypoint.dashboard.service.data;
 
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
-import com.cairn.waypoint.dashboard.repository.HomeworkTemplateRepository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-
+/*
 @Service
 public class HomeworkTemplateDataService {
 
@@ -34,4 +32,4 @@ public class HomeworkTemplateDataService {
   public Optional<HomeworkTemplate> findHomeworkTemplateByName(String name) {
     return this.homeworkTemplateRepository.findByName(name);
   }
-}
+}*/

@@ -24,7 +24,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true, exclude = "stepTemplateLinkedHomeworks")
+//@EqualsAndHashCode(callSuper = true, exclude = "stepTemplateLinkedHomeworks")
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
@@ -42,19 +42,19 @@ public class StepTemplate extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY)
   private StepTemplateCategory category;
 
-  @OneToMany(mappedBy = "stepTemplate",
+  /*@OneToMany(mappedBy = "stepTemplate",
       cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private Set<StepTemplateLinkedHomeworkTemplate> stepTemplateLinkedHomeworks;
-
+*/
   @Builder.Default
   @Column(name = "status_id")
   @Convert(converter = TemplateStatusConverter.class)
   private TemplateStatusEnum status = TemplateStatusEnum.INACTIVE;
 
-  public Set<StepTemplateLinkedHomeworkTemplate> getStepTemplateLinkedHomeworks() {
+  /*public Set<StepTemplateLinkedHomeworkTemplate> getStepTemplateLinkedHomeworks() {
     if (stepTemplateLinkedHomeworks == null) {
       stepTemplateLinkedHomeworks = new LinkedHashSet<>();
     }
     return stepTemplateLinkedHomeworks;
-  }
+  }*/
 }

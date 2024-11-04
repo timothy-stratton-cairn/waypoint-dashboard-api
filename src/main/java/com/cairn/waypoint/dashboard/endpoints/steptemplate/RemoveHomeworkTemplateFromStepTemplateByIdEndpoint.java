@@ -1,7 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+/*
 @Slf4j
 @RestController
 @Tag(name = "Protocol Step Template")
@@ -137,3 +137,4 @@ public class RemoveHomeworkTemplateFromStepTemplateByIdEndpoint {
     );
   }
 }
+*/

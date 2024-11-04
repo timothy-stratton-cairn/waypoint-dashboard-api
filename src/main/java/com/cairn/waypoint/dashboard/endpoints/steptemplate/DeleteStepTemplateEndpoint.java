@@ -102,10 +102,10 @@ public class DeleteStepTemplateEndpoint {
         note.setActive(Boolean.FALSE);
         note.setModifiedBy(modifiedBy);
       });
-      protocolStep.getLinkedHomework().forEach(homeworkLink -> {
-        homeworkLink.setActive(Boolean.FALSE);
-        homeworkLink.setModifiedBy(modifiedBy);
-      });
+      //protocolStep.getLinkedHomework().forEach(homeworkLink -> {
+      //  homeworkLink.setActive(Boolean.FALSE);
+      //  homeworkLink.setModifiedBy(modifiedBy);
+      //});
 
       protocolStep.setActive(Boolean.FALSE);
       protocolStep.setModifiedBy(modifiedBy);
@@ -116,10 +116,10 @@ public class DeleteStepTemplateEndpoint {
     stepTemplateToDelete.setActive(Boolean.FALSE);
     stepTemplateToDelete.setModifiedBy(modifiedBy);
 
-    stepTemplateToDelete.getStepTemplateLinkedHomeworks().forEach(linkedHomeworkTemplate -> {
-      linkedHomeworkTemplate.setActive(Boolean.FALSE);
-      linkedHomeworkTemplate.setModifiedBy(modifiedBy);
-    });
+    //stepTemplateToDelete.getStepTemplateLinkedHomeworks().forEach(linkedHomeworkTemplate -> {
+    //  linkedHomeworkTemplate.setActive(Boolean.FALSE);
+    //  linkedHomeworkTemplate.setModifiedBy(modifiedBy);
+    //});
 
     stepTemplateDataService.saveStepTemplate(stepTemplateToDelete);
 

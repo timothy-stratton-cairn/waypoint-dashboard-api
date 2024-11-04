@@ -3,10 +3,10 @@ package com.cairn.waypoint.dashboard.endpoints.homeworktemplate;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.UpdateHomeworkTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
-import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+//import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
+/*
 @Slf4j
 @RestController
 @Tag(name = "Homework Template")
@@ -208,4 +208,4 @@ public class UpdateHomeworkTemplateEndpoint {
         status
     );
   }
-}
+}*/

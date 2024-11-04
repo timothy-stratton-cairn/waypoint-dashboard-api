@@ -32,7 +32,7 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("active=1")
 @Table(name = "homework_question")
 public class HomeworkQuestion extends BaseEntity {
-
+  
   private String questionAbbreviation;
   private String question;
   private String label;

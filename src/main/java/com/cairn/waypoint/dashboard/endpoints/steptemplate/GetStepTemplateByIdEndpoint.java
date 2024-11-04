@@ -88,7 +88,7 @@ public class GetStepTemplateByIdEndpoint {
           .executableReference(returnedStepTemplate.getLinkedTask().getExecutableReference())
           .build();
     }
-
+/*
     if (returnedStepTemplate.getStepTemplateLinkedHomeworks() != null
         && !returnedStepTemplate.getStepTemplateLinkedHomeworks().isEmpty()) {
       homeworkTemplateDetailsListDto = HomeworkTemplateDetailsListDto.builder()
@@ -102,7 +102,7 @@ public class GetStepTemplateByIdEndpoint {
                   .toList()
           ).build();
 
-    }
+    }*/
 
     if (returnedStepTemplate.getCategory() != null) {
       categoryDetailsDto = StepTemplateCategoryDetailsDto.builder()

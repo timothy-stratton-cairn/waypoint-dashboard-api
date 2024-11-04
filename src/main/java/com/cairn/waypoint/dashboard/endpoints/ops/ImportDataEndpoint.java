@@ -2,7 +2,7 @@ package com.cairn.waypoint.dashboard.endpoints.ops;
 
 import com.cairn.waypoint.dashboard.dto.authorization.BatchAddAccountDetailsDto;
 import com.cairn.waypoint.dashboard.dto.authorization.BatchAddAccountDetailsListDto;
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.AddHomeworkTemplateEndpoint;
+//import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.AddHomeworkTemplateEndpoint;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.AddHomeworkQuestionDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.AddHomeworkTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedResponseDto;
@@ -18,12 +18,12 @@ import com.cairn.waypoint.dashboard.endpoints.steptemplate.UpdateStepTemplateEnd
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.AddStepTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.SuccessfulStepTemplateCreationResponseDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.UpdateStepTemplateDetailsDto;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplateCategory;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.AccountDataService;
-import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+//import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
@@ -70,11 +70,11 @@ public class ImportDataEndpoint {
   private final AddStepTemplateEndpoint addStepTemplateEndpoint;
   private final AddProtocolTemplateEndpoint addProtocolTemplateEndpoint;
   private final AddProtocolEndpoint addProtocolEndpoint;
-  private final AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint;
+  //private final AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint;
   private final ProtocolTemplateDataService protocolTemplateDataService;
   private final StepTemplateCategoryDataService stepTemplateCategoryDataService;
   private final AccountDataService accountDataService;
-  private final HomeworkTemplateDataService homeworkTemplateDataService;
+  //private final HomeworkTemplateDataService homeworkTemplateDataService;
   private final S3FileUpload s3FileUpload;
   private final StepTemplateDataService stepTemplateDataService;
   private final UpdateStepTemplateEndpoint updateStepTemplateEndpoint;
@@ -84,22 +84,22 @@ public class ImportDataEndpoint {
   public ImportDataEndpoint(AddStepTemplateEndpoint addStepTemplateEndpoint,
       AddProtocolTemplateEndpoint addProtocolTemplateEndpoint,
       AddProtocolEndpoint addProtocolEndpoint,
-      AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint,
+      //AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint,
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateCategoryDataService stepTemplateCategoryDataService,
       AccountDataService accountDataService,
-      HomeworkTemplateDataService homeworkTemplateDataService,
+      //HomeworkTemplateDataService homeworkTemplateDataService,
       S3FileUpload s3FileUpload,
       StepTemplateDataService stepTemplateDataService,
       UpdateStepTemplateEndpoint updateStepTemplateEndpoint) {
     this.addStepTemplateEndpoint = addStepTemplateEndpoint;
     this.addProtocolEndpoint = addProtocolEndpoint;
-    this.addHomeworkTemplateEndpoint = addHomeworkTemplateEndpoint;
+    //this.addHomeworkTemplateEndpoint = addHomeworkTemplateEndpoint;
     this.addProtocolTemplateEndpoint = addProtocolTemplateEndpoint;
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.stepTemplateCategoryDataService = stepTemplateCategoryDataService;
     this.accountDataService = accountDataService;
-    this.homeworkTemplateDataService = homeworkTemplateDataService;
+    //this.homeworkTemplateDataService = homeworkTemplateDataService;
     this.s3FileUpload = s3FileUpload;
     this.stepTemplateDataService = stepTemplateDataService;
     this.updateStepTemplateEndpoint = updateStepTemplateEndpoint;
@@ -213,9 +213,9 @@ public class ImportDataEndpoint {
                     .build())
                 .toList())
             .build())
-        .forEach(
+        /*.forEach(
             addHomeworkTemplateDetailsDto -> this.addHomeworkTemplateEndpoint.addHomeworkTemplate(
-                addHomeworkTemplateDetailsDto, principal));
+                addHomeworkTemplateDetailsDto, principal))*/;
   }
 
   private void importProtocolAssignments(Sheet protocolAssignmentsSheet,
@@ -324,13 +324,13 @@ public class ImportDataEndpoint {
           getCellValue(row.getCell(5))).isEmpty()) {
         Optional<StepTemplate> stepTemplateOptional = stepTemplateDataService.findStepTemplateByName(
             getCellValue(row.getCell(2)));
-        Optional<HomeworkTemplate> homeworkTemplateOptional = homeworkTemplateDataService.findHomeworkTemplateByName(
-            getCellValue(row.getCell(4)));
+        //Optional<HomeworkTemplate> homeworkTemplateOptional = homeworkTemplateDataService.findHomeworkTemplateByName(
+        //    getCellValue(row.getCell(4)));
 
-        if (stepTemplateOptional.isPresent() && homeworkTemplateOptional.isPresent()) {
+        if (stepTemplateOptional.isPresent() /*&& homeworkTemplateOptional.isPresent()*/) {
           ResponseEntity<?> creationResponse = updateStepTemplateEndpoint.updateStepTemplate(
               stepTemplateOptional.get().getId(), UpdateStepTemplateDetailsDto.builder()
-                  .linkedHomeworkTemplateIds(List.of(homeworkTemplateOptional.get().getId()))
+                  //.linkedHomeworkTemplateIds(List.of(homeworkTemplateOptional.get().getId()))
                   .build(), principal);
           if (creationResponse.getStatusCode().isSameCodeAs(
               HttpStatusCode.valueOf(409))) {

@@ -9,9 +9,11 @@ databaseChangeLog:
         - sql:
             dbms: 'h2, mysql'
             sql: CREATE TABLE `protocol_template_linked_homework_question` (
+                `id` BIGINT NOT NULL AUTO_INCREMENT,
                 `protocol_template_id` bigint NOT NULL,
                 `homework_question_id` bigint NOT NULL,
-                PRIMARY KEY (`protocol_template_id`,`homework_question_id`),
+                PRIMARY KEY (`id`),
+                UNIQUE KEY (`protocol_template_id`,`homework_question_id`),
                 KEY `FKlsmp50ewlw802qyyavo1p23bn` (`homework_question_id`),
                 CONSTRAINT `FK587suy45fy6ipqxoxcvp34nif` FOREIGN KEY (`protocol_template_id`) REFERENCES `protocol_template` (`id`),
                 CONSTRAINT `FKlsmp50ewlw802qyyavo1p23bn` FOREIGN KEY (`homework_question_id`) REFERENCES `homework_question` (`id`)
@@ -22,34 +24,55 @@ databaseChangeLog:
         - sql:
             dbms: 'h2, mysql'
             sql: CREATE TABLE `protocol_linked_homework_response` (
+                `id` BIGINT NOT NULL AUTO_INCREMENT,
                 `protocol_id` bigint NOT NULL,
                 `homework_response_id` bigint NOT NULL,
-                PRIMARY KEY (`protocol_id`,`homework_response_id`),
+                PRIMARY KEY (`id`),
+                UNIQUE KEY (`protocol_id`,`homework_response_id`),
                 KEY `FKlsmp50ewlw802qyyavo1242tg` (`homework_response_id`),
                 CONSTRAINT `FK587suy45fy6ipqxoxcvpf2v45` FOREIGN KEY (`protocol_id`) REFERENCES `protocol` (`id`),
                 CONSTRAINT `FKlsmp50ewlw802qyyavo1242tg` FOREIGN KEY (`homework_response_id`) REFERENCES `homework_response` (`id`)
-              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+        - sql:
+            dbms: 'h2, mysql'
+            sql: CREATE TABLE `protocol_user` (
+              `id` BIGINT NOT NULL AUTO_INCREMENT,
+              `protocol_id` BIGINT NOT NULL,
+              `user_id` BIGINT NOT NULL,
+               PRIMARY KEY (`id`),
+               CONSTRAINT `FK_protocol_id` FOREIGN KEY (`protocol_id`) REFERENCES `protocol` (`id`),
+               UNIQUE KEY `UK_protocol_user` (`protocol_id`, `user_id`)
+               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
         - sql:
             dbms: 'h2, mysql'
             sql: DROP TABLE IF EXISTS `protocol_step_linked_homework`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: DROP TABLE IF EXISTS `homework_template_linked_homework_question`
         - sql:
             dbms: 'h2, mysql'
             sql: ALTER TABLE `homework_response`
                   DROP FOREIGN KEY `FKp5h432bwdql5g96h4yclkvso5`,
                   DROP COLUMN `homework_id`,
                   ADD COLUMN `last_answered_at` timestamp DEFAULT NULL AFTER `file_guid`,
-                  ADD COLUMN `user_id` BIGINT NOT NULL AFTER `last_answered_at`,
-                  ADD CONSTRAINT `fk_homework_response_protocol_user` FOREIGN KEY (`user_id`) REFERENCES `protocol_user` (`id`) ON DELETE CASCADE;
+                  ADD COLUMN `protocol_id` BIGINT NOT NULL AFTER `last_answered_at`;
+                  
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `protocol_step_template`
+                   DROP FOREIGN KEY `FK22tpvuk2d68kxt0qmydhlvt56`,
+                   DROP COLUMN `linked_homework_template_id`;
                   
   - changeSet:
       id: drop-unneeded-tables-homework-template-and-homework
       author: wanderson
       changes:
-        - dropTable:
-            tableName: "homework_template"
             
         - dropTable:
             tableName: "homework"
+            
+        - dropTable:
+            tableName: "homework_template"
   
   
   

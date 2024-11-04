@@ -2,6 +2,7 @@ package com.cairn.waypoint.dashboard.endpoints.homeworkquestion;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkListDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.UpdateHomeworkResponseDetailsListDto;
+import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.HomeworkResponseListDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
 import com.cairn.waypoint.dashboard.service.helper.HomeworkQuestionResponseHelperService;
@@ -56,16 +57,16 @@ public class GetHomeworkResponseByProtocolIdEndpoint {
             content = {@Content(schema = @Schema(hidden = true))})})
 
 
-public ResponseEntity<?> getAllResponseByProtocolId(@PathVariable Long templateId, Principal principal) {
-    log.info("User [{}] is retrieving all homework of the template [{}]", principal.getName(), templateId);
+public ResponseEntity<?> getAllResponseByProtocolId(@PathVariable Long protocolId, Principal principal) {
+    log.info("User [{}] is retrieving all homework of the template [{}]", principal.getName(), protocolId);
 
-    List<HomeworkResponse> response = homeworkResponseDataService.getHomeResponseByProtocol_Id(templateId);
-    if (response.isEmpty()) {
+    HomeworkResponseListDto  response = homeworkResponseDataService.getHomeResponseByProtocol_Id(protocolId);
+    if (response.getResponses().isEmpty()) {
         return generateFailureResponse("There are no Homeworks for the given template [" +
-                templateId + "]", HttpStatus.NOT_FOUND);
+                protocolId + "]", HttpStatus.NOT_FOUND);
     } else {
         return ResponseEntity.ok(UpdateHomeworkResponseDetailsListDto.builder()
-                .responses(response.stream()
+                .responses(response.getResponses().stream()
                         .map(homeworkResponseHelperService::generateHomeworkQuestionResponseDto)
                         .collect(Collectors.toList()))
                 .build());

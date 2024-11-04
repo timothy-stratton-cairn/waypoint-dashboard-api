@@ -30,10 +30,14 @@ public class HomeworkResponse extends BaseEntity {
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   private HomeworkQuestion homeworkQuestion;
 
-  @JoinColumn(name = "homework_id", nullable = false)
+  /*@JoinColumn(name = "homework_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private Homework homework;
-
+  private Homework homework;*/
+  
+  @JoinColumn(name="protocol_id",nullable = false)
+  @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+  private Protocol protocol;
+  
   private String fileGuid;
   private Integer ordinalIndex;
   

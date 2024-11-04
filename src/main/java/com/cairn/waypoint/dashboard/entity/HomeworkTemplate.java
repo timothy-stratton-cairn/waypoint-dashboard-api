@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLRestriction;
-
+/*
 @Data
 @Entity
 @SuperBuilder
@@ -41,4 +41,4 @@ public class HomeworkTemplate extends BaseEntity {
   @Column(name = "status_id")
   @Convert(converter = TemplateStatusConverter.class)
   private TemplateStatusEnum status = TemplateStatusEnum.INACTIVE;
-}
+}*/

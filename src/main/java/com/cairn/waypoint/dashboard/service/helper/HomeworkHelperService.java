@@ -8,7 +8,6 @@ import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionListDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.ProtocolTemplateDto;
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
-import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
 import java.util.Set;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class HomeworkHelperService {
-
+/*
   @Value("${waypoint.dashboard.base-url}")
   private String baseUrl;
 
@@ -27,8 +26,6 @@ public class HomeworkHelperService {
         .name(homework.getName())
         .description(homework.getDescription())
         .parentProtocolId(
-            homework.getProtocolStepLinkedHomework().getStep().getParentProtocol().getId())
-        .parentProtocolStepId(homework.getProtocolStepLinkedHomework().getStep().getId())
         .assignedHouseholdId(homework.getAssignedHouseholdId())
         .homeworkQuestions(HomeworkQuestionListDto.builder()
             .questions(homework.getHomeworkQuestions().stream()
@@ -92,4 +89,5 @@ public class HomeworkHelperService {
           .build();
     }
   }
+  */
 }

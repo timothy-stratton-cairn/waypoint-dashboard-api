@@ -12,4 +12,6 @@ public interface HomeworkResponseLinkedProtocolRepository extends JpaRepository<
 HomeworkResponseLinkedProtocol, Long> {
 
     List<HomeworkResponseLinkedProtocol> findByProtocol_Id(Long protocolId);
+    
+    
 }

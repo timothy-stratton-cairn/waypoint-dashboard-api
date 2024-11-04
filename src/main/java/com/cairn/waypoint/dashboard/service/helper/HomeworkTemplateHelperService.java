@@ -7,11 +7,11 @@ import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkQuest
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.TriggeredProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import java.util.Objects;
 import java.util.Set;
-
+/*
 public class HomeworkTemplateHelperService {
 
   public static HomeworkTemplateDetailsDto getHomeworkTemplateDetailsDto(
@@ -103,4 +103,4 @@ public class HomeworkTemplateHelperService {
           .build();
     }
   }
-}
+}*/

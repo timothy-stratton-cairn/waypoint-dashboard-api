@@ -34,6 +34,7 @@ spring:
         useServerPrepStmts: true
   liquibase:
     enabled: true
+    drop-first: true
   jpa:
     hibernate:
       ddl-auto: validate

@@ -6,16 +6,16 @@ import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.AddHomeworkTe
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ExpectedResponseDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
-import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+//import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
-import com.cairn.waypoint.dashboard.service.helper.HomeworkTemplateHelperService;
+//import com.cairn.waypoint.dashboard.service.helper.HomeworkTemplateHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -44,12 +44,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
+/*
 @Slf4j
 @RestController
 @Tag(name = "Homework Template")
 public class AddHomeworkTemplateEndpoint {
-
+/*
   public static final String PATH = "/api/homework-template";
 
   private final HomeworkTemplateDataService homeworkTemplateDataService;
@@ -265,4 +265,6 @@ public class AddHomeworkTemplateEndpoint {
         status
     );
   }
+  
 }
+*/

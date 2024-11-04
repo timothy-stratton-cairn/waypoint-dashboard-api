@@ -12,6 +12,6 @@ public class SuccessfulStepTemplateCreationResponseDto {
   private String stepTemplateDescription;
   private String status;
   private StepTaskDetailsDto linkedStepTask;
-  private HomeworkTemplateDetailsListDto linkedHomeworkTemplates;
+  //private HomeworkTemplateDetailsListDto linkedHomeworkTemplates;
   private StepTemplateCategoryDetailsDto category;
 }

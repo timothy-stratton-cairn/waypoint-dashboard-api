@@ -13,7 +13,6 @@ public class ProtocolStepDto {
   private String status;
   private String category;
   private Long stepTemplateId;
-  private LinkedHomeworksDto linkedHomeworks;
   private ProtocolStepNoteListDto stepNotes;
   private ProtocolStepAttachmentListDto stepAttachments;
 }

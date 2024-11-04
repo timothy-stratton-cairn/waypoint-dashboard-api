@@ -6,10 +6,10 @@ import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.ExpectedRespo
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.TriggeredProtocolTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
+//import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
-import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
-import com.cairn.waypoint.dashboard.service.helper.HomeworkTemplateHelperService;
+//import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateDataService;
+//import com.cairn.waypoint.dashboard.service.helper.HomeworkTemplateHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,7 +28,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
+/*
 @Slf4j
 @RestController
 @Tag(name = "Homework Template")
@@ -135,4 +135,4 @@ public class GetHomeworkTemplateByIdEndpoint {
         HttpStatus.NOT_FOUND
     );
   }
-}
+}*/

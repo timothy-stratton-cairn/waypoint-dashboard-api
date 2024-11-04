@@ -1,9 +1,9 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
-import com.cairn.waypoint.dashboard.entity.Homework;
+//import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
+
 import com.cairn.waypoint.dashboard.entity.StepStatus;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import java.math.BigDecimal;
@@ -21,16 +21,18 @@ public class ProtocolCalculationHelperService {
   public static BigDecimal getProtocolCompletionPercentage(Protocol returnedProtocol) {
     if (!returnedProtocol.getProtocolSteps().isEmpty()) {
       List<BigDecimal> stepCompletionPercentages = returnedProtocol.getProtocolSteps().stream()
-          .filter(protocolStep -> protocolStep.getLinkedHomework() == null
+          .filter(protocolStep -> 
+              /*protocolStep.getLinkedHomework() == null
               || protocolStep.getLinkedHomework()
               .isEmpty() || protocolStep.getStatus().equals(StepStatusEnum.CONDITIONAL_COMPLETION)
-              || protocolStep.getStatus().equals(StepStatusEnum.DONE))
+              ||*/ 
+              protocolStep.getStatus().equals(StepStatusEnum.DONE))    
           .map(ProtocolStep::getStatus)
           .map(StepStatusEnum::getInstance)
           .map(StepStatus::getWeight)
           .collect(Collectors.toList());
 
-      List<BigDecimal> stepHomeworkCompletionPercentages;
+      /*List<BigDecimal> stepHomeworkCompletionPercentages;
 
       try {
         stepHomeworkCompletionPercentages = returnedProtocol.getProtocolSteps()
@@ -55,9 +57,9 @@ public class ProtocolCalculationHelperService {
             .collect(Collectors.toList());
       } catch (NullPointerException e) {
         stepHomeworkCompletionPercentages = Arrays.asList(BigDecimal.ZERO);
-      }
+      }*/
 
-      return Stream.of(stepCompletionPercentages, stepHomeworkCompletionPercentages)
+      return Stream.of(stepCompletionPercentages) //, stepHomeworkCompletionPercentages)
           .flatMap(Collection::stream)
           .reduce(BigDecimal.ZERO, BigDecimal::add)
           .divide(new BigDecimal(returnedProtocol.getProtocolSteps().size()), RoundingMode.HALF_UP);

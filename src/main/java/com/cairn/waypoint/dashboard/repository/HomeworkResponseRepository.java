@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.repository;
 
-import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import java.util.List;
@@ -10,12 +9,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface HomeworkResponseRepository extends JpaRepository<HomeworkResponse, Long> {
 
   Optional<HomeworkResponse> findHomeworkResponseByFileGuid(String fileGuid);
+  
 
   List<HomeworkResponse> findHomeworkResponseByHomeworkQuestion(HomeworkQuestion homeworkQuestion);
 
   List<HomeworkResponse> getHomeworkResponseByCategory_Id(Long categoryId);
   
   List<HomeworkResponse> findByHomeworkQuestion_IdIn(List<Long> questionIds);
+  
+  List<HomeworkResponse> findByProtocol_Id(Long protocolId);
 
-  Optional<HomeworkResponse> findByHomeworkQuestion_IdAndUserId(Long questionId, Long userId);
+  Optional<HomeworkResponse> findByHomeworkQuestion_IdAndProtocol_Id(Long questionId, Long protocolId);
+  
+ 
 }

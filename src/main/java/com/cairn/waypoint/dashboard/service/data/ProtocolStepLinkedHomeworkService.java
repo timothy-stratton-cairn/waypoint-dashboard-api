@@ -1,15 +1,13 @@
 package com.cairn.waypoint.dashboard.service.data;
 
-import com.cairn.waypoint.dashboard.entity.Homework;
-import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
-import com.cairn.waypoint.dashboard.repository.ProtocolStepLinkedHomeworkRepository;
+
 import java.util.Collection;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProtocolStepLinkedHomeworkService {
-
+/*
   private final ProtocolStepLinkedHomeworkRepository protocolStepLinkedHomeworkRepository;
 
   public ProtocolStepLinkedHomeworkService(
@@ -32,5 +30,5 @@ public class ProtocolStepLinkedHomeworkService {
       Collection<ProtocolStepLinkedHomework> protocolStepLinkedHomeworks) {
     return this.protocolStepLinkedHomeworkRepository.saveAll(
         protocolStepLinkedHomeworks);
-  }
+  }*/
 }

@@ -81,7 +81,7 @@ public class GetAllStepTemplatesByTemplateCategoryIdEndpoint {
                           .name(stepTemplate.getName())
                           .description(stepTemplate.getDescription())
                           .status(stepTemplate.getStatus().name())
-                          .linkedHomeworkTemplates(
+                          /*.linkedHomeworkTemplates(
                               stepTemplate.getStepTemplateLinkedHomeworks() == null ||
                                   stepTemplate.getStepTemplateLinkedHomeworks().isEmpty() ?
                                   null : HomeworkTemplateDetailsListDto.builder()
@@ -95,7 +95,7 @@ public class GetAllStepTemplatesByTemplateCategoryIdEndpoint {
                                                   .name(homeworkTemplate.getName())
                                                   .build())
                                           .toList()
-                                  ).build())
+                                  ).build())*/
                           .category(StepTemplateCategoryDetailsDto.builder()
                               .id(stepTemplate.getCategory().getId())
                               .name(stepTemplate.getCategory().getName())

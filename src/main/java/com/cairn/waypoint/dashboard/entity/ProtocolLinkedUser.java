@@ -3,6 +3,9 @@ package com.cairn.waypoint.dashboard.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -13,24 +16,27 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLRestriction;
-/*
+
 @Data
 @Entity
 @SuperBuilder
+//@EqualsAndHashCode(callSuper = true, exclude = "protocol_id")
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
-@EqualsAndHashCode(callSuper = true, exclude = {"homeworkTemplate", "homeworkQuestion"})
-@Table(name = "homework_template_linked_homework_question")
-public class HomeworkTemplateLinkedHomeworkQuestion extends BaseEntity {
+@Table(name = "protocol_user")
+public class ProtocolLinkedUser {
 
-  @ManyToOne
-  @JoinColumn(name = "homework_template_id", nullable = false)
-  private HomeworkTemplate homeworkTemplate;
-
-  @JoinColumn(name = "homework_question_id", nullable = false)
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private HomeworkQuestion homeworkQuestion;
-
-  private Integer ordinalIndex;
-}*/
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@JoinColumn(name="protocol_id",nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE) 
+	private Protocol protocol;
+	
+	private Long userId;
+	
+	
+	
+}

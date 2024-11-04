@@ -1,10 +1,10 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
-import com.cairn.waypoint.dashboard.entity.Homework;
+//import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
+
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
@@ -31,16 +31,10 @@ public class ProtocolTemplateHelperService {
 
   private final ProtocolDataService protocolDataService;
   private final StepTemplateDataService stepTemplateDataService;
-  private final HomeworkDataService homeworkDataService;
-  private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
 
-  public ProtocolTemplateHelperService(ProtocolDataService protocolDataService,
-      StepTemplateDataService stepTemplateDataService, HomeworkDataService homeworkDataService,
-      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
+  public ProtocolTemplateHelperService(ProtocolDataService protocolDataService,StepTemplateDataService stepTemplateDataService) {
     this.protocolDataService = protocolDataService;
     this.stepTemplateDataService = stepTemplateDataService;
-    this.homeworkDataService = homeworkDataService;
-    this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
   }
 
   @Transactional
@@ -62,11 +56,11 @@ public class ProtocolTemplateHelperService {
                   protocolStep.getTemplate().getId()))
               .forEach(protocolStep -> {
                 protocolStep.setActive(Boolean.FALSE);
-                if (protocolStep.getLinkedHomework() != null) {
+                /*if (protocolStep.getLinkedHomework() != null) {
                   protocolStep.getLinkedHomework().forEach(
                       protocolStepLinkedHomework -> protocolStepLinkedHomework.setActive(
                           Boolean.FALSE));
-                }
+                }*/
               });
           return protocolSteps;
         };
@@ -118,20 +112,21 @@ public class ProtocolTemplateHelperService {
               .stepTemplateCategory(stepTemplate.getCategory())
               .build());
           protocolStep.setStatus(StepStatusEnum.TODO);
-          protocolStep.setParentProtocol(parentProtocol);
+          //protocolStep.setParentProtocol(parentProtocol);
 
           return protocolStep;
         })
         .collect(Collectors.toSet());
 
-    createClientHomework(newProtocolSteps, parentProtocol.getAssignedHouseholdId(), modifiedBy);
+    //createClientHomework(newProtocolSteps, parentProtocol.getAssignedHouseholdId(), modifiedBy);
 
     protocolSteps.addAll(newProtocolSteps);
 
     return protocolSteps;
   }
-
-  public void generateAndSaveClientHomework(Protocol createdProtocol, String modifiedBy) {
+  //TODO this will need to be reworked to work without Homework 
+  
+  /*public void generateAndSaveClientHomework(Protocol createdProtocol, String modifiedBy) {
     // Save independent pieces first
     List<Homework> homeworkList = createClientHomework(createdProtocol.getProtocolSteps(),
         createdProtocol.getAssignedHouseholdId(),
@@ -140,16 +135,16 @@ public class ProtocolTemplateHelperService {
     for (Homework homework : homeworkList) {
       Set<HomeworkResponse> homeworkResponses = homework.getHomeworkQuestions();
       homework.setHomeworkQuestions(null);
-      Homework savedHomework = this.homeworkDataService.saveHomework(homework);
+      //Homework savedHomework = this.homeworkDataService.saveHomework(homework);
       homework.setHomeworkQuestions(homeworkResponses);
 
       savedHomework.getHomeworkQuestions()
           .forEach(homeworkResponse -> homeworkResponse.setHomework(savedHomework));
 
       this.homeworkDataService.saveHomework(homework);
-    }
+    }*/
 
-    List<ProtocolStepLinkedHomework> homeworkToSave = createdProtocol.getProtocolSteps().stream()
+    /*List<ProtocolStepLinkedHomework> homeworkToSave = createdProtocol.getProtocolSteps().stream()
         .map(ProtocolStep::getLinkedHomework)
         .flatMap(Set::stream)
         .collect(Collectors.toList());
@@ -157,9 +152,10 @@ public class ProtocolTemplateHelperService {
     for (ProtocolStepLinkedHomework homework : homeworkToSave) {
       protocolStepLinkedHomeworkService.saveProtocolStepLinkedHomework(homework);
     }
-  }
-
-  private List<Homework> createClientHomework(Collection<ProtocolStep> protocolSteps,
+  }*/
+  
+ //TODO This will need to be reworked to work without Homework
+  /*private List<Homework> createClientHomework(Collection<ProtocolStep> protocolSteps,
       Long householdId,
       String modifiedBy) {
     return protocolSteps.stream()
@@ -200,5 +196,6 @@ public class ProtocolTemplateHelperService {
         .filter(Objects::nonNull)
         .flatMap(List::stream)
         .collect(Collectors.toList());
-  }
+  }*/
 }
+

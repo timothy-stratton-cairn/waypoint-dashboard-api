@@ -1,12 +1,10 @@
 package com.cairn.waypoint.dashboard.service.data;
 
 
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
-import com.cairn.waypoint.dashboard.repository.StepTemplateLinkedHomeworkTemplateRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
-
+/*
 @Service
 public class StepTemplateLinkedHomeworkTemplateDataService {
 
@@ -34,4 +32,4 @@ public class StepTemplateLinkedHomeworkTemplateDataService {
     return this.stepTemplateLinkedHomeworkTemplateRepository.findByHomeworkTemplate(
         homeworkTemplate);
   }
-}
+}*/

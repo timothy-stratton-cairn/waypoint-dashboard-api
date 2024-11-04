@@ -1,7 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.homework;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.entity.Homework;
+//import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
@@ -39,7 +39,7 @@ public class DeleteHomeworkByIdEndpoint {
     this.protocolStepDataService = protocolStepDataService;
     this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
   }
-
+/*
   @DeleteMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
   @Operation(
@@ -58,6 +58,7 @@ public class DeleteHomeworkByIdEndpoint {
           @ApiResponse(responseCode = "404", description = "Not Found",
               content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
+  
   public ResponseEntity<?> deactivateHomeworkById(@PathVariable Long homeworkId,
       Principal principal) {
     log.info("User [{}] is Deactivating Homework with ID [{}]", principal.getName(),
@@ -107,5 +108,5 @@ public class DeleteHomeworkByIdEndpoint {
             .build(),
         HttpStatus.NOT_FOUND
     );
-  }
+  }*/
 }

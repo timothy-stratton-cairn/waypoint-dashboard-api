@@ -13,17 +13,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLRestriction;
-
+// TODO TO BE DELETED 
 @Data
-@Entity
+//@Entity   
 @SuperBuilder
-@EqualsAndHashCode(callSuper = true, exclude = {"stepTemplate", "homeworkTemplate"})
-@NoArgsConstructor
-@AllArgsConstructor
-@SQLRestriction("active=1")
-@Table(name = "step_template_linked_homework_template")
+@EqualsAndHashCode(callSuper = true, exclude = {"stepTemplate", "homeworkTemplate"})abstract
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@SQLRestriction("active=1")
+//@Table(name = "step_template_linked_homework_template")
 public class StepTemplateLinkedHomeworkTemplate extends BaseEntity {
-
+/*
   @ManyToOne
   @JoinColumn(name = "protocol_step_template_id", nullable = false)
   private StepTemplate stepTemplate;
@@ -31,4 +31,5 @@ public class StepTemplateLinkedHomeworkTemplate extends BaseEntity {
   @JoinColumn(name = "homework_template_id", nullable = false)
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private HomeworkTemplate homeworkTemplate;
+  */
 }

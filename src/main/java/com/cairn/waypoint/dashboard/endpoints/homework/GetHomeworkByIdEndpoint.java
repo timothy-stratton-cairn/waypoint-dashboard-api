@@ -2,7 +2,7 @@ package com.cairn.waypoint.dashboard.endpoints.homework;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkDto;
-import com.cairn.waypoint.dashboard.entity.Homework;
+//import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.helper.HomeworkHelperService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
+/*
 @Slf4j
 @RestController
 @Tag(name = "Homework")
@@ -82,4 +82,4 @@ public class GetHomeworkByIdEndpoint {
         HttpStatus.NOT_FOUND
     );
   }
-}
+}*/
