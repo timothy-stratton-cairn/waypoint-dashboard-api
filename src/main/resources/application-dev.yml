@@ -33,8 +33,8 @@ spring:
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
   liquibase:
+
     enabled: true
-    drop-first: true
   jpa:
     hibernate:
       ddl-auto: validate

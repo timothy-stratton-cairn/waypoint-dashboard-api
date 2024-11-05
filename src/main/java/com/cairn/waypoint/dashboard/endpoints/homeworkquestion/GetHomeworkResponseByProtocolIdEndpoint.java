@@ -72,16 +72,16 @@ public ResponseEntity<?> getAllResponseByProtocolId(@PathVariable Long protocolI
                 .build());
     }
 }
-	  private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
-	    log.warn(message);
-	    return new ResponseEntity<>(
-	        ErrorMessage.builder()
-	            .path(PATH)
-	            .timestamp(LocalDateTime.now())
-	            .status(status.value())
-	            .error(message)
-	            .build(),
-	        status
-	    );
-	  }
-	}
+private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
+	log.warn(message);
+	return new ResponseEntity<>(
+		ErrorMessage.builder()
+			.path(PATH)
+			.timestamp(LocalDateTime.now())
+			.status(status.value())
+			.error(message)
+			.build(),
+		status
+	);
+  }
+}

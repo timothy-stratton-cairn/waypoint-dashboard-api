@@ -45,6 +45,7 @@ public class HomeworkResponse extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private HomeworkCategory category;
   
+  
   private Boolean active;
 
   //usage: new HomeworkResponse().getResponse(QuestionTypeEnum.DATE.getDataType());

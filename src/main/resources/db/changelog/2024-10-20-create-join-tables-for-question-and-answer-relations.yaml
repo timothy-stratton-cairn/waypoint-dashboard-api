@@ -35,16 +35,6 @@ databaseChangeLog:
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
         - sql:
             dbms: 'h2, mysql'
-            sql: CREATE TABLE `protocol_user` (
-              `id` BIGINT NOT NULL AUTO_INCREMENT,
-              `protocol_id` BIGINT NOT NULL,
-              `user_id` BIGINT NOT NULL,
-               PRIMARY KEY (`id`),
-               CONSTRAINT `FK_protocol_id` FOREIGN KEY (`protocol_id`) REFERENCES `protocol` (`id`),
-               UNIQUE KEY `UK_protocol_user` (`protocol_id`, `user_id`)
-               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-        - sql:
-            dbms: 'h2, mysql'
             sql: DROP TABLE IF EXISTS `protocol_step_linked_homework`;
         - sql:
             dbms: 'h2, mysql'
@@ -56,6 +46,10 @@ databaseChangeLog:
                   DROP COLUMN `homework_id`,
                   ADD COLUMN `last_answered_at` timestamp DEFAULT NULL AFTER `file_guid`,
                   ADD COLUMN `protocol_id` BIGINT NOT NULL AFTER `last_answered_at`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `protocol`
+              ADD COLUMN `user_id` BIGINT NOT NULL AFTER `description`;
                   
         - sql:
             dbms: 'h2, mysql'

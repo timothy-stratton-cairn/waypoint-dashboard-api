@@ -40,10 +40,7 @@ spring:
         useServerPrepStmts: true
   liquibase:
     enabled: true
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
-    parameters:
-      searchPath: file:/Users/wesleyanderson/Desktop/waypoint-dashboard-api/target/classes/db/changelog  
-
+  
 
   jpa:
     hibernate:

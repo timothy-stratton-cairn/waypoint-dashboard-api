@@ -3,16 +3,12 @@ package com.cairn.waypoint.dashboard.service.data;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.HomeworkResponseDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.HomeworkResponseListDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.HomeworkQuestionLinkedProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
-import com.cairn.waypoint.dashboard.entity.HomeworkResponseLinkedProtocol;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionLinkedProtocolTemplatesRepository;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
-import com.cairn.waypoint.dashboard.repository.HomeworkResponseLinkedProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.HomeworkResponseRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.ArrayList;
@@ -27,18 +23,28 @@ public class HomeworkResponseDataService {
 
   private final HomeworkResponseRepository homeworkResponseRepository;
   private final ProtocolRepository protocolRepository;
+
   private final HomeworkQuestionLinkedProtocolTemplatesRepository linkedRepository;
   private final HomeworkQuestionRepository questionRepository;
+  private final ProtocolDataService protocolDataService;
+  private final HomeworkQuestionLinkedProtocolTemplateDataService linkedProtocolTemplateDataService;
+  
   public HomeworkResponseDataService(
 		  HomeworkResponseRepository homeworkResponseRepository,
           ProtocolRepository protocolRepository,
           HomeworkQuestionRepository questionRepository,
-          HomeworkQuestionLinkedProtocolTemplatesRepository linkedRepository
+          HomeworkQuestionLinkedProtocolTemplatesRepository linkedRepository,
+          ProtocolDataService protocolDataService,
+          HomeworkQuestionLinkedProtocolTemplateDataService linkedProtocolTemplateDataService
           ) {
 	this.homeworkResponseRepository = homeworkResponseRepository;
 	this.protocolRepository = protocolRepository;
 	this.linkedRepository = linkedRepository;
+
 	this.questionRepository = questionRepository;
+	this.protocolDataService = protocolDataService;
+
+    this.linkedProtocolTemplateDataService = linkedProtocolTemplateDataService;
 	}
 
   public HomeworkResponse saveHomeworkResponse(HomeworkResponse homeworkResponse) {
@@ -76,40 +82,13 @@ public class HomeworkResponseDataService {
 	        .numberOfResponses(responses.size())
 	        .build();
 	}
-  
-  //TODO This probably only needs to be getQuestionsAndResponsesByProtocol. Protocols will be tied to users 
-  public List<HomeworkResponseDto> getQuestionsAndResponsesByProtocolAndUser(Long protocolId) {
 
-      Protocol protocol = protocolRepository.findById(protocolId)
-  
-          .orElseThrow(() -> new IllegalArgumentException("Invalid protocol ID: " + protocolId));
-      Long templateId = protocol.getProtocolTemplate().getId();
-
-      List<Long> questionIds = linkedRepository.findByProtocolTemplate_Id(templateId)
-          .stream()
-          .map(link -> link.getQuestion().getId())
-          .collect(Collectors.toList());
-      
-      List<HomeworkResponseDto> resultList = new ArrayList<>();
-
-      for (Long questionId : questionIds) {
-    	    HomeworkQuestion question = questionRepository.findById(questionId)
-    	        .orElseThrow(() -> new EntityNotFoundException("Question not found with ID: " + questionId));
-
-    	    Optional<HomeworkResponse> responseOpt = homeworkResponseRepository
-    	        .findByHomeworkQuestion_IdAndProtocol_Id(questionId, protocolId);
-
-    	    HomeworkResponseDto dto = HomeworkResponseDto.builder()
-    	        .questionId(question.getId())
-    	        .responseId(responseOpt.map(HomeworkResponse::getId).orElse(null))
-    	        .categroyId(question.getCategory().getId())
-    	        .response(responseOpt.map(HomeworkResponse::getResponse).orElse(null))
-    	        .file_guide(responseOpt.map(HomeworkResponse::getFileGuid).orElse(null))
-    	        .build();
-
-    	    resultList.add(dto);
-    	}
-
-      return resultList;
+  public List<HomeworkResponse> getResponsesByProtocolAndQuestion(Protocol protocol, HomeworkQuestion question) {
+	  return homeworkResponseRepository.findByProtocolAndQuestion(protocol, question);
   }
+  
+
+
+
+  
 }

@@ -44,27 +44,7 @@
 	<plugin>
 	  <groupId>org.apache.maven.plugins</groupId>
 	  <artifactId>maven-dependency-plugin</artifactId>
-	  <executions>
-		  
-	    <execution>
-	      <id>unpack-dependencies</id>
-	      <phase>package</phase> 
-	      <goals>
-	        <goal>unpack</goal>
-	      </goals>
-	      <configuration>
-	        <artifactItems>
-	          <artifactItem>
-	            <groupId>com.cairnfg.waypoint.authorization</groupId>
-	            <artifactId>waypoint-authorization-api</artifactId>
-	            <version>0.0.1</version>
-	            <type>jar</type>
-	            <excludes>db/changelog/db.changelog-master.yaml</excludes>
-	          </artifactItem>
-	        </artifactItems>
-	      </configuration>
-	    </execution>
-	  </executions>
+
 	  
 	</plugin>
   </plugins>
