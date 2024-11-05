@@ -1,42 +1,35 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto;
 
+import com.cairn.waypoint.dashboard.endpoints.homeworkquestion.SimplifiedHomeworkQuestionDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.SimplifiedProtocolDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
+import com.cairn.waypoint.dashboard.entity.Protocol;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class QuestionResponsePairDto {
-    private Long protocol_id;
-    private HomeworkQuestion question;
-    private HomeworkResponse response;
+    private SimplifiedProtocolDto protocol;
+    private SimplifiedHomeworkQuestionDto question;
+    private SimplifiedHomeworkResponseDto response;
 
-
-    public QuestionResponsePairDto(Long protocol_id, HomeworkQuestion question, HomeworkResponse response) {
-        this.protocol_id = protocol_id;
-        this.question = question;
-        this.response = response;
+    public QuestionResponsePairDto(Protocol protocol, HomeworkQuestion question, HomeworkResponse response) {
+        this.protocol = new SimplifiedProtocolDto(protocol);
+        this.question = new SimplifiedHomeworkQuestionDto(question);
+        this.response = response != null ? new SimplifiedHomeworkResponseDto(response) : null;
     }
 
-    // Getters and setters
-    public Long getProtocolId() {
-        return protocol_id;
+    public SimplifiedProtocolDto getProtocol() {
+        return protocol;
     }
 
-    public void setProtocolId(Long protocol_id) {
-        this.protocol_id = protocol_id;
-    }
-
-    public HomeworkQuestion getQuestion() {
+    public SimplifiedHomeworkQuestionDto getQuestion() {
         return question;
     }
 
-    public void setQuestion(HomeworkQuestion question) {
-        this.question = question;
-    }
-
-    public HomeworkResponse getResponse() {
+    public SimplifiedHomeworkResponseDto getResponse() {
         return response;
     }
 
-    public void setResponse(HomeworkResponse response) {
-        this.response = response;
-    }
 }

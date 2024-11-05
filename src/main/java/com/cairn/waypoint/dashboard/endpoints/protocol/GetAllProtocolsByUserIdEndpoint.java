@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/protocols")
-@Tag(name = "Protocol", description = "Endpoints for managing protocols")
+@Tag(name = "Protocol")
 public class GetAllProtocolsByUserIdEndpoint {
 
     private final ProtocolDataService protocolDataService;

@@ -84,7 +84,7 @@ public class HomeworkResponseDataService {
 	}
 
   public List<HomeworkResponse> getResponsesByProtocolAndQuestion(Protocol protocol, HomeworkQuestion question) {
-	  return homeworkResponseRepository.findByProtocolAndQuestion(protocol, question);
+	  return homeworkResponseRepository.findByProtocolAndHomeworkQuestion(protocol, question);
   }
   
 

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "HomeworkQuestion")
+@Tag(name = "Homework Question")
 public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
 
     public static final String PATH = "/api/homework-question-response/user/{userId}";

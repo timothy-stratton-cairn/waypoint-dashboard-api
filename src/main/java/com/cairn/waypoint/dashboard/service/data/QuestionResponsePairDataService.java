@@ -19,19 +19,21 @@ public class QuestionResponsePairDataService {
     private final HomeworkQuestionDataService questionService;
     private final HomeworkQuestionLinkedProtocolTemplateDataService questionLinkedProtocolTemplateDataServiceService;
     private final HomeworkResponseDataService responseService;
+    private final HomeworkResponseDataService homeworkResponseDataService;
 
     public QuestionResponsePairDataService(
-            ProtocolDataService protocolService,HomeworkQuestionDataService questionService,
+            ProtocolDataService protocolService, HomeworkQuestionDataService questionService,
             HomeworkQuestionLinkedProtocolTemplateDataService questionLinkedProtocolTemplateDataServiceService,
-            HomeworkResponseDataService responseService ){
+            HomeworkResponseDataService responseService, HomeworkResponseDataService homeworkResponseDataService){
         this.protocolService = protocolService;
         this.questionService = questionService;
         this.questionLinkedProtocolTemplateDataServiceService = questionLinkedProtocolTemplateDataServiceService;
         this.responseService = responseService;
-
+        this.homeworkResponseDataService = homeworkResponseDataService;
     }
 
     public QuestionResponsePairListDto getQuestionResponsePairsByUserId(Long userId) {
+
         ArrayList<QuestionResponsePairDto> questionResponsePairs = new ArrayList<>();
         List<Protocol> protocols = protocolService.findByUserId(userId);
         for (Protocol protocol: protocols) {
@@ -42,10 +44,10 @@ public class QuestionResponsePairDataService {
                 List<HomeworkResponse> responses = responseService.getResponsesByProtocolAndQuestion(protocol, question);
                 if (!responses.isEmpty()) {
                     for(HomeworkResponse response: responses){
-                    questionResponsePairs.add(new QuestionResponsePairDto(protocol.getId(),question,response));
+                    questionResponsePairs.add(new QuestionResponsePairDto(protocol,question,response));
                     }
                 } else {
-                questionResponsePairs.add(new QuestionResponsePairDto(protocol.getId(), question, null));
+                questionResponsePairs.add(new QuestionResponsePairDto(protocol, question, null));
             }
             }
         }

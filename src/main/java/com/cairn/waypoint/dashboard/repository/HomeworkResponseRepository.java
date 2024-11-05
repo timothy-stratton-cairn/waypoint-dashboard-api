@@ -19,7 +19,7 @@ public interface HomeworkResponseRepository extends JpaRepository<HomeworkRespon
   
   List<HomeworkResponse> findByHomeworkQuestion_IdIn(List<Long> questionIds);
 
-  List<HomeworkResponse> findByProtocolAndQuestion(Protocol protocol, HomeworkQuestion question);
+  List<HomeworkResponse> findByProtocolAndHomeworkQuestion(Protocol protocol, HomeworkQuestion question);
 
   List<HomeworkResponse> findByProtocol_Id(Long protocolId);
 
