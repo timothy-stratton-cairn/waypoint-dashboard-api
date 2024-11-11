@@ -1,14 +1,14 @@
 package com.cairn.waypoint.dashboard.service.data;
 
-import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.HomeworkQuestionLinkedProtocolTemplate;
-import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
+import com.cairn.waypoint.dashboard.entity.*;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolTemplateRepository;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionLinkedProtocolTemplatesRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,14 +17,16 @@ public class HomeworkQuestionDataService {
   private final HomeworkQuestionRepository homeworkQuestionRepository;
   private final HomeworkQuestionLinkedProtocolTemplatesRepository homeworkQuestionLinkedProtocolTemplatesRepository;
   private final ProtocolTemplateRepository protocolTemplateRepository;
+  private final ProtocolDataService protocolDataService;
 
   public HomeworkQuestionDataService(HomeworkQuestionRepository homeworkQuestionRepository,
-          ProtocolTemplateRepository protocolTemplateRepository,
-          HomeworkQuestionLinkedProtocolTemplatesRepository homeworkQuestionLinkedProtocolTemplatesRepository) {
+                                     ProtocolTemplateRepository protocolTemplateRepository,
+                                     HomeworkQuestionLinkedProtocolTemplatesRepository homeworkQuestionLinkedProtocolTemplatesRepository, ProtocolDataService protocolDataService) {
 	this.homeworkQuestionRepository = homeworkQuestionRepository;
 	this.protocolTemplateRepository = protocolTemplateRepository;
 	this.homeworkQuestionLinkedProtocolTemplatesRepository = homeworkQuestionLinkedProtocolTemplatesRepository;
-	}
+    this.protocolDataService = protocolDataService;
+  }
 
   public List<HomeworkQuestion> getAllHomeworkQuestions() {
     return this.homeworkQuestionRepository.findAll();
@@ -57,6 +59,18 @@ public class HomeworkQuestionDataService {
             .collect(Collectors.toList());
   }
 
+  public List<HomeworkQuestion> getHomeworkQuestionsByProtocolId(Long  protocolId){
+    Protocol protocol = protocolDataService.getProtocolById(protocolId)
+            .orElseThrow(() -> new EntityNotFoundException("Protocol not found with ID: " + protocolId));
+
+    List<HomeworkQuestionLinkedProtocolTemplate> linkedProtocolTemplates =
+            homeworkQuestionLinkedProtocolTemplatesRepository.findByProtocolTemplate_Id(protocol.getId());
+
+    return linkedProtocolTemplates.stream()
+            .map(HomeworkQuestionLinkedProtocolTemplate::getQuestion)
+            .collect(Collectors.toList());
+  }
+
   public void linkQuestionToProtocolTemplate(Long questionId, Long protocolTemplateId) {
 
       HomeworkQuestion question = homeworkQuestionRepository.findById(questionId)
@@ -71,4 +85,8 @@ public class HomeworkQuestionDataService {
 
       homeworkQuestionLinkedProtocolTemplatesRepository.save(link);
   }
+  public HomeworkQuestion getHomeworkQuestionByResponse(HomeworkResponse response){
+    return response.getHomeworkQuestion();
+  }
+
 }

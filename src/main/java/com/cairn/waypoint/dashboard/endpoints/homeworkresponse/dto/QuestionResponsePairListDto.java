@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 //TODO Needs to be refactored to be more efficient
 public class QuestionResponsePairListDto {
-    private ArrayList<QuestionResponsePairDto> questions;
+    private List<QuestionResponsePairDto> questions;
     private Integer numberOfPairs;
 
 
-    public QuestionResponsePairListDto(ArrayList<QuestionResponsePairDto> questions) {
+    public QuestionResponsePairListDto(List<QuestionResponsePairDto> questions) {
         this.questions = questions;
         this.numberOfPairs = questions != null ? questions.size() : 0;
     }
@@ -17,7 +17,7 @@ public class QuestionResponsePairListDto {
         return questions;
     }
 
-    public void setQuestions(ArrayList<QuestionResponsePairDto> questions) {
+    public void setQuestions(List<QuestionResponsePairDto> questions) {
         this.questions = questions;
         this.numberOfPairs = questions != null ? questions.size() : 0;
     }

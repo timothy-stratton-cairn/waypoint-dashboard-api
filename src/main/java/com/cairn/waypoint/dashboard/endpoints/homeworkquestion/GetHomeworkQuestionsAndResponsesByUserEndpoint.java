@@ -1,6 +1,5 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworkquestion;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.HomeworkResponseListDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionResponsePairListDto;
 import com.cairn.waypoint.dashboard.service.data.QuestionResponsePairDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,17 +43,32 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
             responses = {
                     @ApiResponse(responseCode = "200",
                             content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = HomeworkResponseListDto.class))}),
+                                    schema = @Schema(implementation = QuestionResponsePairListDto.class))}),
                     @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = {@Content(schema = @Schema(hidden = true))}),
                     @ApiResponse(responseCode = "403", description = "Forbidden",
-                            content = {@Content(schema = @Schema(hidden = true))})
+                            content = {@Content(schema = @Schema(hidden = true))}),
+                    @ApiResponse(responseCode = "404", description = "User not found",
+                            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ErrorMessage.class))})
             })
-    public ResponseEntity<QuestionResponsePairListDto> getAllQuestionsByUserId(@PathVariable Long userId, Principal principal) {
-        log.info("User [{}] is retrieving all questions and responses for user ID [{}]", principal.getName(), userId);
-        QuestionResponsePairListDto questionResponsePairs = questionResponsePairDataService.getQuestionResponsePairsByUserId(userId);
+    public ResponseEntity<?> getHomeworkQuestionsAndResponsesByUser(@PathVariable Long userId) {
+        try {
+            QuestionResponsePairListDto questionResponsePairs = questionResponsePairDataService.findAllQuestionResponsePairsByUser(userId);
 
-        return ResponseEntity.ok(questionResponsePairs);
+            if (questionResponsePairs.getNumberOfPairs() == 0) {
+                return generateFailureResponse("No questions or responses found for user ID: " + userId, HttpStatus.NOT_FOUND);
+            }
+
+            return ResponseEntity.ok(questionResponsePairs);
+
+        } catch (EntityNotFoundException e) {
+            return generateFailureResponse("User with ID " + userId + " not found.", HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            log.error("An error occurred while retrieving homework questions and responses for user ID: {}", userId, e);
+            return generateFailureResponse("An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
@@ -68,7 +83,4 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
                 status
         );
     }
-
 }
-
-

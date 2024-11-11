@@ -83,12 +83,31 @@ public class HomeworkResponseDataService {
 	        .build();
 	}
 
-  public List<HomeworkResponse> getResponsesByProtocolAndQuestion(Protocol protocol, HomeworkQuestion question) {
+  /*public List<HomeworkResponse> getResponsesByProtocolAndQuestion(Protocol protocol, HomeworkQuestion question) {
 	  return homeworkResponseRepository.findByProtocolAndHomeworkQuestion(protocol, question);
-  }
-  
+  }*/
 
 
+    public HomeworkResponse saveHomeworkResponseFromDto(HomeworkResponseDto dto) {
+        HomeworkQuestion homeworkQuestion = questionRepository.findById(dto.getQuestionId())
+                .orElseThrow(() -> new EntityNotFoundException("HomeworkQuestion not found"));
+
+        HomeworkResponse homeworkResponse = HomeworkResponse.builder()
+                .response(dto.getResponse())
+                .homeworkQuestion(homeworkQuestion)
+                .fileGuid(dto.getFileGuid())
+                .active(true) // Set default value for active if needed
+                .build();
+
+        return homeworkResponseRepository.save(homeworkResponse);
+    }
+
+    public List<HomeworkResponse> getAllResponsesByUser_Id(Long userId) {
+        return this.homeworkResponseRepository.findAllByUserId(userId);
+    }
+    <Optional> HomeworkResponse getHomeworkResponse(HomeworkQuestion homeworkQuestion) {
+        return homeworkResponseRepository.findByHomeworkQuestion(homeworkQuestion);
+    }
 
   
 }

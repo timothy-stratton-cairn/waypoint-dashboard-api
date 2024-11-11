@@ -1,12 +1,6 @@
 package com.cairn.waypoint.dashboard.entity;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,11 +27,11 @@ public class HomeworkResponse extends BaseEntity {
   /*@JoinColumn(name = "homework_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private Homework homework;*/
-  
-  @JoinColumn(name="protocol_id",nullable = false)
-  @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-  private Protocol protocol;
-  
+
+
+  @Column(name="user_id")
+  private Long userId;
+
   private String fileGuid;
   private Integer ordinalIndex;
   

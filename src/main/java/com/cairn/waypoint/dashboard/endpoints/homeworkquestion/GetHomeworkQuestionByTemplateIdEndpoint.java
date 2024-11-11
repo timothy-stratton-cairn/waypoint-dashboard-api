@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "Homework")
+@Tag(name = "Homework Question d")
 public class GetHomeworkQuestionByTemplateIdEndpoint {
 	
 	  public static final String PATH = "/api/homework-question/protocol-template/{templateId}";
@@ -43,6 +43,7 @@ public class GetHomeworkQuestionByTemplateIdEndpoint {
 		this.homeworkQuestionDataService = homeworkQuestionDataService;
 		this.homeworkQuestionHelperService = homeworkQuestionHelperService;
 	  }
+
 
 
 @GetMapping(PATH)

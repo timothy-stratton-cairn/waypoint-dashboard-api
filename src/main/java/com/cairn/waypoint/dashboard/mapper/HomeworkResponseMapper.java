@@ -20,4 +20,6 @@ public interface HomeworkResponseMapper {
   @Mapping(source = "modifiedBy", target = "modifiedBy")
   
   HomeworkResponse homeworkQuestionLinkedProtocolTemplate(HomeworkQuestionLinkedProtocolTemplate protocolTemplate,String modifiedBy);
+
+    Object toDto(HomeworkResponse createdResponse);
 }
