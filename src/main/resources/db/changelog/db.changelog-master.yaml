@@ -73,6 +73,8 @@ databaseChangeLog:
       file: db/changelog/2024-10-16-add-category-to-homework.yaml
   - include:
       file: db/changelog/2024-10-20-create-join-tables-for-question-and-answer-relations.yaml
+  - include:
+      file: db/changelog/2024-11-11-add-user_id-to-user-homework-response-table.yaml
 
 
 
