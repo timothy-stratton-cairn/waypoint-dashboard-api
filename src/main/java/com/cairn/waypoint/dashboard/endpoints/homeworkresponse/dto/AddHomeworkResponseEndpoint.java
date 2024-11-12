@@ -5,6 +5,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.mapper.HomeworkResponseMapper;
 import com.cairn.waypoint.dashboard.repository.HomeworkCategoryRepository;
+import com.cairn.waypoint.dashboard.service.HomeworkCategoryDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,14 +36,16 @@ public class AddHomeworkResponseEndpoint {
 
     private final HomeworkResponseDataService homeworkResponseDataService;
     private final HomeworkQuestionDataService homeworkQuestionDataService;
-    private final HomeworkCategoryRepository homeworkCategoryRepository;
+    private final HomeworkCategoryDataService homeworkCategoryDataService;
     private final HomeworkResponseMapper homeworkResponseMapper = HomeworkResponseMapper.INSTANCE;
 
     public AddHomeworkResponseEndpoint(HomeworkResponseDataService homeworkResponseDataService,
-                                       HomeworkQuestionDataService homeworkQuestionDataService, HomeworkCategoryRepository homeworkCategoryRepository) {
+                                       HomeworkQuestionDataService homeworkQuestionDataService,
+                                       HomeworkCategoryDataService homeworkCategoryDataService
+    ) {
         this.homeworkResponseDataService = homeworkResponseDataService;
         this.homeworkQuestionDataService = homeworkQuestionDataService;
-        this.homeworkCategoryRepository = homeworkCategoryRepository;
+        this.homeworkCategoryDataService = homeworkCategoryDataService;
     }
 
     @Transactional
@@ -80,10 +83,10 @@ public class AddHomeworkResponseEndpoint {
                             addHomeworkResponseDto.getQuestionId() + "] does not exist",
                     HttpStatus.NOT_FOUND);
         }
-        Optional<HomeworkCategory> categoryOpt = homeworkCategoryRepository.findById(addHomeworkResponseDto.getCategoryId());
 
+        Optional<HomeworkCategory> category = homeworkCategoryDataService.getCategoryById(addHomeworkResponseDto.getCategoryId());
 
-        if (categoryOpt.isEmpty()) {
+        if (category.isEmpty()) {
             return generateFailureResponse("Category with ID [" +
                             addHomeworkResponseDto.getCategoryId() + "] does not exist",
                     HttpStatus.NOT_FOUND);
@@ -93,7 +96,7 @@ public class AddHomeworkResponseEndpoint {
                 .homeworkQuestion(homeworkQuestionOpt.get())
                 .userId(addHomeworkResponseDto.getUserId())
                 .modifiedBy(principal.getName())
-                .category(categoryOpt.get())
+                .category(category.get())
                 .updated(LocalDateTime.now())
                 .ordinalIndex(2)
                 .fileGuid(addHomeworkResponseDto.getFileGuid())

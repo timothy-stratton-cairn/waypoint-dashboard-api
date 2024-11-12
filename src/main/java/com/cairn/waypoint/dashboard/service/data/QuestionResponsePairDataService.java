@@ -4,8 +4,8 @@ import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionRespo
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionResponsePairListDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.SimplifiedHomeworkResponseDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
-import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
+import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
+import com.cairn.waypoint.dashboard.repository.HomeworkResponseRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,18 +14,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class QuestionResponsePairDataService {
-    private final HomeworkQuestionDataService questionService;
-    private final HomeworkResponseDataService homeworkResponseDataService;
+    private final HomeworkResponseRepository homeworkResponseRepository;
 
-    public QuestionResponsePairDataService( HomeworkQuestionDataService questionService,HomeworkResponseDataService homeworkResponseDataService){
-        this.questionService = questionService;
-        this.homeworkResponseDataService = homeworkResponseDataService;
+    public QuestionResponsePairDataService( HomeworkQuestionDataService questionService,
+                                            HomeworkResponseDataService homeworkResponseDataService,
+                                            HomeworkResponseRepository homeworkResponseRepository,
+                                            HomeworkQuestionRepository homeworkQuestionRepository
+    ){
+        this.homeworkResponseRepository = homeworkResponseRepository;
     }
 
     public QuestionResponsePairListDto findAllQuestionResponsePairsByUser(Long userId) {
-        List<QuestionResponsePairDto> questionResponsePairDtos = homeworkResponseDataService.getAllResponsesByUser_Id(userId).stream()
+        List<QuestionResponsePairDto> questionResponsePairDtos = homeworkResponseRepository.findAllByUserId(userId).stream()
                 .map(response -> {
-                    HomeworkQuestion question = questionService.getHomeworkQuestionByResponse(response);
+                    HomeworkQuestion question = response.getHomeworkQuestion();
                     if (question == null) {
                         throw new EntityNotFoundException("HomeworkQuestion not found for response ID: " + response.getId());
                     }

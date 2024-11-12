@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface HomeworkResponseRepository extends JpaRepository<HomeworkResponse, Long> {
 
   Optional<HomeworkResponse> findHomeworkResponseByFileGuid(String fileGuid);
-  
 
   List<HomeworkResponse> findHomeworkResponseByHomeworkQuestion(HomeworkQuestion homeworkQuestion);
 
