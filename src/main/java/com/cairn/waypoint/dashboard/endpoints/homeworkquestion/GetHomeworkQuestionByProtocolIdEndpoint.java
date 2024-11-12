@@ -58,7 +58,7 @@ public class GetHomeworkQuestionByProtocolIdEndpoint {
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})})
 
-  public ResponseEntity<?> getAllQuestionsByTemplateId(@PathVariable Long protocolId,
+  public ResponseEntity<?> getAllQuestionsByProtocId(@PathVariable Long protocolId,
       Principal principal) {
     log.info("User [{}] is retrieving all homework of the protocol [{}]", principal.getName(),
         protocolId);

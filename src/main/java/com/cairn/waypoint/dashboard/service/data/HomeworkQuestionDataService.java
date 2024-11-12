@@ -66,16 +66,24 @@ public class HomeworkQuestionDataService {
   }
 
   public List<HomeworkQuestion> getHomeworkQuestionsByProtocolId(Long protocolId) {
-    Protocol protocol = protocolRepository.findById(protocolId).get();
+    Protocol protocol = protocolRepository.findById(protocolId)
+        .orElseThrow(() -> new RuntimeException("Protocol not found with ID: " + protocolId));
 
     List<HomeworkQuestionLinkedProtocolTemplate> linkedProtocolTemplates =
         homeworkQuestionLinkedProtocolTemplatesRepository.findByProtocolTemplate_Id(
-            protocol.getId());
+            protocol.getProtocolTemplate().getId());
 
     return linkedProtocolTemplates.stream()
         .map(HomeworkQuestionLinkedProtocolTemplate::getQuestion)
+        .filter(question -> {
+          // Attempt to find the question by ID, and skip if not found or inactive
+          Optional<HomeworkQuestion> foundQuestion = homeworkQuestionRepository.findById(question.getId());
+          return foundQuestion.isPresent() && foundQuestion.get().getActive() != null && foundQuestion.get().getActive();
+        })
         .collect(Collectors.toList());
   }
+
+
 
   public void linkQuestionToProtocolTemplate(Long questionId, Long protocolTemplateId) {
 

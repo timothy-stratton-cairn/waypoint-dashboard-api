@@ -12,10 +12,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.SQLRestriction;
 
 @Data
 @Entity
@@ -25,12 +23,16 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "protocol_template_linked_homework_question")
 public class HomeworkQuestionLinkedProtocolTemplate {
 
-	@ManyToOne
-	@JoinColumn(name = "protocol_template_id", nullable = false)
-	private ProtocolTemplate protocolTemplate;
-	
-	
-	@JoinColumn(name = "homework_question_id", nullable = false)
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-	private HomeworkQuestion question;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @ManyToOne
+  @JoinColumn(name = "protocol_template_id", nullable = false)
+  private ProtocolTemplate protocolTemplate;
+
+
+  @JoinColumn(name = "homework_question_id", nullable = false)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private HomeworkQuestion question;
 }

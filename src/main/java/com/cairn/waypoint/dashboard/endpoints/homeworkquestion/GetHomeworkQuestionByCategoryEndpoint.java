@@ -44,7 +44,7 @@ public class GetHomeworkQuestionByCategoryEndpoint {
   @GetMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
   @Operation(
-      summary = "Retrieves all homework questionsassociated with the category ID.",
+      summary = "Retrieves all homework questions associated with the category ID.",
       description = "Retrieves all homework questions associated with the category ID. Requires the `homework.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
