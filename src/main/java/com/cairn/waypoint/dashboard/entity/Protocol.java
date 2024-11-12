@@ -43,7 +43,7 @@ public class Protocol extends BaseEntity {
   private LocalDate completionDate;
   private Long assignedHouseholdId;
 
-  @Column(name="user_id")
+  @Column(name = "user_id")
   private Long userId;
 
   @Column(name = "protocol_status_id")

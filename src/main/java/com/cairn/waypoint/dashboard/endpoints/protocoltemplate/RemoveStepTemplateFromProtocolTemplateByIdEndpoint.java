@@ -4,9 +4,7 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
-import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
-import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateLinkedStepTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
@@ -50,14 +48,14 @@ public class RemoveStepTemplateFromProtocolTemplateByIdEndpoint {
       StepTemplateDataService stepTemplateDataService, ProtocolDataService protocolDataService
       //HomeworkDataService homeworkDataService,
       //ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService
-      ) {
+  ) {
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.protocolTemplateLinkedStepTemplateDataService = protocolTemplateLinkedStepTemplateDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService,
         stepTemplateDataService
         //, homeworkDataService, protocolStepLinkedHomeworkService
-        );
+    );
   }
 
   @Transactional

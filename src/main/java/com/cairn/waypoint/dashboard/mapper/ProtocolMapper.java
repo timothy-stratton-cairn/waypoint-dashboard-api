@@ -2,7 +2,6 @@ package com.cairn.waypoint.dashboard.mapper;
 
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AccountProtocolDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
-//import com.cairn.waypoint.dashboard.endpoints.protocol.dto.LinkedHomeworksDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolDetailsDto;
@@ -11,11 +10,9 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.RecurrenceDetailsDto;
-//import com.cairn.waypoint.dashboard.entity.Homework;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;

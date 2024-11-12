@@ -1,24 +1,19 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
 //import com.cairn.waypoint.dashboard.entity.Homework;
-import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
+
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepCategory;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.mapper.ProtocolMapper;
-import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
-import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import jakarta.transaction.Transactional;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -31,7 +26,8 @@ public class ProtocolTemplateHelperService {
   private final ProtocolDataService protocolDataService;
   private final StepTemplateDataService stepTemplateDataService;
 
-  public ProtocolTemplateHelperService(ProtocolDataService protocolDataService,StepTemplateDataService stepTemplateDataService) {
+  public ProtocolTemplateHelperService(ProtocolDataService protocolDataService,
+      StepTemplateDataService stepTemplateDataService) {
     this.protocolDataService = protocolDataService;
     this.stepTemplateDataService = stepTemplateDataService;
   }
@@ -152,8 +148,8 @@ public class ProtocolTemplateHelperService {
       protocolStepLinkedHomeworkService.saveProtocolStepLinkedHomework(homework);
     }
   }*/
-  
- //TODO This will need to be reworked to work without Homework
+
+  //TODO This will need to be reworked to work without Homework
   /*private List<Homework> createClientHomework(Collection<ProtocolStep> protocolSteps,
       Long householdId,
       String modifiedBy) {

@@ -13,14 +13,15 @@ import org.mapstruct.factory.Mappers;
 public interface StepTemplateMapper {
 
   StepTemplateMapper INSTANCE = Mappers.getMapper(StepTemplateMapper.class);
-  
+
   StepTemplateDto toDto(StepTemplate stepTemplate);
+
   StepTemplate toEntity(AddStepTemplateDetailsDto addStepTemplateDetailsDto);
-  
+
   //@Mapping(target = "linkedHomeworkTemplates", source = "stepTemplateLinkedHomeworks")
-  @Mapping(target ="linkedStepTask", source = "linkedTask")
+  @Mapping(target = "linkedStepTask", source = "linkedTask")
   StepTemplateDetailsDto toDetailsDto(StepTemplate stepTemplate);
-  
+
   @Mapping(target = "status", source = "templateStatus")
   StepTemplate toEntity(
       UpdateStepTemplateDetailsDto updateStepTemplateDetailsDto);

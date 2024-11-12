@@ -1,8 +1,6 @@
 package com.cairn.waypoint.dashboard.service.data;
 
 
-import java.util.Collection;
-import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service

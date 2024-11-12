@@ -1,18 +1,15 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
 //import com.cairn.waypoint.dashboard.entity.Homework;
+
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-
 import com.cairn.waypoint.dashboard.entity.StepStatus;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,8 +22,8 @@ public class ProtocolCalculationHelperService {
               /*protocolStep.getLinkedHomework() == null
               || protocolStep.getLinkedHomework()
               .isEmpty() || protocolStep.getStatus().equals(StepStatusEnum.CONDITIONAL_COMPLETION)
-              ||*/ 
-              protocolStep.getStatus().equals(StepStatusEnum.DONE))    
+              ||*/
+              protocolStep.getStatus().equals(StepStatusEnum.DONE))
           .map(ProtocolStep::getStatus)
           .map(StepStatusEnum::getInstance)
           .map(StepStatus::getWeight)

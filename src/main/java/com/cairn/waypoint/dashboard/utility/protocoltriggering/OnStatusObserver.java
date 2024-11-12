@@ -4,7 +4,6 @@ import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
-//import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -27,7 +26,7 @@ public class OnStatusObserver implements StatusObserver {
       ProtocolDataService protocolDataService,
       ProtocolStepDataService protocolStepDataService
       //ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService
-      ) {
+  ) {
     this.entityManager = entityManager;
     this.protocolDataService = protocolDataService;
     this.protocolStepDataService = protocolStepDataService;

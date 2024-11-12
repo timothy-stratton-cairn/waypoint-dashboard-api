@@ -2,7 +2,6 @@ package com.cairn.waypoint.dashboard.endpoints.homeworkquestion;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.HomeworkQuestionLinkedProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionLinkedProtocolTemplateDataService;
@@ -36,7 +35,7 @@ public class DeleteHomeworkQuestionByIdEndpoint {
   private final HomeworkResponseDataService homeworkResponseDataService;
 
   public DeleteHomeworkQuestionByIdEndpoint(HomeworkQuestionDataService homeworkQuestionDataService,
-	  HomeworkQuestionLinkedProtocolTemplateDataService questionProtocolTemplateDataService,
+      HomeworkQuestionLinkedProtocolTemplateDataService questionProtocolTemplateDataService,
       HomeworkResponseDataService homeworkResponseDataService) {
     this.homeworkQuestionDataService = homeworkQuestionDataService;
     this.questionProtocolTemplateDataService = questionProtocolTemplateDataService;
@@ -81,7 +80,7 @@ public class DeleteHomeworkQuestionByIdEndpoint {
   private ResponseEntity<String> generateSuccessResponse(HomeworkQuestion homeworkQuestion,
       String modifiedBy) {
     List<HomeworkQuestion> protocolTemplateLinkedHomeworkQuestionList =
-    		questionProtocolTemplateDataService.findAllQuestionsByQuestionId(homeworkQuestion.getId());
+        questionProtocolTemplateDataService.findAllQuestionsByQuestionId(homeworkQuestion.getId());
 
     protocolTemplateLinkedHomeworkQuestionList.forEach(protocolTemplateLinkedHomeworkQuestion -> {
       protocolTemplateLinkedHomeworkQuestion.setModifiedBy(modifiedBy);

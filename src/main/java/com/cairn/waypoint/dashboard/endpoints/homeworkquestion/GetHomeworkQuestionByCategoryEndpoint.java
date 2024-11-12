@@ -1,14 +1,10 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworkquestion;
+
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkListDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionListDto;
-import com.cairn.waypoint.dashboard.endpoints.homeworktemplate.dto.HomeworkQuestionDetailsListDto;
-import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
-import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
-import com.cairn.waypoint.dashboard.service.helper.HomeworkHelperService;
 import com.cairn.waypoint.dashboard.service.helper.HomeworkQuestionHelperService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,62 +27,64 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Tag(name = "Homework")
 public class GetHomeworkQuestionByCategoryEndpoint {
-	
-	  public static final String PATH = "/api/homework-question/category/{categoryId}";
 
-	  private final HomeworkQuestionDataService homeworkQuestionDataService;
-	  private final HomeworkQuestionHelperService homeworkQuestionHelperService;
-	 
-	  public GetHomeworkQuestionByCategoryEndpoint( HomeworkQuestionHelperService homeworkQuestionHelperService, HomeworkQuestionDataService homeworkQuestionDataService) {
-		this.homeworkQuestionDataService = homeworkQuestionDataService;
-		this.homeworkQuestionHelperService = homeworkQuestionHelperService;
-	  }
+  public static final String PATH = "/api/homework-question/category/{categoryId}";
 
+  private final HomeworkQuestionDataService homeworkQuestionDataService;
+  private final HomeworkQuestionHelperService homeworkQuestionHelperService;
 
-@GetMapping(PATH)
-@PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
-@Operation(
-    summary = "Retrieves all homework questionsassociated with the category ID.",
-    description = "Retrieves all homework questions associated with the category ID. Requires the `homework.full` permission.",
-    security = @SecurityRequirement(name = "oAuth2JwtBearer"),
-    responses = {
-        @ApiResponse(responseCode = "200",
-            content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                schema = @Schema(implementation = HomeworkListDto.class))}),
-        @ApiResponse(responseCode = "401", description = "Unauthorized",
-            content = {@Content(schema = @Schema(hidden = true))}),
-        @ApiResponse(responseCode = "403", description = "Forbidden",
-            content = {@Content(schema = @Schema(hidden = true))})})
+  public GetHomeworkQuestionByCategoryEndpoint(
+      HomeworkQuestionHelperService homeworkQuestionHelperService,
+      HomeworkQuestionDataService homeworkQuestionDataService) {
+    this.homeworkQuestionDataService = homeworkQuestionDataService;
+    this.homeworkQuestionHelperService = homeworkQuestionHelperService;
+  }
 
 
-public ResponseEntity<?> getAllHomeworkBycategoryId(@PathVariable Long categoryId,
-	      Principal principal) {
-	    log.info("User [{}] is retrieving all homework of the proper category [{}]",
-	        principal.getName(), categoryId);
+  @GetMapping(PATH)
+  @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
+  @Operation(
+      summary = "Retrieves all homework questionsassociated with the category ID.",
+      description = "Retrieves all homework questions associated with the category ID. Requires the `homework.full` permission.",
+      security = @SecurityRequirement(name = "oAuth2JwtBearer"),
+      responses = {
+          @ApiResponse(responseCode = "200",
+              content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = HomeworkListDto.class))}),
+          @ApiResponse(responseCode = "401", description = "Unauthorized",
+              content = {@Content(schema = @Schema(hidden = true))}),
+          @ApiResponse(responseCode = "403", description = "Forbidden",
+              content = {@Content(schema = @Schema(hidden = true))})})
 
-	    if (this.homeworkQuestionDataService.getHomeworkQuestionByCategory(categoryId).isEmpty()) {
-	      return generateFailureResponse("There are no Homeworks for the given category [" +
-	              categoryId + "]",
-	          HttpStatus.NOT_FOUND);
-	    } else {
-	      return ResponseEntity.ok(HomeworkQuestionListDto.builder()
-	          .questions(this.homeworkQuestionDataService.getHomeworkQuestionByCategory(categoryId).stream()
-	              .map(homeworkQuestionHelperService::generateHomeworkQuestionDto)
-	              .collect(Collectors.toList()))
-	          .build());
-	    }
-	  }
+  public ResponseEntity<?> getAllHomeworkBycategoryId(@PathVariable Long categoryId,
+      Principal principal) {
+    log.info("User [{}] is retrieving all homework of the proper category [{}]",
+        principal.getName(), categoryId);
 
-	  private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
-	    log.warn(message);
-	    return new ResponseEntity<>(
-	        ErrorMessage.builder()
-	            .path(PATH)
-	            .timestamp(LocalDateTime.now())
-	            .status(status.value())
-	            .error(message)
-	            .build(),
-	        status
-	    );
-	  }
-	}
+    if (this.homeworkQuestionDataService.getHomeworkQuestionByCategory(categoryId).isEmpty()) {
+      return generateFailureResponse("There are no Homeworks for the given category [" +
+              categoryId + "]",
+          HttpStatus.NOT_FOUND);
+    } else {
+      return ResponseEntity.ok(HomeworkQuestionListDto.builder()
+          .questions(
+              this.homeworkQuestionDataService.getHomeworkQuestionByCategory(categoryId).stream()
+                  .map(homeworkQuestionHelperService::generateHomeworkQuestionDto)
+                  .collect(Collectors.toList()))
+          .build());
+    }
+  }
+
+  private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
+    log.warn(message);
+    return new ResponseEntity<>(
+        ErrorMessage.builder()
+            .path(PATH)
+            .timestamp(LocalDateTime.now())
+            .status(status.value())
+            .error(message)
+            .build(),
+        status
+    );
+  }
+}

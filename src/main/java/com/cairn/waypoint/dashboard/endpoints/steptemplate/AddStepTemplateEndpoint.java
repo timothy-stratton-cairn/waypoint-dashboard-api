@@ -21,11 +21,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -106,7 +102,7 @@ public class AddStepTemplateEndpoint {
           HttpStatus.NOT_FOUND);
     } else {
       StepTemplate createdStepTemplate = createStepTemplate(addStepTemplateDetailsDto,
-          principal.getName(), linkedStepTask.orElse(null),stepTemplateCategory.orElse(null));
+          principal.getName(), linkedStepTask.orElse(null), stepTemplateCategory.orElse(null));
 
       log.info("Step Template [{}] created successfully with ID [{}]",
           addStepTemplateDetailsDto.getName(),
@@ -163,7 +159,7 @@ public class AddStepTemplateEndpoint {
     StepTemplate createdStepTemplate = this.stepTemplateDataService.saveStepTemplate(
         stepTemplateToCreate);
 
-      return this.stepTemplateDataService.saveStepTemplate(createdStepTemplate);
+    return this.stepTemplateDataService.saveStepTemplate(createdStepTemplate);
 
   }
 

@@ -62,12 +62,13 @@ public class AddProtocolEndpoint {
   public AddProtocolEndpoint(ProtocolDataService protocolDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateDataService stepTemplateDataService,
-     //HomeworkDataService homeworkDataService, 
+      //HomeworkDataService homeworkDataService,
       HouseholdDataService householdDataService) {
     this.protocolDataService = protocolDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
 
-    this.protocolTemplateHelperService = new ProtocolTemplateHelperService( protocolDataService, stepTemplateDataService);
+    this.protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService,
+        stepTemplateDataService);
     this.householdDataService = householdDataService;
   }
 

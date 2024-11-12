@@ -51,9 +51,8 @@ public class UpdateHomeworkResponsesEndpoint {
   private String homeworkResponseKeyPrefix;
 
   public UpdateHomeworkResponsesEndpoint(S3FileUpload s3FileUpload,
-                                         ProtocolDataService protocolDataService,
-                                         HomeworkResponseDataService responseDataService )
-  {
+      ProtocolDataService protocolDataService,
+      HomeworkResponseDataService responseDataService) {
     this.s3FileUpload = s3FileUpload;
     this.responseDataService = responseDataService;
     this.protocolDataService = protocolDataService;
@@ -67,37 +66,46 @@ public class UpdateHomeworkResponsesEndpoint {
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200", description = "Updated - Protocol update was successful"),
-          @ApiResponse(responseCode = "401", description = "Unauthorized", content = {@Content(schema = @Schema(hidden = true))}),
-          @ApiResponse(responseCode = "403", description = "Forbidden", content = {@Content(schema = @Schema(hidden = true))}),
-          @ApiResponse(responseCode = "404", description = "Not Found", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessage.class))}),
-          @ApiResponse(responseCode = "422", description = "Unprocessable Entity", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessage.class))})
+          @ApiResponse(responseCode = "401", description = "Unauthorized", content = {
+              @Content(schema = @Schema(hidden = true))}),
+          @ApiResponse(responseCode = "403", description = "Forbidden", content = {
+              @Content(schema = @Schema(hidden = true))}),
+          @ApiResponse(responseCode = "404", description = "Not Found", content = {
+              @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessage.class))}),
+          @ApiResponse(responseCode = "422", description = "Unprocessable Entity", content = {
+              @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ErrorMessage.class))})
       })
-  
+
   public ResponseEntity<?> updateHomeworkResponses(@PathVariable Long protocolId,
       @RequestPart("json") @Parameter(schema = @Schema(type = "string", format = "binary")) UpdateHomeworkResponseDetailsListDto updateHomeworkResponseDetailsListDto,
       @RequestPart("files") Optional<MultipartFile[]> files, Principal principal) {
 
     Optional<Protocol> protocolToUpdate = protocolDataService.getProtocolById(protocolId);
     if (protocolToUpdate.isEmpty()) {
-        return generateFailureResponse("Protocol with ID [" + protocolId + "] does not exist", HttpStatus.NOT_FOUND);
+      return generateFailureResponse("Protocol with ID [" + protocolId + "] does not exist",
+          HttpStatus.NOT_FOUND);
     }
 
     Map<Long, UpdateHomeworkResponseDetailsDto> homeworkQuestions = updateHomeworkResponseDetailsListDto.getResponses()
         .stream()
-        .collect(Collectors.toMap(UpdateHomeworkResponseDetailsDto::getQuestionId, Function.identity()));
+        .collect(
+            Collectors.toMap(UpdateHomeworkResponseDetailsDto::getQuestionId, Function.identity()));
 
-    HomeworkResponseListDto responseListDto = responseDataService.getHomeResponseByProtocol_Id(protocolId);
+    HomeworkResponseListDto responseListDto = responseDataService.getHomeResponseByProtocol_Id(
+        protocolId);
     if (responseListDto.getResponses().isEmpty()) {
-        return generateFailureResponse("No associated Homework Responses found", HttpStatus.NOT_FOUND);
+      return generateFailureResponse("No associated Homework Responses found",
+          HttpStatus.NOT_FOUND);
     }
 
-    responseListDto = stageHomeworkResponses(homeworkQuestions, files.orElse(null), responseListDto, principal.getName());
+    responseListDto = stageHomeworkResponses(homeworkQuestions, files.orElse(null), responseListDto,
+        principal.getName());
 
     responseDataService.saveAll(responseListDto.getResponses());
 
     boolean allResponsesComplete = responseListDto.getResponses().stream()
         .noneMatch(response -> response.getHomeworkQuestion().getRequired() &&
-                (response.getResponse() == null || response.getResponse().isEmpty()));
+            (response.getResponse() == null || response.getResponse().isEmpty()));
 
     if (allResponsesComplete) {
       protocolToUpdate.get().setCompletionDate(LocalDate.now());
@@ -129,19 +137,22 @@ public class UpdateHomeworkResponsesEndpoint {
           homeworkResponse.getHomeworkQuestion().getId());
 
       if (responseToUpdate != null) {
-        Optional<MultipartFile> fileToUpload = fileProvider.apply(responseToUpdate.getUserResponse());
+        Optional<MultipartFile> fileToUpload = fileProvider.apply(
+            responseToUpdate.getUserResponse());
         String uploadedFileName;
 
         try {
           if (fileToUpload.isPresent()) {
-            uploadedFileName = s3FileUpload.uploadFile(fileToUpload.get(), modifiedBy, homeworkResponseKeyPrefix);
+            uploadedFileName = s3FileUpload.uploadFile(fileToUpload.get(), modifiedBy,
+                homeworkResponseKeyPrefix);
             responseToUpdate.setUserResponse(uploadedFileName);
             responseToUpdate.setUploadedFile(fileToUpload.get());
           }
 
           homeworkResponse.setModifiedBy(modifiedBy);
           homeworkResponse.setResponse(responseToUpdate.getUserResponse());
-          homeworkResponse.setFileGuid(fileToUpload.isPresent() ? UUID.randomUUID().toString() : null);
+          homeworkResponse.setFileGuid(
+              fileToUpload.isPresent() ? UUID.randomUUID().toString() : null);
         } catch (IOException e) {
           throw new RuntimeException(e);
         }

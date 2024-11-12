@@ -32,7 +32,7 @@ import org.hibernate.annotations.SQLRestriction;
 @SQLRestriction("active=1")
 @Table(name = "homework_question")
 public class HomeworkQuestion extends BaseEntity {
-  
+
   private String questionAbbreviation;
   private String question;
   private String label;
@@ -64,8 +64,8 @@ public class HomeworkQuestion extends BaseEntity {
   @JoinColumn(name = "triggered_protocol_template_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private ProtocolTemplate triggeredProtocol;
-  
-  @JoinColumn(name = "category_id", nullable =false )
+
+  @JoinColumn(name = "category_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private HomeworkCategory category;
 }

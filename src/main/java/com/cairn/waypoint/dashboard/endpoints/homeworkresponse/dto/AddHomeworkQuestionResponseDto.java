@@ -1,55 +1,55 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.web.multipart.MultipartFile;
 
 public class AddHomeworkQuestionResponseDto {
 
-    private Long questionId;
-    private Long userId;
-    private String response;
-    private Long categoryId;
-    @JsonIgnore
-    private String fileGuid;
+  private Long questionId;
+  private Long userId;
+  private String response;
+  private Long categoryId;
+  @JsonIgnore
+  private String fileGuid;
 
 
-    public String getFileGuid() {
-        return fileGuid;
-    }
+  public String getFileGuid() {
+    return fileGuid;
+  }
 
-    public void setFileGuid(String fileGuid) {
-        this.fileGuid = fileGuid;
-    }
-    public Long getQuestionId() {
-        return questionId;
-    }
+  public void setFileGuid(String fileGuid) {
+    this.fileGuid = fileGuid;
+  }
 
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
-    }
+  public Long getQuestionId() {
+    return questionId;
+  }
 
-    public Long getUserId() {
-        return userId;
-    }
+  public void setQuestionId(Long questionId) {
+    this.questionId = questionId;
+  }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+  public Long getUserId() {
+    return userId;
+  }
 
-    public String getResponse() {
-        return response;
-    }
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
 
-    public void setResponse(String response) {
-        this.response = response;
-    }
+  public String getResponse() {
+    return response;
+  }
 
-    public Long getCategoryId() {
-        return categoryId;
-    }
+  public void setResponse(String response) {
+    this.response = response;
+  }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
+  public Long getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(Long categoryId) {
+    this.categoryId = categoryId;
+  }
 
 }

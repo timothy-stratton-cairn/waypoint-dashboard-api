@@ -95,9 +95,11 @@ public class ProtocolDataService {
   public List<Protocol> getAllScheduledProtocols() {
     return this.protocolRepository.findByRecurrenceType(RecurrenceTypeEnum.ON_SCHEDULE);
   }
+
   public List<Protocol> findByUserId(Long userId) {
     return this.protocolRepository.findByUserId(userId);
   }
+
   public List<Protocol> getAllUpcomingProtocols(LocalDate limitingDate) {
     return this.protocolRepository.findAllUpcomingProtocolsToDate(limitingDate,
         ProtocolStatusEnum.IN_PROGRESS.getInstance().getId(),

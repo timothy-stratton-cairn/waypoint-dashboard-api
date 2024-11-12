@@ -1,17 +1,5 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
-import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadHomeworkResponseEndpoint;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.ExpectedResponseDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.ExpectedResponseListDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionListDto;
-import com.cairn.waypoint.dashboard.endpoints.homework.dto.ProtocolTemplateDto;
-import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
-import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
-import java.util.Set;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service

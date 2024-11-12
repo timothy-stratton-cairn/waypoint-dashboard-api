@@ -1,8 +1,6 @@
 package com.cairn.waypoint.dashboard.utility.protocoltriggering;
 
 import com.cairn.waypoint.dashboard.entity.Protocol;
-import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-
 import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
@@ -10,13 +8,10 @@ import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
-//import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.util.SerializationUtils;
 
 public interface StatusObserver {
@@ -100,7 +95,7 @@ public interface StatusObserver {
         .flatMap(Set::stream)
         .collect(Collectors.toSet()); */
     protocolToReoccur.getProtocolSteps();
-        //.forEach(protocolStep -> protocolStep.setLinkedHomework(null));
+    //.forEach(protocolStep -> protocolStep.setLinkedHomework(null));
 
     //Protocol protocolReoccurrence = protocolDataService.saveProtocol(protocolToReoccur);
 
