@@ -18,7 +18,6 @@ public interface StepTemplateMapper {
 
   StepTemplate toEntity(AddStepTemplateDetailsDto addStepTemplateDetailsDto);
 
-  //@Mapping(target = "linkedHomeworkTemplates", source = "stepTemplateLinkedHomeworks")
   @Mapping(target = "linkedStepTask", source = "linkedTask")
   StepTemplateDetailsDto toDetailsDto(StepTemplate stepTemplate);
 

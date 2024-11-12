@@ -62,7 +62,6 @@ public class AddProtocolEndpoint {
   public AddProtocolEndpoint(ProtocolDataService protocolDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateDataService stepTemplateDataService,
-      //HomeworkDataService homeworkDataService,
       HouseholdDataService householdDataService) {
     this.protocolDataService = protocolDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
@@ -184,9 +183,6 @@ public class AddProtocolEndpoint {
           setupProtocolComment(addProtocolDetailsDto, principal.getName()));
 
       Protocol createdProtocol = this.protocolDataService.saveProtocol(protocolToBeCreated);
-
-      //protocolTemplateHelperService.generateAndSaveClientHomework(createdProtocol,
-      //    principal.getName());
 
       createdProtocol = this.protocolDataService.getProtocolById(createdProtocol.getId()).get();
 

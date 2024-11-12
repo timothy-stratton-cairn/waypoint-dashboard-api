@@ -29,17 +29,14 @@ public class OnScheduleObserver implements StatusObserver {
   private final EntityManager entityManager;
   private final ProtocolDataService protocolDataService;
   private final ProtocolStepDataService protocolStepDataService;
-  //private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
 
   public OnScheduleObserver(EntityManager entityManager,
       ProtocolDataService protocolDataService,
       ProtocolStepDataService protocolStepDataService
-      //,ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService
   ) {
     this.entityManager = entityManager;
     this.protocolDataService = protocolDataService;
     this.protocolStepDataService = protocolStepDataService;
-    //this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
   }
 
   @Override
@@ -56,7 +53,6 @@ public class OnScheduleObserver implements StatusObserver {
     log.info("Creating new scheduled occurrence of Protocol with ID [{}]",
         protocolToReoccur.getId());
     createProtocolRecurrence(protocolToReoccur, protocolDataService,
-        //protocolStepLinkedHomeworkService
         protocolStepDataService, entityManager);
     log.info("Protocol with ID [{}] new instance created successfully", protocolToReoccur.getId());
   }

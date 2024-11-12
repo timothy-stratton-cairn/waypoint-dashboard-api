@@ -16,14 +16,7 @@ public interface HomeworkResponseRepository extends JpaRepository<HomeworkRespon
 
   List<HomeworkResponse> findByHomeworkQuestion_IdIn(List<Long> questionIds);
 
-  //List<HomeworkResponse> findByProtocolAndHomeworkQuestion(Protocol protocol, HomeworkQuestion question);
-
-  //List<HomeworkResponse> findByProtocol_Id(Long protocolId);
-
-  //Optional<HomeworkResponse> findByHomeworkQuestion_IdAndProtocol_Id(Long questionId, Long protocolId);
-
   <Optional> HomeworkResponse findByHomeworkQuestion(HomeworkQuestion homeworkQuestion);
-
 
   List<HomeworkResponse> findAllByUserId(Long userId);
 }

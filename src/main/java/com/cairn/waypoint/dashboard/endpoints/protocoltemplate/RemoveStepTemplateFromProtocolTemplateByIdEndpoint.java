@@ -46,15 +46,12 @@ public class RemoveStepTemplateFromProtocolTemplateByIdEndpoint {
       ProtocolTemplateDataService protocolTemplateDataService,
       ProtocolTemplateLinkedStepTemplateDataService protocolTemplateLinkedStepTemplateDataService,
       StepTemplateDataService stepTemplateDataService, ProtocolDataService protocolDataService
-      //HomeworkDataService homeworkDataService,
-      //ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService
   ) {
     this.protocolTemplateDataService = protocolTemplateDataService;
     this.protocolTemplateLinkedStepTemplateDataService = protocolTemplateLinkedStepTemplateDataService;
 
     this.protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService,
         stepTemplateDataService
-        //, homeworkDataService, protocolStepLinkedHomeworkService
     );
   }
 

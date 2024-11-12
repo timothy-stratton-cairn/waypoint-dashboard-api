@@ -59,7 +59,6 @@ public class UpdateStepTemplateEndpoint {
       ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
     this.stepTemplateDataService = stepTemplateDataService;
     this.stepTaskDataService = stepTaskDataService;
-    //this.homeworkTemplateDataService = homeworkTemplateDataService;
     this.stepTemplateCategoryDataService = stepTemplateCategoryDataService;
     this.protocolStepDataService = protocolStepDataService;
     this.protocolDataService = protocolDataService;
@@ -104,7 +103,6 @@ public class UpdateStepTemplateEndpoint {
         updateStepTemplateDetailsDto.getName());
 
     Optional<StepTask> linkedStepTask = Optional.empty();
-    //List<HomeworkTemplate> linkedHomeworkTemplates = new ArrayList<>();
     Optional<StepTemplateCategory> stepTemplateCategory = Optional.empty();
 
     if (stepTemplateToBeUpdated.isEmpty()) {
@@ -124,16 +122,7 @@ public class UpdateStepTemplateEndpoint {
             .isEmpty()) {
       return generateFailureResponse("Step Task with ID [" +
           updateStepTemplateDetailsDto.getLinkedStepTaskId() + "] not found", HttpStatus.NOT_FOUND);
-      
-    /* 
-      else if (updateStepTemplateDetailsDto.getLinkedHomeworkTemplateIds() != null &&
-        !updateStepTemplateDetailsDto.getLinkedHomeworkTemplateIds().isEmpty() &&
-        (linkedHomeworkTemplates = this.homeworkTemplateDataService.getHomeworkTemplates(
-            updateStepTemplateDetailsDto.getLinkedHomeworkTemplateIds())).isEmpty()) {
-      return generateFailureResponse("Homework Templates with ID [" +
-              updateStepTemplateDetailsDto.getLinkedHomeworkTemplateIds() + "] not found",
-          HttpStatus.NOT_FOUND);
-      */
+
     } else if (updateStepTemplateDetailsDto.getStepTemplateCategoryId() != null &&
         (stepTemplateCategory = this.stepTemplateCategoryDataService.getTemplateCategoryById(
             updateStepTemplateDetailsDto.getStepTemplateCategoryId())).isEmpty()) {
@@ -143,7 +132,6 @@ public class UpdateStepTemplateEndpoint {
     } else {
       Long createdStepTemplateId = updateStepTemplate(updateStepTemplateDetailsDto,
           principal.getName(), linkedStepTask.orElse(null),
-          //linkedHomeworkTemplates, 
           stepTemplateCategory.orElse(null),
           stepTemplateToBeUpdated.get());
 
@@ -173,43 +161,6 @@ public class UpdateStepTemplateEndpoint {
     StepTemplate updatedStepTemplate = this.stepTemplateDataService.saveStepTemplate(
         targetStepTemplate);
 
-    /*if (!linkedHomeworkTemplates.isEmpty()) {
-      updatedStepTemplate.setStepTemplateLinkedHomeworks(linkedHomeworkTemplates.stream()
-          .map(homeworkTemplate -> StepTemplateLinkedHomeworkTemplate.builder()
-              .modifiedBy(modifiedBy)
-              .homeworkTemplate(homeworkTemplate)
-              .stepTemplate(updatedStepTemplate)
-              .build())
-          .collect(Collectors.toSet()));
-
-      this.stepTemplateDataService.saveStepTemplate(updatedStepTemplate);
-
-      List<ProtocolStep> protocolStepsToUpdate = this.protocolStepDataService.getProtocolStepsByStepTemplateId(
-          targetStepTemplate.getId());
-
-      Consumer<Protocol> assignHomeworkToUpdatedHomeworkSteps = (protocolWhoseStepsNeedUpdating) ->
-          this.protocolTemplateHelperService.generateAndSaveClientHomework(
-              protocolWhoseStepsNeedUpdating, modifiedBy);
-
-      protocolStepsToUpdate.stream()
-          .map(ProtocolStep::getParentProtocol)
-          .peek(assignHomeworkToUpdatedHomeworkSteps);
-
-      protocolStepsToUpdate.stream()
-          .filter(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))
-          .peek(protocolStep -> protocolStep.setStatus(StepStatusEnum.IN_PROGRESS))
-          .map(this.protocolStepDataService::saveProtocolStep)
-          .forEach(updatedProtocolStep -> {
-            Protocol protocolToUpdate = updatedProtocolStep.getParentProtocol();
-            if (protocolToUpdate.getProtocolSteps().stream()
-                .allMatch(protocolStep -> protocolStep.getStatus().equals(StepStatusEnum.DONE))) {
-              protocolToUpdate.setCompletionDate(LocalDate.now());
-            } else {
-              protocolToUpdate.setCompletionDate(null);
-            }
-            this.protocolDataService.updateProtocol(protocolToUpdate);
-          });
-    }*/
     return updatedStepTemplate.getId();
   }
 

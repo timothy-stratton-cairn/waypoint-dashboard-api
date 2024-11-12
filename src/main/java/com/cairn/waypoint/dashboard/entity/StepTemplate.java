@@ -37,20 +37,8 @@ public class StepTemplate extends BaseEntity {
   @JoinColumn(name = "protocol_step_template_category_id")
   @OneToOne(fetch = FetchType.LAZY)
   private StepTemplateCategory category;
-
-  /*@OneToMany(mappedBy = "stepTemplate",
-      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private Set<StepTemplateLinkedHomeworkTemplate> stepTemplateLinkedHomeworks;
-*/
   @Builder.Default
   @Column(name = "status_id")
   @Convert(converter = TemplateStatusConverter.class)
   private TemplateStatusEnum status = TemplateStatusEnum.INACTIVE;
-
-  /*public Set<StepTemplateLinkedHomeworkTemplate> getStepTemplateLinkedHomeworks() {
-    if (stepTemplateLinkedHomeworks == null) {
-      stepTemplateLinkedHomeworks = new LinkedHashSet<>();
-    }
-    return stepTemplateLinkedHomeworks;
-  }*/
 }

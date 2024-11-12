@@ -31,11 +31,6 @@ public class HomeworkResponse extends BaseEntity {
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   private HomeworkQuestion homeworkQuestion;
 
-  /*@JoinColumn(name = "homework_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private Homework homework;*/
-
-
   @Column(name = "user_id")
   private Long userId;
 
@@ -49,7 +44,6 @@ public class HomeworkResponse extends BaseEntity {
 
   private Boolean active;
 
-  //usage: new HomeworkResponse().getResponse(QuestionTypeEnum.DATE.getDataType());
   @SuppressWarnings("unchecked")
   public <T> T getResponse(T returnType) {
     return (T) this.homeworkQuestion.getQuestionType().createInstance(this.response);

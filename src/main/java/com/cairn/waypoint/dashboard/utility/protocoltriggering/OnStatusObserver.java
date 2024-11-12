@@ -20,17 +20,14 @@ public class OnStatusObserver implements StatusObserver {
   private final EntityManager entityManager;
   private final ProtocolDataService protocolDataService;
   private final ProtocolStepDataService protocolStepDataService;
-  //private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
 
   public OnStatusObserver(EntityManager entityManager,
       ProtocolDataService protocolDataService,
       ProtocolStepDataService protocolStepDataService
-      //ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService
   ) {
     this.entityManager = entityManager;
     this.protocolDataService = protocolDataService;
     this.protocolStepDataService = protocolStepDataService;
-    //this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
   }
 
   @Override
@@ -46,7 +43,6 @@ public class OnStatusObserver implements StatusObserver {
     log.info("Creating new occurrence of Protocol with ID [{}] based on status",
         protocolToReoccur.getId());
     createProtocolRecurrence(protocolToReoccur, protocolDataService,
-        //protocolStepLinkedHomeworkService,
         protocolStepDataService, entityManager);
     log.info("Protocol with ID [{}] new instance created successfully", protocolToReoccur.getId());
   }

@@ -88,36 +88,7 @@ public interface StatusObserver {
       protocolCommentary.setId(null);
       protocolCommentary.setModifiedBy("triggering-system");
     });
-
-    /*Set<ProtocolStepLinkedHomework> stepLinkedHomeworkSet = protocolToReoccur.getProtocolSteps()
-        .stream()
-        .map(ProtocolStep::getLinkedHomework)
-        .flatMap(Set::stream)
-        .collect(Collectors.toSet()); */
     protocolToReoccur.getProtocolSteps();
-    //.forEach(protocolStep -> protocolStep.setLinkedHomework(null));
 
-    //Protocol protocolReoccurrence = protocolDataService.saveProtocol(protocolToReoccur);
-
-   /* stepLinkedHomeworkSet.stream()
-        .map(stepLinkedHomework ->
-            ProtocolStepLinkedHomework.builder()
-                .modifiedBy("triggering-system")
-                .step(protocolReoccurrence.getProtocolSteps().stream()
-                    .filter(protocolStep ->
-                        protocolStep.getTemplate().getId()
-                            .equals(stepLinkedHomework.getStep().getTemplate().getId()))
-                    .findFirst()
-                    .orElseThrow())
-                .homework(protocol.getProtocolSteps().stream()
-                    .map(ProtocolStep::getLinkedHomework)
-                    .flatMap(Set::stream)
-                    .map(ProtocolStepLinkedHomework::getHomework)
-                    .filter(homework -> homework.getName()
-                        .equals(stepLinkedHomework.getHomework().getName()))
-                    .findFirst()
-                    .orElseThrow())
-                .build())
-        .forEach(protocolStepLinkedHomeworkService::saveProtocolStepLinkedHomework);*/
   }
 }
