@@ -26,25 +26,18 @@ public class HomeworkResponseDataService {
 
   private final HomeworkQuestionLinkedProtocolTemplatesRepository linkedRepository;
   private final HomeworkQuestionRepository questionRepository;
-  private final ProtocolDataService protocolDataService;
-  private final HomeworkQuestionLinkedProtocolTemplateDataService linkedProtocolTemplateDataService;
   
   public HomeworkResponseDataService(
 		  HomeworkResponseRepository homeworkResponseRepository,
           ProtocolRepository protocolRepository,
           HomeworkQuestionRepository questionRepository,
-          HomeworkQuestionLinkedProtocolTemplatesRepository linkedRepository,
-          ProtocolDataService protocolDataService,
-          HomeworkQuestionLinkedProtocolTemplateDataService linkedProtocolTemplateDataService
+          HomeworkQuestionLinkedProtocolTemplatesRepository linkedRepository
           ) {
 	this.homeworkResponseRepository = homeworkResponseRepository;
 	this.protocolRepository = protocolRepository;
 	this.linkedRepository = linkedRepository;
 
 	this.questionRepository = questionRepository;
-	this.protocolDataService = protocolDataService;
-
-    this.linkedProtocolTemplateDataService = linkedProtocolTemplateDataService;
 	}
 
   public HomeworkResponse saveHomeworkResponse(HomeworkResponse homeworkResponse) {
@@ -82,11 +75,6 @@ public class HomeworkResponseDataService {
 	        .numberOfResponses(responses.size())
 	        .build();
 	}
-
-  /*public List<HomeworkResponse> getResponsesByProtocolAndQuestion(Protocol protocol, HomeworkQuestion question) {
-	  return homeworkResponseRepository.findByProtocolAndHomeworkQuestion(protocol, question);
-  }*/
-
 
     public HomeworkResponse saveHomeworkResponseFromDto(HomeworkResponseDto dto) {
         HomeworkQuestion homeworkQuestion = questionRepository.findById(dto.getQuestionId())

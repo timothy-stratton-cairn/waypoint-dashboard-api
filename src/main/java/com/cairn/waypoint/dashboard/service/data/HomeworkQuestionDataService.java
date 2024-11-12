@@ -2,6 +2,7 @@ package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.*;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
+import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolTemplateRepository;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionLinkedProtocolTemplatesRepository;
 import java.util.List;
@@ -17,15 +18,17 @@ public class HomeworkQuestionDataService {
   private final HomeworkQuestionRepository homeworkQuestionRepository;
   private final HomeworkQuestionLinkedProtocolTemplatesRepository homeworkQuestionLinkedProtocolTemplatesRepository;
   private final ProtocolTemplateRepository protocolTemplateRepository;
-  private final ProtocolDataService protocolDataService;
+  private final ProtocolRepository protocolRepository;
 
   public HomeworkQuestionDataService(HomeworkQuestionRepository homeworkQuestionRepository,
                                      ProtocolTemplateRepository protocolTemplateRepository,
-                                     HomeworkQuestionLinkedProtocolTemplatesRepository homeworkQuestionLinkedProtocolTemplatesRepository, ProtocolDataService protocolDataService) {
+                                     HomeworkQuestionLinkedProtocolTemplatesRepository homeworkQuestionLinkedProtocolTemplatesRepository,
+                                     ProtocolRepository protocolRepository
+  ) {
 	this.homeworkQuestionRepository = homeworkQuestionRepository;
 	this.protocolTemplateRepository = protocolTemplateRepository;
 	this.homeworkQuestionLinkedProtocolTemplatesRepository = homeworkQuestionLinkedProtocolTemplatesRepository;
-    this.protocolDataService = protocolDataService;
+    this.protocolRepository = protocolRepository;
   }
 
   public List<HomeworkQuestion> getAllHomeworkQuestions() {
@@ -60,8 +63,7 @@ public class HomeworkQuestionDataService {
   }
 
   public List<HomeworkQuestion> getHomeworkQuestionsByProtocolId(Long  protocolId){
-    Protocol protocol = protocolDataService.getProtocolById(protocolId)
-            .orElseThrow(() -> new EntityNotFoundException("Protocol not found with ID: " + protocolId));
+    Protocol protocol = protocolRepository.findById(protocolId).get();
 
     List<HomeworkQuestionLinkedProtocolTemplate> linkedProtocolTemplates =
             homeworkQuestionLinkedProtocolTemplatesRepository.findByProtocolTemplate_Id(protocol.getId());

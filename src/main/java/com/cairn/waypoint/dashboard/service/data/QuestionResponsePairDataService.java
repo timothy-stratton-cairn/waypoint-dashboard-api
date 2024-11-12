@@ -1,6 +1,8 @@
 package com.cairn.waypoint.dashboard.service.data;
+import com.cairn.waypoint.dashboard.endpoints.homeworkquestion.SimplifiedHomeworkQuestionDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionResponsePairDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionResponsePairListDto;
+import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.SimplifiedHomeworkResponseDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
@@ -27,7 +29,9 @@ public class QuestionResponsePairDataService {
                     if (question == null) {
                         throw new EntityNotFoundException("HomeworkQuestion not found for response ID: " + response.getId());
                     }
-                    return new QuestionResponsePairDto(question, response);
+                    SimplifiedHomeworkQuestionDto sim_question = new SimplifiedHomeworkQuestionDto(question);
+                    SimplifiedHomeworkResponseDto sim_response = new SimplifiedHomeworkResponseDto(response);
+                    return new QuestionResponsePairDto(sim_question,sim_response);
                 })
                 .collect(Collectors.toList());
 
