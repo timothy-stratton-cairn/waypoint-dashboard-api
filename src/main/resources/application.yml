@@ -48,5 +48,4 @@ spring:
 
 logging:
   level:
-    liquibase: DEBUG
     org.springframework.security: INFO

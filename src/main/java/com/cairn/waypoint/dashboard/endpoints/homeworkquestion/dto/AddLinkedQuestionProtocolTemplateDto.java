@@ -7,13 +7,13 @@ import lombok.Data;
 
 @Data
 public class AddLinkedQuestionProtocolTemplateDto {
-	
-	 @NotNull
-	    private Long templateId;
 
-	    @NotNull
-	    private Long questionId;
+  @NotNull
+  private Long templateId;
 
-	    private Boolean active = true; // Default value
+  @NotNull
+  private Long questionId;
+
+  private Boolean active = true; // Default value
 
 }
