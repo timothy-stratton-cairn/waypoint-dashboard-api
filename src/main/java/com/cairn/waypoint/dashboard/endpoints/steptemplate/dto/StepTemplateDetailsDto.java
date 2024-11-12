@@ -12,7 +12,6 @@ public class StepTemplateDetailsDto {
   private String name;
   private String description;
   private String status;
-  private StepTaskDetailsDto linkedStepTask; // mapping to this with reflection. 
-  private HomeworkTemplateDetailsListDto linkedHomeworkTemplates;
+  private StepTaskDetailsDto linkedStepTask;
   private StepTemplateCategoryDetailsDto category;
 }

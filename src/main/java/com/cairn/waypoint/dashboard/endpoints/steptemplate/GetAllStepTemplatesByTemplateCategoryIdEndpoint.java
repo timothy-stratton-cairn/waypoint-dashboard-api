@@ -1,12 +1,9 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
-import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateListDto;
-import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;

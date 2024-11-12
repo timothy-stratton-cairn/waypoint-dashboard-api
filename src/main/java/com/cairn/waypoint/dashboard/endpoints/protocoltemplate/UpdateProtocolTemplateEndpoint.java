@@ -8,7 +8,6 @@ import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.mapper.ProtocolTe
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.ProtocolTemplateLinkedStepTemplate;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
-import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
