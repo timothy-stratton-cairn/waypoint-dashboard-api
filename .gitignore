@@ -34,5 +34,4 @@ target/
 .externalToolBuilders/org.springframework.ide.eclipse.boot.validation.springbootbuilder.launch
 
 #
-src/main/resources/application-dev.yml
 bin/*
