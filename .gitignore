@@ -31,7 +31,7 @@ target/
 .settings/
 
 #Springboot stuff
-.externalToolBuilders/org.springframework.ide.eclipse.boot.validation.springbootbuilder.launch
+.externalToolBuilders/
 
 #
 bin/*
