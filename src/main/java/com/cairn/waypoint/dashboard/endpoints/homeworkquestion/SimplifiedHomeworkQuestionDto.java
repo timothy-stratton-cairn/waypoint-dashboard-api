@@ -7,7 +7,6 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 public class SimplifiedHomeworkQuestionDto {
     private Long id;
     private LocalDateTime updated;

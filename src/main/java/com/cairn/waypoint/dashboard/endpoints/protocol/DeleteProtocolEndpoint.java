@@ -81,7 +81,6 @@ public class DeleteProtocolEndpoint {
         note.setActive(Boolean.FALSE);
         note.setModifiedBy(modifiedBy);
       });
-
       step.setActive(Boolean.FALSE);
       step.setModifiedBy(modifiedBy);
     });
