@@ -44,6 +44,7 @@ spring:
         format_sql: false
 
 
+
 server:
   port: 8083
 

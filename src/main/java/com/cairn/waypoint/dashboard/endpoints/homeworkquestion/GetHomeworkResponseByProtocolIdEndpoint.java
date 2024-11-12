@@ -3,7 +3,6 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkListDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.UpdateHomeworkResponseDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.HomeworkResponseListDto;
-import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
 import com.cairn.waypoint.dashboard.service.helper.HomeworkQuestionResponseHelperService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "Homework")
+@Tag(name = "Homework Response")
 public class GetHomeworkResponseByProtocolIdEndpoint {
 	
 	  public static final String PATH = "/api/homework-response/protocol/{protocolId}";
@@ -39,8 +37,6 @@ public class GetHomeworkResponseByProtocolIdEndpoint {
 		this.homeworkResponseDataService = homeworkResponseDataService;
 		this.homeworkResponseHelperService = homeworkResponseHelperService;
 	  }
-
-
 @GetMapping(PATH)
 @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
 @Operation(
@@ -55,8 +51,6 @@ public class GetHomeworkResponseByProtocolIdEndpoint {
             content = {@Content(schema = @Schema(hidden = true))}),
         @ApiResponse(responseCode = "403", description = "Forbidden",
             content = {@Content(schema = @Schema(hidden = true))})})
-
-
 public ResponseEntity<?> getAllResponseByProtocolId(@PathVariable Long protocolId, Principal principal) {
     log.info("User [{}] is retrieving all homework of the template [{}]", principal.getName(), protocolId);
 

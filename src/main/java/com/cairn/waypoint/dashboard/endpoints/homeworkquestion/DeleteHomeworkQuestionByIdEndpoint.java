@@ -4,7 +4,6 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestionLinkedProtocolTemplate;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
-
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionLinkedProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
@@ -33,17 +32,14 @@ public class DeleteHomeworkQuestionByIdEndpoint {
 
   public static final String PATH = "/api/homework-question/{homeworkQuestionId}";
   private final HomeworkQuestionDataService homeworkQuestionDataService;
-  //private final HomeworkTemplateLinkedHomeworkQuestionDataService homeworkTemplateLinkedHomeworkQuestionDataService;
   private final HomeworkQuestionLinkedProtocolTemplateDataService questionProtocolTemplateDataService;
   private final HomeworkResponseDataService homeworkResponseDataService;
 
   public DeleteHomeworkQuestionByIdEndpoint(HomeworkQuestionDataService homeworkQuestionDataService,
 	  HomeworkQuestionLinkedProtocolTemplateDataService questionProtocolTemplateDataService,
-      //HomeworkTemplateLinkedHomeworkQuestionDataService homeworkTemplateLinkedHomeworkQuestionDataService,
       HomeworkResponseDataService homeworkResponseDataService) {
     this.homeworkQuestionDataService = homeworkQuestionDataService;
     this.questionProtocolTemplateDataService = questionProtocolTemplateDataService;
-    //this.homeworkTemplateLinkedHomeworkQuestionDataService = homeworkTemplateLinkedHomeworkQuestionDataService;
     this.homeworkResponseDataService = homeworkResponseDataService;
   }
 
@@ -65,6 +61,7 @@ public class DeleteHomeworkQuestionByIdEndpoint {
           @ApiResponse(responseCode = "404", description = "Not Found",
               content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
+
   public ResponseEntity<?> deactivateHomeworkQuestionById(@PathVariable Long homeworkQuestionId,
       Principal principal) {
     log.info("User [{}] is Deactivating Homework Question with ID [{}]", principal.getName(),

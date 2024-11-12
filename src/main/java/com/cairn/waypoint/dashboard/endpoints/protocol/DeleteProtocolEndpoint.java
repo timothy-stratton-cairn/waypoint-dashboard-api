@@ -81,10 +81,6 @@ public class DeleteProtocolEndpoint {
         note.setActive(Boolean.FALSE);
         note.setModifiedBy(modifiedBy);
       });
-        /*step.getLinkedHomework().forEach(homeworkLink -> {
-        homeworkLink.setActive(Boolean.FALSE);
-        homeworkLink.setModifiedBy(modifiedBy);
-      });*/
 
       step.setActive(Boolean.FALSE);
       step.setModifiedBy(modifiedBy);

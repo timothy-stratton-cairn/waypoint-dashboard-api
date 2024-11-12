@@ -15,18 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/protocol-template-homework")
 @Tag(name = "Protocol Template")
 public class LinkHomeworkQuestionAndProtocolTemplateEndpoint {
-
+    public static final String PATH ="/api/protocol-template/homework-question";
     private final HomeworkQuestionLinkedProtocolTemplatesRepository linkedProtocolTemplateRepository;
     private final ProtocolTemplateRepository protocolTemplateRepository;
     private final HomeworkQuestionRepository homeworkQuestionRepository;
@@ -39,7 +35,7 @@ public class LinkHomeworkQuestionAndProtocolTemplateEndpoint {
         this.homeworkQuestionRepository = homeworkQuestionRepository;
     }
 
-    @PostMapping
+    @PostMapping(PATH)
     @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
     @Operation(
             summary = "Add a new HomeworkQuestionLinkedProtocolTemplate entry",
@@ -80,7 +76,7 @@ public class LinkHomeworkQuestionAndProtocolTemplateEndpoint {
         HomeworkQuestionLinkedProtocolTemplate savedEntry = linkedProtocolTemplateRepository.save(linkedEntry);
 
         HomeworkQuestionLinkedProtocolTemplateDto responseDto = HomeworkQuestionLinkedProtocolTemplateDto.builder()
-                .id(savedEntry.getId())
+                //.id(savedEntry.getId()) commenting this out and not deleting for now how some questions about this.
                 .protocolTemplateId(savedEntry.getProtocolTemplate().getId())
                 .homeworkQuestionId(savedEntry.getQuestion().getId())
                 .build();

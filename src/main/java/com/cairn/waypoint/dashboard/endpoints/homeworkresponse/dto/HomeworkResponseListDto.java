@@ -13,7 +13,7 @@ public class HomeworkResponseListDto{
 	List<HomeworkResponse> responses;
 	private Integer numberOfResponses;
 	
-    public Integer getNumOfQuestions() {
+    public Integer getNumOfResponses() {
 	    return responses.size();
 	  }
 }

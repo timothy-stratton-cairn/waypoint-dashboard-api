@@ -4,7 +4,6 @@ import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkListDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.UpdateHomeworkResponseDetailsListDto;
 import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
 import com.cairn.waypoint.dashboard.service.helper.HomeworkQuestionResponseHelperService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,9 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "Homework")
+@Tag(name = "Homework Question")
 public class GetHomeworkQuestionResponseByCategoryEndpoint {
-	
 	  public static final String PATH = "/api/homework-question-response/category/{categoryId}";
 
 	  private final HomeworkResponseDataService homeworkResponseDataService;
@@ -37,7 +35,6 @@ public class GetHomeworkQuestionResponseByCategoryEndpoint {
 		this.homeworkResponseDataService = homeworkResponseDataService;
 		this.homeworkQuestionResponseHelperService = homeworkQuestionResponseHelperService;
 	  }
-
 
 @GetMapping(PATH)
 @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
@@ -53,8 +50,6 @@ public class GetHomeworkQuestionResponseByCategoryEndpoint {
             content = {@Content(schema = @Schema(hidden = true))}),
         @ApiResponse(responseCode = "403", description = "Forbidden",
             content = {@Content(schema = @Schema(hidden = true))})})
-
-
 public ResponseEntity<?> getAllResponseBycategoryId(@PathVariable Long categoryId,
 	      Principal principal) {
 	    log.info("User [{}] is retrieving all homework of the proper category [{}]",

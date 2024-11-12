@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
-@Tag(name = "Homework")
+@Tag(name = "Protocol Template")
 public class JoinQuestionToProtocolTemplate {
 
     public static final String PATH = "/api/protocol-template/{protocolTemplateId}/link-question/{questionId}";

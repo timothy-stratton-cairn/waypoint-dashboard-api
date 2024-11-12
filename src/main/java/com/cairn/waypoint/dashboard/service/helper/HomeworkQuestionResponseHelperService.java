@@ -6,7 +6,6 @@ import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.service.data.ExpectedResponseDataService;
 
 @Service
-@SuppressWarnings("DuplicatedCode")
 public class HomeworkQuestionResponseHelperService {
 
   private ExpectedResponseDataService expectedResponseDataService;

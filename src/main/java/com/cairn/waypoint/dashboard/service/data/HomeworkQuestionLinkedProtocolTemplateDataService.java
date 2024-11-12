@@ -41,6 +41,8 @@ public class HomeworkQuestionLinkedProtocolTemplateDataService{
 
 	        return linkedRepository.save(link);
 	    }
+
+
 	 public List<HomeworkQuestion> findAllQuestionsByQuestionId(Long questionId) {
 		    List<Long> questionIds = linkedRepository.findAllByQuestion_Id(questionId).stream()
 		        .map(linkedTemplate -> linkedTemplate.getQuestion().getId()) 

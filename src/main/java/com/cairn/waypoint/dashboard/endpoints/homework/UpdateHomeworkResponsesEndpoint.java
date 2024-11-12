@@ -4,7 +4,6 @@ import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.UpdateHomeworkResponseDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.UpdateHomeworkResponseDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.HomeworkResponseListDto;
-import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
@@ -43,7 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Homework")
 public class UpdateHomeworkResponsesEndpoint {
 
-  public static final String PATH = "/api/protocol/{protocolId}";
+  public static final String PATH = "/api/homework-response/{homeworkResponseId}";
   private final S3FileUpload s3FileUpload;
   private final ProtocolDataService protocolDataService;
   private final HomeworkResponseDataService responseDataService;
@@ -51,7 +50,10 @@ public class UpdateHomeworkResponsesEndpoint {
   @Value("${waypoint.dashboard.s3.homework-response-key-prefix}")
   private String homeworkResponseKeyPrefix;
 
-  public UpdateHomeworkResponsesEndpoint(S3FileUpload s3FileUpload, ProtocolDataService protocolDataService,HomeworkResponseDataService responseDataService ) {
+  public UpdateHomeworkResponsesEndpoint(S3FileUpload s3FileUpload,
+                                         ProtocolDataService protocolDataService,
+                                         HomeworkResponseDataService responseDataService )
+  {
     this.s3FileUpload = s3FileUpload;
     this.responseDataService = responseDataService;
     this.protocolDataService = protocolDataService;

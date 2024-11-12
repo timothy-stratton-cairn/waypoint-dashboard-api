@@ -28,6 +28,11 @@ target/
 .classpath
 .factorypath
 .project
-.settings/org.eclipse.core.resources.prefs
-.settings/org.eclipse.jdt.apt.core.prefs
-.settings/org.eclipse.jdt.core.prefs
+.settings/
+
+#Springboot stuff
+.externalToolBuilders/org.springframework.ide.eclipse.boot.validation.springbootbuilder.launch
+
+#
+src/main/resources/application-dev.yml
+bin/*

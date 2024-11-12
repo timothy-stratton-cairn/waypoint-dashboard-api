@@ -24,11 +24,7 @@ import org.hibernate.annotations.SQLRestriction;
 @AllArgsConstructor
 @Table(name = "protocol_template_linked_homework_question")
 public class HomeworkQuestionLinkedProtocolTemplate {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "protocol_template_id", nullable = false)
 	private ProtocolTemplate protocolTemplate;

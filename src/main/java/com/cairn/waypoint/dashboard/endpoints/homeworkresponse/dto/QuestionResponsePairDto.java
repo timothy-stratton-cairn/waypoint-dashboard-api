@@ -3,7 +3,11 @@ package com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkquestion.SimplifiedHomeworkQuestionDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
+import lombok.Builder;
+import lombok.Data;
 
+@Data
+@Builder
 public class QuestionResponsePairDto {
     private SimplifiedHomeworkQuestionDto question;
     private SimplifiedHomeworkResponseDto response;

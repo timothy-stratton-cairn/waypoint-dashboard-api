@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@Tag(name = "Homework Question d")
+@Tag(name = "Homework Question")
 public class GetHomeworkQuestionByTemplateIdEndpoint {
 	
 	  public static final String PATH = "/api/homework-question/protocol-template/{templateId}";
@@ -43,9 +43,6 @@ public class GetHomeworkQuestionByTemplateIdEndpoint {
 		this.homeworkQuestionDataService = homeworkQuestionDataService;
 		this.homeworkQuestionHelperService = homeworkQuestionHelperService;
 	  }
-
-
-
 @GetMapping(PATH)
 @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
 @Operation(
@@ -60,8 +57,6 @@ public class GetHomeworkQuestionByTemplateIdEndpoint {
             content = {@Content(schema = @Schema(hidden = true))}),
         @ApiResponse(responseCode = "403", description = "Forbidden",
             content = {@Content(schema = @Schema(hidden = true))})})
-
-
 public ResponseEntity<?> getAllQuestionsByTemplateId(@PathVariable Long templateId, Principal principal) {
     log.info("User [{}] is retrieving all homework of the template [{}]", principal.getName(), templateId);
 
@@ -77,6 +72,7 @@ public ResponseEntity<?> getAllQuestionsByTemplateId(@PathVariable Long template
                 .build());
     }
 }
+
 	  private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
 	    log.warn(message);
 	    return new ResponseEntity<>(
