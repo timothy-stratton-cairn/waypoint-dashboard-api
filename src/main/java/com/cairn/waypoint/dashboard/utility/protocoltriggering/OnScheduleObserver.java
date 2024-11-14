@@ -5,7 +5,6 @@ import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
-import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
@@ -30,16 +29,14 @@ public class OnScheduleObserver implements StatusObserver {
   private final EntityManager entityManager;
   private final ProtocolDataService protocolDataService;
   private final ProtocolStepDataService protocolStepDataService;
-  private final ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService;
 
   public OnScheduleObserver(EntityManager entityManager,
       ProtocolDataService protocolDataService,
-      ProtocolStepDataService protocolStepDataService,
-      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
+      ProtocolStepDataService protocolStepDataService
+  ) {
     this.entityManager = entityManager;
     this.protocolDataService = protocolDataService;
     this.protocolStepDataService = protocolStepDataService;
-    this.protocolStepLinkedHomeworkService = protocolStepLinkedHomeworkService;
   }
 
   @Override
@@ -56,7 +53,7 @@ public class OnScheduleObserver implements StatusObserver {
     log.info("Creating new scheduled occurrence of Protocol with ID [{}]",
         protocolToReoccur.getId());
     createProtocolRecurrence(protocolToReoccur, protocolDataService,
-        protocolStepLinkedHomeworkService, protocolStepDataService, entityManager);
+        protocolStepDataService, entityManager);
     log.info("Protocol with ID [{}] new instance created successfully", protocolToReoccur.getId());
   }
 

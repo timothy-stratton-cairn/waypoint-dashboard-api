@@ -11,4 +11,12 @@ public interface HomeworkResponseRepository extends JpaRepository<HomeworkRespon
   Optional<HomeworkResponse> findHomeworkResponseByFileGuid(String fileGuid);
 
   List<HomeworkResponse> findHomeworkResponseByHomeworkQuestion(HomeworkQuestion homeworkQuestion);
+
+  List<HomeworkResponse> getHomeworkResponseByCategory_Id(Long categoryId);
+
+  List<HomeworkResponse> findByHomeworkQuestion_IdIn(List<Long> questionIds);
+
+  <Optional> HomeworkResponse findByHomeworkQuestion(HomeworkQuestion homeworkQuestion);
+
+  List<HomeworkResponse> findAllByUserId(Long userId);
 }

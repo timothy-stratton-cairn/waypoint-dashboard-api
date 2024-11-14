@@ -32,6 +32,7 @@ public class AddHomeworkQuestionDetailsDto {
   private QuestionTypeEnum questionType;
 
   private Boolean isRequired;
+  private Boolean active;
 
   @Valid
   private List<ExpectedResponseDto> responseOptions;

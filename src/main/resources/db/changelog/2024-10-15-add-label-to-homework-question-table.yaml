@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-column-to-homework-question
+      author: wanderson
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: alter table homework_question add `label` varchar(36) default NULL after `question`;

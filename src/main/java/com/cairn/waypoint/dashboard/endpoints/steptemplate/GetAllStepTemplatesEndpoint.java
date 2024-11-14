@@ -1,11 +1,8 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplate;
 
-import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateDetailsDto;
-import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.HomeworkTemplateDetailsListDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateCategoryDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateListDto;
-import com.cairn.waypoint.dashboard.entity.StepTemplateLinkedHomeworkTemplate;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -59,21 +56,6 @@ public class GetAllStepTemplatesEndpoint {
                         .name(stepTemplate.getName())
                         .description(stepTemplate.getDescription())
                         .status(stepTemplate.getStatus().name())
-                        .linkedHomeworkTemplates(
-                            stepTemplate.getStepTemplateLinkedHomeworks() == null ||
-                                stepTemplate.getStepTemplateLinkedHomeworks().isEmpty() ?
-                                null : HomeworkTemplateDetailsListDto.builder()
-                                .homeworkTemplates(
-                                    stepTemplate.getStepTemplateLinkedHomeworks().stream()
-                                        .map(
-                                            StepTemplateLinkedHomeworkTemplate::getHomeworkTemplate)
-                                        .map(
-                                            homeworkTemplate -> HomeworkTemplateDetailsDto.builder()
-                                                .id(homeworkTemplate.getId())
-                                                .name(homeworkTemplate.getName())
-                                                .build())
-                                        .toList()
-                                ).build())
                         .category(StepTemplateCategoryDetailsDto.builder()
                             .id(stepTemplate.getCategory().getId())
                             .name(stepTemplate.getCategory().getName())

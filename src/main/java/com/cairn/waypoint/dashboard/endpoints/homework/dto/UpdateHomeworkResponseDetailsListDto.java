@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class UpdateHomeworkResponseDetailsListDto {
 
   private List<UpdateHomeworkResponseDetailsDto> responses;
+
 }

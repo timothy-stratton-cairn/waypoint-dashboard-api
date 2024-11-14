@@ -2,7 +2,6 @@ package com.cairn.waypoint.dashboard.endpoints.protocol;
 
 import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadStepAttachmentEndpoint;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
-import com.cairn.waypoint.dashboard.endpoints.protocol.dto.LinkedHomeworksDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolListDto;
@@ -13,8 +12,6 @@ import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.UpcomingProtocolDto;
 import com.cairn.waypoint.dashboard.endpoints.protocol.dto.UpcomingProtocolListDto;
-import com.cairn.waypoint.dashboard.entity.Homework;
-import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -132,14 +129,6 @@ public class GetAllUpcomingProtocolsEndpoint {
                                             .toList())
                                         .build())
                                     .status(protocolStep.getStatus().getInstance().getName())
-                                    .linkedHomeworks(protocolStep.getLinkedHomework() != null ?
-                                        LinkedHomeworksDto.builder()
-                                            .homeworkIds(
-                                                protocolStep.getLinkedHomework().stream().map(
-                                                        ProtocolStepLinkedHomework::getHomework)
-                                                    .map(Homework::getId)
-                                                    .collect(Collectors.toSet()))
-                                            .build() : null)
                                     .category(
                                         protocolStep.getCategory().getStepTemplateCategory()
                                             .getName())

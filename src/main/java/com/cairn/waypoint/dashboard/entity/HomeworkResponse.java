@@ -1,6 +1,7 @@
 package com.cairn.waypoint.dashboard.entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -30,14 +31,19 @@ public class HomeworkResponse extends BaseEntity {
   @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   private HomeworkQuestion homeworkQuestion;
 
-  @JoinColumn(name = "homework_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private Homework homework;
+  @Column(name = "user_id")
+  private Long userId;
 
   private String fileGuid;
   private Integer ordinalIndex;
 
-  //usage: new HomeworkResponse().getResponse(QuestionTypeEnum.DATE.getDataType());
+  @JoinColumn(name = "category_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private HomeworkCategory category;
+
+
+  private Boolean active;
+
   @SuppressWarnings("unchecked")
   public <T> T getResponse(T returnType) {
     return (T) this.homeworkQuestion.getQuestionType().createInstance(this.response);

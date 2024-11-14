@@ -40,6 +40,8 @@ spring:
         useServerPrepStmts: true
   liquibase:
     enabled: true
+  
+
   jpa:
     hibernate:
       ddl-auto: validate

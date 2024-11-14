@@ -35,12 +35,14 @@ public class HomeworkQuestion extends BaseEntity {
 
   private String questionAbbreviation;
   private String question;
+  private String label;
 
   @Column(name = "homework_question_type_id")
   @Convert(converter = QuestionTypeConverter.class)
   private QuestionTypeEnum questionType;
 
   private Boolean required;
+  private Boolean active;
 
   @Builder.Default
   @Column(name = "status_id")
@@ -61,4 +63,8 @@ public class HomeworkQuestion extends BaseEntity {
   @JoinColumn(name = "triggered_protocol_template_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private ProtocolTemplate triggeredProtocol;
+
+  @JoinColumn(name = "category_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private HomeworkCategory category;
 }

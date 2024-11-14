@@ -14,10 +14,8 @@ import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import com.cairn.waypoint.dashboard.mapper.ProtocolMapper;
-import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
 import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
-import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
 import com.cairn.waypoint.dashboard.service.helper.ProtocolTemplateHelperService;
@@ -64,14 +62,12 @@ public class AddProtocolEndpoint {
   public AddProtocolEndpoint(ProtocolDataService protocolDataService,
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateDataService stepTemplateDataService,
-      HomeworkDataService homeworkDataService, HouseholdDataService householdDataService,
-      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService) {
+      HouseholdDataService householdDataService) {
     this.protocolDataService = protocolDataService;
     this.protocolTemplateDataService = protocolTemplateDataService;
 
-    this.protocolTemplateHelperService = new ProtocolTemplateHelperService(
-        protocolDataService, stepTemplateDataService, homeworkDataService,
-        protocolStepLinkedHomeworkService);
+    this.protocolTemplateHelperService = new ProtocolTemplateHelperService(protocolDataService,
+        stepTemplateDataService);
     this.householdDataService = householdDataService;
   }
 
@@ -187,9 +183,6 @@ public class AddProtocolEndpoint {
           setupProtocolComment(addProtocolDetailsDto, principal.getName()));
 
       Protocol createdProtocol = this.protocolDataService.saveProtocol(protocolToBeCreated);
-
-      protocolTemplateHelperService.generateAndSaveClientHomework(createdProtocol,
-          principal.getName());
 
       createdProtocol = this.protocolDataService.getProtocolById(createdProtocol.getId()).get();
 

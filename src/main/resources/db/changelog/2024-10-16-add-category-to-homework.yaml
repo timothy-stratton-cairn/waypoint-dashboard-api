@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: add-column-to-homework
+      author: wanderson
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `homework_question` add `category_id` bigint DEFAULT NULL AFTER `required`;
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `homework_response` add `category_id` bigint DEFAULT NULL AFTER `ordinal_index`;

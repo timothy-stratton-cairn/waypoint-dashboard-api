@@ -1,6 +1,6 @@
 waypoint:
   dashboard:
-    base-url: http://host.docker.internal:8083
+    base-url: http://localhost:8083
     s3:
       bucket: waypoints-dashboard-api
       import-data-key-prefix: import-data/
@@ -16,12 +16,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://host.docker.internal:8082
+          issuer-uri: http://localhost:8082
   application:
     name: waypoint-dashboard-api
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://host.docker.internal:3306/dashboard?useSSL=false
+    url: jdbc:mysql://localhost:3306/dashboard-db?useSSL=false
     username: docker
     password:
     hikari:
@@ -33,6 +33,7 @@ spring:
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
   liquibase:
+
     enabled: true
   jpa:
     hibernate:
@@ -41,6 +42,7 @@ spring:
     properties:
       hibernate:
         format_sql: false
+
 
 
 server:

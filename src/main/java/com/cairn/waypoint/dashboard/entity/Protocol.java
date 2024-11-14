@@ -37,18 +37,18 @@ public class Protocol extends BaseEntity {
 
   private String name;
   private String description;
-
   private String goal;
   private String goalProgress;
-
   private LocalDate dueDate;
   private LocalDate completionDate;
+  private Long assignedHouseholdId;
+
+  @Column(name = "user_id")
+  private Long userId;
 
   @Column(name = "protocol_status_id")
   @Convert(converter = ProtocolStatusConverter.class)
   private ProtocolStatusEnum status;
-
-  private Long assignedHouseholdId;
 
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "protocol", cascade = {CascadeType.MERGE,
       CascadeType.PERSIST})

@@ -1,6 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.steptemplate.mapper;
 
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.AddStepTemplateDetailsDto;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.StepTemplateDto;
 import com.cairn.waypoint.dashboard.endpoints.steptemplate.dto.UpdateStepTemplateDetailsDto;
 import com.cairn.waypoint.dashboard.entity.StepTemplate;
@@ -16,6 +17,9 @@ public interface StepTemplateMapper {
   StepTemplateDto toDto(StepTemplate stepTemplate);
 
   StepTemplate toEntity(AddStepTemplateDetailsDto addStepTemplateDetailsDto);
+
+  @Mapping(target = "linkedStepTask", source = "linkedTask")
+  StepTemplateDetailsDto toDetailsDto(StepTemplate stepTemplate);
 
   @Mapping(target = "status", source = "templateStatus")
   StepTemplate toEntity(

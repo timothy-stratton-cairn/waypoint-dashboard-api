@@ -1,10 +1,10 @@
-package com.cairn.waypoint.dashboard.endpoints.homework;
+package com.cairn.waypoint.dashboard.endpoints.homeworkquestion;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkListDto;
-import com.cairn.waypoint.dashboard.service.data.HomeworkDataService;
-import com.cairn.waypoint.dashboard.service.data.HouseholdDataService;
-import com.cairn.waypoint.dashboard.service.helper.HomeworkHelperService;
+import com.cairn.waypoint.dashboard.endpoints.homework.dto.HomeworkQuestionListDto;
+import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
+import com.cairn.waypoint.dashboard.service.helper.HomeworkQuestionHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,26 +26,26 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Tag(name = "Homework")
-public class GetAllHomeworkByAssociatedHouseholdIdEndpoint {
+public class GetHomeworkQuestionByCategoryEndpoint {
 
-  public static final String PATH = "/api/homework/household/{householdId}";
+  public static final String PATH = "/api/homework-question/category/{categoryId}";
 
-  private final HomeworkHelperService homeworkHelperService;
-  private final HouseholdDataService householdDataService;
-  private final HomeworkDataService homeworkDataService;
+  private final HomeworkQuestionDataService homeworkQuestionDataService;
+  private final HomeworkQuestionHelperService homeworkQuestionHelperService;
 
-  public GetAllHomeworkByAssociatedHouseholdIdEndpoint(HomeworkHelperService homeworkHelperService,
-      HouseholdDataService householdDataService, HomeworkDataService homeworkDataService) {
-    this.homeworkHelperService = homeworkHelperService;
-    this.householdDataService = householdDataService;
-    this.homeworkDataService = homeworkDataService;
+  public GetHomeworkQuestionByCategoryEndpoint(
+      HomeworkQuestionHelperService homeworkQuestionHelperService,
+      HomeworkQuestionDataService homeworkQuestionDataService) {
+    this.homeworkQuestionDataService = homeworkQuestionDataService;
+    this.homeworkQuestionHelperService = homeworkQuestionHelperService;
   }
+
 
   @GetMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_homework.full', 'SCOPE_admin.full')")
   @Operation(
-      summary = "Retrieves all homework associated with the provided account ID.",
-      description = "Retrieves all homework associated with the provided account ID. Requires the `homework.full` permission.",
+      summary = "Retrieves all homework questions associated with the category ID.",
+      description = "Retrieves all homework questions associated with the category ID. Requires the `homework.full` permission.",
       security = @SecurityRequirement(name = "oAuth2JwtBearer"),
       responses = {
           @ApiResponse(responseCode = "200",
@@ -55,20 +55,22 @@ public class GetAllHomeworkByAssociatedHouseholdIdEndpoint {
               content = {@Content(schema = @Schema(hidden = true))}),
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})})
-  public ResponseEntity<?> getAllHomeworkByHouseholdId(@PathVariable Long householdId,
-      Principal principal) {
-    log.info("User [{}] is retrieving all homework associated with Household with ID [{}]",
-        principal.getName(), householdId);
 
-    if (this.householdDataService.getHouseholdDetails(householdId).isEmpty()) {
-      return generateFailureResponse("Household with ID [" +
-              householdId + "] does not exists",
+  public ResponseEntity<?> getAllHomeworkBycategoryId(@PathVariable Long categoryId,
+      Principal principal) {
+    log.info("User [{}] is retrieving all homework of the proper category [{}]",
+        principal.getName(), categoryId);
+
+    if (this.homeworkQuestionDataService.getHomeworkQuestionByCategory(categoryId).isEmpty()) {
+      return generateFailureResponse("There are no Homeworks for the given category [" +
+              categoryId + "]",
           HttpStatus.NOT_FOUND);
     } else {
-      return ResponseEntity.ok(HomeworkListDto.builder()
-          .homeworks(this.homeworkDataService.getHomeworkByAssignedHouseholdId(householdId).stream()
-              .map(homeworkHelperService::generateHomeworkDto)
-              .collect(Collectors.toList()))
+      return ResponseEntity.ok(HomeworkQuestionListDto.builder()
+          .questions(
+              this.homeworkQuestionDataService.getHomeworkQuestionByCategory(categoryId).stream()
+                  .map(homeworkQuestionHelperService::generateHomeworkQuestionDto)
+                  .collect(Collectors.toList()))
           .build());
     }
   }

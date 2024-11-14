@@ -3,10 +3,9 @@ package com.cairn.waypoint.dashboard.endpoints.homeworkquestion;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
-import com.cairn.waypoint.dashboard.entity.HomeworkTemplateLinkedHomeworkQuestion;
 import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionLinkedProtocolTemplateDataService;
 import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
-import com.cairn.waypoint.dashboard.service.data.HomeworkTemplateLinkedHomeworkQuestionDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,14 +31,14 @@ public class DeleteHomeworkQuestionByIdEndpoint {
 
   public static final String PATH = "/api/homework-question/{homeworkQuestionId}";
   private final HomeworkQuestionDataService homeworkQuestionDataService;
-  private final HomeworkTemplateLinkedHomeworkQuestionDataService homeworkTemplateLinkedHomeworkQuestionDataService;
+  private final HomeworkQuestionLinkedProtocolTemplateDataService questionProtocolTemplateDataService;
   private final HomeworkResponseDataService homeworkResponseDataService;
 
   public DeleteHomeworkQuestionByIdEndpoint(HomeworkQuestionDataService homeworkQuestionDataService,
-      HomeworkTemplateLinkedHomeworkQuestionDataService homeworkTemplateLinkedHomeworkQuestionDataService,
+      HomeworkQuestionLinkedProtocolTemplateDataService questionProtocolTemplateDataService,
       HomeworkResponseDataService homeworkResponseDataService) {
     this.homeworkQuestionDataService = homeworkQuestionDataService;
-    this.homeworkTemplateLinkedHomeworkQuestionDataService = homeworkTemplateLinkedHomeworkQuestionDataService;
+    this.questionProtocolTemplateDataService = questionProtocolTemplateDataService;
     this.homeworkResponseDataService = homeworkResponseDataService;
   }
 
@@ -61,6 +60,7 @@ public class DeleteHomeworkQuestionByIdEndpoint {
           @ApiResponse(responseCode = "404", description = "Not Found",
               content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
+
   public ResponseEntity<?> deactivateHomeworkQuestionById(@PathVariable Long homeworkQuestionId,
       Principal principal) {
     log.info("User [{}] is Deactivating Homework Question with ID [{}]", principal.getName(),
@@ -79,15 +79,13 @@ public class DeleteHomeworkQuestionByIdEndpoint {
 
   private ResponseEntity<String> generateSuccessResponse(HomeworkQuestion homeworkQuestion,
       String modifiedBy) {
-    List<HomeworkTemplateLinkedHomeworkQuestion> homeworkTemplateLinkedHomeworkQuestionList =
-        homeworkTemplateLinkedHomeworkQuestionDataService.getAllLinkedHomeworkTemplatesByHomeworkQuestion(
-            homeworkQuestion);
+    List<HomeworkQuestion> protocolTemplateLinkedHomeworkQuestionList =
+        questionProtocolTemplateDataService.findAllQuestionsByQuestionId(homeworkQuestion.getId());
 
-    homeworkTemplateLinkedHomeworkQuestionList.forEach(homeworkTemplateLinkedHomeworkQuestion -> {
-      homeworkTemplateLinkedHomeworkQuestion.setModifiedBy(modifiedBy);
-      homeworkTemplateLinkedHomeworkQuestion.setActive(Boolean.FALSE);
-      homeworkTemplateLinkedHomeworkQuestionDataService.saveHomeworkTemplateLinkedHomeworkQuestion(
-          homeworkTemplateLinkedHomeworkQuestion);
+    protocolTemplateLinkedHomeworkQuestionList.forEach(protocolTemplateLinkedHomeworkQuestion -> {
+      protocolTemplateLinkedHomeworkQuestion.setModifiedBy(modifiedBy);
+      protocolTemplateLinkedHomeworkQuestion.setActive(Boolean.FALSE);
+      homeworkQuestionDataService.saveHomeworkQuestion(protocolTemplateLinkedHomeworkQuestion);
     });
 
     List<HomeworkResponse> homeworkResponses = homeworkResponseDataService.getAllHomeworkResponsesByHomeworkQuestion(

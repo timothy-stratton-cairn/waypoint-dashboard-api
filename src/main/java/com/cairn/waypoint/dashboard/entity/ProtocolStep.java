@@ -24,8 +24,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Data
 @Entity
 @SuperBuilder
-@EqualsAndHashCode(callSuper = false, exclude = {"parentProtocol", "notes", "attachments",
-    "linkedHomework"})
+@EqualsAndHashCode(callSuper = false, exclude = {"parentProtocol", "notes", "attachments"})
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
@@ -61,27 +60,6 @@ public class ProtocolStep extends BaseEntity {
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private StepTask linkedTask;
 
-  @OneToMany(fetch = FetchType.EAGER, mappedBy = "step", cascade = CascadeType.ALL)
-  private Set<ProtocolStepLinkedHomework> linkedHomework;
-
-  @JoinColumn(name = "parent_protocol_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private Protocol parentProtocol;
-
-  public Set<ProtocolStepLinkedHomework> getLinkedHomework() {
-    if (linkedHomework == null) {
-      linkedHomework = new HashSet<>();
-    }
-    return linkedHomework;
-  }
-
-  public void addLinkedHomework(ProtocolStepLinkedHomework linkedHomework) {
-    if (this.linkedHomework == null) {
-      this.linkedHomework = new HashSet<>();
-    }
-    this.linkedHomework.add(linkedHomework);
-  }
-
   public Set<ProtocolStepNote> getNotes() {
     if (notes == null) {
       notes = new HashSet<>();
@@ -95,4 +73,9 @@ public class ProtocolStep extends BaseEntity {
     }
     return attachments;
   }
+
+  @JoinColumn(name = "parent_protocol_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private Protocol parentProtocol;
+
 }

@@ -41,7 +41,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.12.1</version>
       </plugin>
-    </plugins>
+  </plugins>
+
   </build>
   <dependencies>
 
@@ -160,6 +161,8 @@
       <groupId>org.apache.poi</groupId>
       <version>${poi.version}</version>
     </dependency>
+
+
   </dependencies>
   <groupId>com.cairn.waypoint.dashboard</groupId>
 

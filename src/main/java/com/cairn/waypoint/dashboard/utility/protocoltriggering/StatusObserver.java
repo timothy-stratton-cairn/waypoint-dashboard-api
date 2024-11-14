@@ -1,8 +1,6 @@
 package com.cairn.waypoint.dashboard.utility.protocoltriggering;
 
 import com.cairn.waypoint.dashboard.entity.Protocol;
-import com.cairn.waypoint.dashboard.entity.ProtocolStep;
-import com.cairn.waypoint.dashboard.entity.ProtocolStepLinkedHomework;
 import com.cairn.waypoint.dashboard.entity.ProtocolStepNote;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolCommentTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
@@ -10,13 +8,10 @@ import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.StepStatusEnum;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.ProtocolStepDataService;
-import com.cairn.waypoint.dashboard.service.data.ProtocolStepLinkedHomeworkService;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.util.SerializationUtils;
 
 public interface StatusObserver {
@@ -29,7 +24,6 @@ public interface StatusObserver {
 
   default void createProtocolRecurrence(Protocol protocol,
       ProtocolDataService protocolDataService,
-      ProtocolStepLinkedHomeworkService protocolStepLinkedHomeworkService,
       ProtocolStepDataService protocolStepDataService,
       EntityManager entityManager) {
     protocol.setStatus(ProtocolStatusEnum.COMPLETED_WITH_TRIGGERED_RECURRENCE);
@@ -94,36 +88,7 @@ public interface StatusObserver {
       protocolCommentary.setId(null);
       protocolCommentary.setModifiedBy("triggering-system");
     });
+    protocolToReoccur.getProtocolSteps();
 
-    Set<ProtocolStepLinkedHomework> stepLinkedHomeworkSet = protocolToReoccur.getProtocolSteps()
-        .stream()
-        .map(ProtocolStep::getLinkedHomework)
-        .flatMap(Set::stream)
-        .collect(Collectors.toSet());
-    protocolToReoccur.getProtocolSteps()
-        .forEach(protocolStep -> protocolStep.setLinkedHomework(null));
-
-    Protocol protocolReoccurrence = protocolDataService.saveProtocol(protocolToReoccur);
-
-    stepLinkedHomeworkSet.stream()
-        .map(stepLinkedHomework ->
-            ProtocolStepLinkedHomework.builder()
-                .modifiedBy("triggering-system")
-                .step(protocolReoccurrence.getProtocolSteps().stream()
-                    .filter(protocolStep ->
-                        protocolStep.getTemplate().getId()
-                            .equals(stepLinkedHomework.getStep().getTemplate().getId()))
-                    .findFirst()
-                    .orElseThrow())
-                .homework(protocol.getProtocolSteps().stream()
-                    .map(ProtocolStep::getLinkedHomework)
-                    .flatMap(Set::stream)
-                    .map(ProtocolStepLinkedHomework::getHomework)
-                    .filter(homework -> homework.getName()
-                        .equals(stepLinkedHomework.getHomework().getName()))
-                    .findFirst()
-                    .orElseThrow())
-                .build())
-        .forEach(protocolStepLinkedHomeworkService::saveProtocolStepLinkedHomework);
   }
 }

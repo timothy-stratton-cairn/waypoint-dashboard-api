@@ -90,6 +90,7 @@ public class AddHomeworkQuestionEndpoint {
           @ApiResponse(responseCode = "409", description = "Conflict",
               content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ErrorMessage.class))})})
+
   public ResponseEntity<?> addHomeworkQuestion(
       @RequestBody AddHomeworkQuestionDetailsDto addHomeworkQuestionDetailsDto,
       Principal principal) {

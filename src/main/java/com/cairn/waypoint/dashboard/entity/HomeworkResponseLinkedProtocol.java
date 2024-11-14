@@ -3,16 +3,19 @@ package com.cairn.waypoint.dashboard.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLRestriction;
+
 
 @Data
 @Entity
@@ -20,15 +23,19 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
-@EqualsAndHashCode(callSuper = true, exclude = {"step", "homework"})
-@Table(name = "protocol_step_linked_homework")
-public class ProtocolStepLinkedHomework extends BaseEntity {
+@Table(name = "protocol_linked_homework_response")
+public class HomeworkResponseLinkedProtocol {
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "protocol_step_id", nullable = false)
-  private ProtocolStep step;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  @JoinColumn(name = "homework_id", unique = true, nullable = false, updatable = false)
-  private Homework homework;
+  @ManyToOne
+  @JoinColumn(name = "protocol_id", nullable = false)
+  private Protocol protocol;
+
+
+  @JoinColumn(name = "homework_response_id", nullable = false)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private HomeworkResponse response;
 }

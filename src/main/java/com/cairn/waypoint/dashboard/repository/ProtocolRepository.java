@@ -12,6 +12,8 @@ public interface ProtocolRepository extends JpaRepository<Protocol, Long> {
 
   List<Protocol> findByProtocolTemplate_Id(Long protocolTemplateId);
 
+  List<Protocol> findByUserId(Long userId);
+
   List<Protocol> findByAssignedHouseholdId(Long householdId);
 
   List<Protocol> findByRecurrenceType(RecurrenceTypeEnum recurrenceTypeEnum);
