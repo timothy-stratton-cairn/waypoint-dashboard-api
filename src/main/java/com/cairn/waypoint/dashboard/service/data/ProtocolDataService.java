@@ -54,8 +54,12 @@ public class ProtocolDataService {
     return this.protocolRepository.findByProtocolTemplate_Id(protocolTemplateId);
   }
 
+
   public List<Protocol> getByHouseholdId(Long householdId) {
     return this.protocolRepository.findByAssignedHouseholdId(householdId);
+  }
+  public List<Protocol> getByUserId(Long userId) {
+    return this.protocolRepository.findByUserId(userId);
   }
 
   @Transactional
@@ -96,9 +100,7 @@ public class ProtocolDataService {
     return this.protocolRepository.findByRecurrenceType(RecurrenceTypeEnum.ON_SCHEDULE);
   }
 
-  public List<Protocol> findByUserId(Long userId) {
-    return this.protocolRepository.findByUserId(userId);
-  }
+
 
   public List<Protocol> getAllUpcomingProtocols(LocalDate limitingDate) {
     return this.protocolRepository.findAllUpcomingProtocolsToDate(limitingDate,
