@@ -29,7 +29,7 @@ import org.hibernate.annotations.SQLRestriction;
 @EqualsAndHashCode(callSuper = true, exclude = "expectedHomeworkResponses")
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLRestriction("active=1")
+//@SQLRestriction("active=1") I don't want to do this, but it's causing Entity not found issues. I'll come up with something better.
 @Table(name = "homework_question")
 public class HomeworkQuestion extends BaseEntity {
 
