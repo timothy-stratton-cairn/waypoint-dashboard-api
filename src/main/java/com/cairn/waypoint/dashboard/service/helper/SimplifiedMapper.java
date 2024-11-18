@@ -15,6 +15,9 @@ public interface SimplifiedMapper {
   SimplifiedHomeworkQuestionDto simplifyQuestion(HomeworkQuestion question);
 
   SimplifiedHomeworkResponseDto simplifyResponse(HomeworkResponse response);
+
+
+
 }
 
 

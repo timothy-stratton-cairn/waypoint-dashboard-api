@@ -31,6 +31,10 @@ public class QuestionResponsePairDataService {
     this.mapper = mapper;
   }
 
+  public QuestionResponsePairListDto findALLQuestionResponsePairsByProtocolId(Long protocolId) {
+    return new QuestionResponsePairListDto(questionResponsePairDtos);
+  }
+
   public QuestionResponsePairListDto findAllQuestionResponsePairsByUser(Long userId) {
     List<QuestionResponsePairDto> questionResponsePairDtos = homeworkResponseRepository.findAllByUserId(
             userId).stream()

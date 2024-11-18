@@ -40,6 +40,10 @@ public class ProtocolDataService {
   public Optional<Protocol> getProtocolById(Long id) {
     return this.protocolRepository.findById(id);
   }
+  public Optional<Protocol> getProtocolByName(String name) {
+    return this.protocolRepository.findByName(name);
+  }
+
 
   public Optional<Protocol> getByProtocolTemplateIdAndHouseholdId(Long protocolTemplateId,
       Long householdId) {
