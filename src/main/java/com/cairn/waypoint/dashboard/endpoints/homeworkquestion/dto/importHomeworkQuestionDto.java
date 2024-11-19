@@ -24,6 +24,7 @@ public class importHomeworkQuestionDto {
   private String expectedResponse; // Expected Response (comma Seperated list) Column I. 8
   //private ExpectedResponse triggeringResponse; // Triggering Response
   private Boolean triggersProtocolCreation; // Triggers Protocol Creation
+  private Boolean active;
   //private ProtocolTemplate protocolTemplate; //triggered Protocol
 
 }

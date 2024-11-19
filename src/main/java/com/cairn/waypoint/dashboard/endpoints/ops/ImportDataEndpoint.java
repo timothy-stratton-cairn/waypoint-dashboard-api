@@ -188,6 +188,7 @@ public class ImportDataEndpoint {
           .expectedResponse(row.getCell(8)!=null?row.getCell(8).getStringCellValue():null)
           //.triggeringResponse(expectedResponseDataService.getExpectedResponseByResponse(row.getCell(8).getStringCellValue()).orElse(null))
           .triggersProtocolCreation(false)
+          .active(true)
           //.protocolTemplate(protocolTemplateDataService.findProtocolTemplateByName(row.getCell(10).getStringCellValue()).orElse(null))
           .build();
 

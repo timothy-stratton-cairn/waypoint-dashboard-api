@@ -60,7 +60,7 @@ public class GetAllHomeworkQuestionsEndpoint {
                         .questionId(homeworkQuestion.getId())
                         .question(homeworkQuestion.getQuestion())
                         .questionAbbr(homeworkQuestion.getQuestionAbbreviation())
-                        .categoryId(homeworkQuestion.getCategory().getId())
+                        .categoryId(homeworkQuestion.getCategory()!=null? homeworkQuestion.getCategory().getId():null)
                         .status(homeworkQuestion.getStatus().name())
                         .build())
                     .collect(Collectors.toList()))

@@ -26,6 +26,8 @@ public interface QuestionMapper {
   //@Mapping(source = "triggeringResponse", target = "triggeringResponse")
   //@Mapping(source = "protocolTemplate", target = "triggeredProtocol")
   @Mapping(target = "expectedHomeworkResponses", ignore = true)
+  @Mapping(target = "active", constant = "true")
+  @Mapping(target = "status", constant = "LIVE")
   HomeworkQuestion toEntity(importHomeworkQuestionDto dto);
 
 }
