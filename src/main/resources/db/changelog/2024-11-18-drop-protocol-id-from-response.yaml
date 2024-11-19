@@ -3,7 +3,7 @@ databaseChangeLog:
       onFail: HALT
       onError: HALT
   - changeSet:
-      id: add-user-id-to-homework-response
+      id: drop-column-protocol-id-from-homework-response
       author: wanderson
       changes:
         - sql:
