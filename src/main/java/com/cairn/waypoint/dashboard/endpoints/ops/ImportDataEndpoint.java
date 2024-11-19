@@ -133,13 +133,12 @@ public class ImportDataEndpoint {
       requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
           description = "Upload an Excel file (.xls or .xlsx) to import data",
           required = true,
-          content = @Content(mediaType = "multipart/form-data",
-              schema = @Schema(type = "string", format = "binary", description = "Excel file to be uploaded"))
+          content = @Content(
+              mediaType = "multipart/form-data",
+              schema = @Schema(type = "string", format = "binary", description = "Excel file to be uploaded")
+          )
       )
   )
-
-
-
   public ResponseEntity<String> importData(
       @Parameter(description = "Excel file to be uploaded", required = true)
       @RequestParam("file") MultipartFile file,
@@ -156,16 +155,16 @@ public class ImportDataEndpoint {
      //importEmployeeAccounts(waypointsDataImportSpreadsheet.getSheet("Employee Accounts"));
      // these will come back just
      //just not working on them right now so I'm commenting them out so I can focus on HW
-     ClientCreationResponseListDto response1 = importClients(
-         waypointsDataImportSpreadsheet.getSheet("Client Accounts"));
+     //ClientCreationResponseListDto response1 = importClients(
+     //    waypointsDataImportSpreadsheet.getSheet("Client Accounts"));
      // See Above.
      //importProtocolTemplateDetails(waypointsDataImportSpreadsheet.getSheet("Protocols"),principal);
      importHomework(waypointsDataImportSpreadsheet.getSheet("Homework"), principal);
-     importProtocolAssignments(waypointsDataImportSpreadsheet.getSheet("Protocol Assignments"),
-         response1,
-         principal);
+     //importProtocolAssignments(waypointsDataImportSpreadsheet.getSheet("Protocol Assignments"),
+     //    response1,
+     //    principal);
 
-    this.s3FileUpload.uploadFile(file, principal.getName(), baseKey);
+    //this.s3FileUpload.uploadFile(file, principal.getName(), baseKey);
 
     return ResponseEntity.ok("Successfully uploaded the file");
   }
@@ -174,28 +173,38 @@ public class ImportDataEndpoint {
     List<HomeworkQuestion> homeworkQuestions = new ArrayList<>();
 
     for (Row row : homeworkSheet) {
+      try{
       importHomeworkQuestionDto homeworkQuestionDto = importHomeworkQuestionDto.builder()
-          .category(homeworkCategoryDataService.getHomeworkCategoryByName(row.getCell(0).getStringCellValue()))
-          .description(row.getCell(1).getStringCellValue())
-          .multipleResponses(row.getCell(2).getBooleanCellValue())
-          .abbreviation(row.getCell(3).getStringCellValue())
-          .question(row.getCell(4).getStringCellValue())
-          .questionType(QuestionTypeEnum.valueOf(row.getCell(5).getStringCellValue())) //
-          .isRequired(row.getCell(6).getBooleanCellValue())
-          .expectedResponse(row.getCell(7).getStringCellValue())
-          .triggeringResponse(expectedResponseDataService.getExpectedResponseByResponse(row.getCell(8).getStringCellValue()).orElse(null))
-          .triggersProtocolCreation(row.getCell(9).getBooleanCellValue())
-          .protocol(protocolDataService.getProtocolByName(row.getCell(10).getStringCellValue()).orElse(null))
+          .category(row.getCell(1)!=null?homeworkCategoryDataService.getHomeworkCategoryByName(row.getCell(1).getStringCellValue()):null)
+          //.description(row.getCell(1).getStringCellValue())
+          .multipleResponses(row.getCell(3)!=null?row.getCell(3).getBooleanCellValue():null)
+          .abbreviation(row.getCell(4)!=null?row.getCell(4).getStringCellValue():null)
+          .question(row.getCell(5)!=null?row.getCell(5).getStringCellValue():null)
+          .questionType(row.getCell(6) != null && !"AUTO".equalsIgnoreCase(row.getCell(6).getStringCellValue())
+              ? QuestionTypeEnum.valueOf(row.getCell(6).getStringCellValue().toUpperCase().replace("-", "_"))
+              : QuestionTypeEnum.valueOf("STRING"))
+
+          .isRequired(row.getCell(7)!=null?row.getCell(7).getBooleanCellValue():false)
+          .expectedResponse(row.getCell(8)!=null?row.getCell(8).getStringCellValue():null)
+          //.triggeringResponse(expectedResponseDataService.getExpectedResponseByResponse(row.getCell(8).getStringCellValue()).orElse(null))
+          .triggersProtocolCreation(false)
+          //.protocolTemplate(protocolTemplateDataService.findProtocolTemplateByName(row.getCell(10).getStringCellValue()).orElse(null))
           .build();
+
+
 
       HomeworkQuestion homeworkQuestion = questionMapper.INSTANCE.toEntity(homeworkQuestionDto);
       homeworkQuestions.add(homeworkQuestion);
+
+      }catch(Exception e) {
+        System.out.println(e.getMessage());
+      }
     }
 
     // Batch save all HomeworkQuestions
     homeworkQuestionDataService.batchSaveHomeworkQuestions(homeworkQuestions);
   }
-
+/*
   private void importProtocolAssignments(Sheet protocolAssignmentsSheet,
       ClientCreationResponseListDto createdClients, Principal principal) {
     for (Row row : protocolAssignmentsSheet) {
@@ -218,7 +227,7 @@ public class ImportDataEndpoint {
           .build(), principal);
     }
   }
-
+*/
 /*
   @SuppressWarnings({"OptionalGetWithoutIsPresent", "StatementWithEmptyBody"})
   private void importProtocolTemplateDetails(Sheet protocolsSheet, Principal principal) {
@@ -315,6 +324,7 @@ public class ImportDataEndpoint {
         .build());
   }
 */
+  /*
   private ClientCreationResponseListDto importClients(Sheet cllientAccountsSheet) {
     List<BatchAddAccountDetailsDto> accountsToAdd = new ArrayList<>();
     for (int i = 1; i < cllientAccountsSheet.getLastRowNum(); i++) {
@@ -343,7 +353,7 @@ public class ImportDataEndpoint {
         .accountBatch(accountsToAdd)
         .build());
   }
-
+*/
 
   private String getCellValue(Cell cell) {
     try {

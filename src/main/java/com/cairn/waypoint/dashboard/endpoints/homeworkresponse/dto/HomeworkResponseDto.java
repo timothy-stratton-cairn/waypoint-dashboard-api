@@ -11,6 +11,7 @@ public class HomeworkResponseDto {
   private Long questionId;
   private Long categoryId;
   private Long userId;
+  private String question;
   private String response;
   private String fileGuid;
 }
