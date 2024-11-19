@@ -28,6 +28,7 @@ public class ProtocolDetailsDto {
   private String status;
   private RecurrenceDetailsDto nextInstance;
   private Long assignedHouseholdId;
+  private Long userId;
 
   @JsonSerialize(using = BigDecimalSerializer.class)
   private BigDecimal completionPercentage;

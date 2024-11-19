@@ -14,7 +14,7 @@ import lombok.Data;
 public class importHomeworkQuestionDto {
 
 
-  private HomeworkCategory category; 
+  private HomeworkCategory category;
   private String description;
   private Boolean multipleResponses;
   private String abbreviation;
