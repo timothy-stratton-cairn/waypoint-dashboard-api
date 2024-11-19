@@ -14,17 +14,15 @@ import lombok.Data;
 public class importHomeworkQuestionDto {
 
 
-  private HomeworkCategory category; // Homework Name. Column B 1
-  private String description; // Homework Description
-  private Boolean multipleResponses;  //Can Have Multiple Responses Column D 3
-  private String abbreviation; // HomeworkQuestion Abbreviation Column E.  4
-  private String question;  //Homework Question. Column F. 5
-  private QuestionTypeEnum questionType; // Homework Question Type Column G. 6
-  private Boolean isRequired; // is Required Column H.  7
-  private String expectedResponse; // Expected Response (comma Seperated list) Column I. 8
-  //private ExpectedResponse triggeringResponse; // Triggering Response
-  private Boolean triggersProtocolCreation; // Triggers Protocol Creation
+  private HomeworkCategory category; 
+  private String description;
+  private Boolean multipleResponses;
+  private String abbreviation;
+  private String question;
+  private QuestionTypeEnum questionType;
+  private Boolean isRequired;
+  private String expectedResponse;
+  private Boolean triggersProtocolCreation;
   private Boolean active;
-  //private ProtocolTemplate protocolTemplate; //triggered Protocol
 
 }
