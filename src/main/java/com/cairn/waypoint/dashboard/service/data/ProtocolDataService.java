@@ -54,6 +54,13 @@ public class ProtocolDataService {
         .findFirst();
   }
 
+  public Optional<Protocol> getByProtocolTemplateIdAndUserId(Long protocolTemplateId,Long userId) {
+    return this.protocolRepository.findByUserId(userId).stream()
+        .filter(protocol -> protocol.getProtocolTemplate()
+            .getId()
+            .equals(protocolTemplateId)).findFirst();
+  }
+
   public List<Protocol> getByProtocolTemplateId(Long protocolTemplateId) {
     return this.protocolRepository.findByProtocolTemplate_Id(protocolTemplateId);
   }

@@ -25,6 +25,7 @@ public class AccountProtocolDto {
   @JsonSerialize(using = LocalDateTimeSerializer.class)
   private LocalDateTime lastStatusUpdateTimestamp;
   private String status;
+  private Long assignedUserId;
   private Long assignedHouseholdId;
 
   @JsonSerialize(using = BigDecimalSerializer.class)

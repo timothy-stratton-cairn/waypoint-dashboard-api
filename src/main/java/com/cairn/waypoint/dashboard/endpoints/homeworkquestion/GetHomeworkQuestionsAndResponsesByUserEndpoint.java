@@ -1,6 +1,7 @@
 package com.cairn.waypoint.dashboard.endpoints.homeworkquestion;
 
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
+import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionResponsePairDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionResponsePairListDto;
 import com.cairn.waypoint.dashboard.service.data.QuestionResponsePairDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,12 +61,15 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
       QuestionResponsePairListDto questionResponsePairs = questionResponsePairDataService.findAllQuestionResponsePairsByUser(
           userId);
 
-      if (questionResponsePairs.getNumberOfPairs() == 0) {
+      QuestionResponsePairListDto filteredResponse = new QuestionResponsePairListDto(filterLatestResponses(questionResponsePairs).getQuestions());
+
+      if (filteredResponse.getNumberOfPairs() == 0) {
         return generateFailureResponse("No questions or responses found for user ID: " + userId,
             HttpStatus.NOT_FOUND);
       }
 
-      return ResponseEntity.ok(questionResponsePairs);
+      return ResponseEntity.ok(filteredResponse);
+
 
     } catch (EntityNotFoundException e) {
       return generateFailureResponse("User with ID " + userId + " not found.",
@@ -77,6 +84,18 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
     }
   }
 
+  private QuestionResponsePairListDto filterLatestResponses(QuestionResponsePairListDto pairs) {
+    List<QuestionResponsePairDto> filteredPairs = pairs.getQuestions().stream()
+        .collect(Collectors.toMap(
+            pair -> pair.getQuestion().getId(),
+            pair -> pair,
+            (pair1, pair2) -> pair1.getResponse().getUpdated().isAfter(pair2.getResponse().getUpdated()) ? pair1 : pair2
+        ))
+        .values()
+        .stream()
+        .collect(Collectors.toList());
+    return new QuestionResponsePairListDto(filteredPairs);
+  }
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
     log.warn(message);
     return new ResponseEntity<>(

@@ -22,6 +22,7 @@ public class AddProtocolDetailsDto {
   private String comment;
   private String commentType;
   private Long assignedHouseholdId;
+  private Long assignedUserId;
   private LocalDate dueDate;
   private String recurrenceTypeValue;
   private String triggeringStatusValue;
