@@ -17,6 +17,7 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -77,7 +78,7 @@ public class Protocol extends BaseEntity {
   @OrderBy("ordinalIndex ASC")
   @JoinColumn(name = "parent_protocol_id")
   @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private Set<ProtocolStep> protocolSteps;
+  private Set<ProtocolStep> protocolSteps = new HashSet<>();
 
   public void setStatus(ProtocolStatusEnum status) {
     this.status = status;

@@ -124,7 +124,7 @@ public class AddProtocolEndpoint {
           addProtocolDetailsDto.getProtocolTemplateId() + "]", HttpStatus.CONFLICT);
 
     } else if ((accountDetailsDtoOptional = this.accountDataService.getAccountDetails(
-        String.valueOf(addProtocolDetailsDto.getAssignedHouseholdId()))).isEmpty()) {
+        String.valueOf(addProtocolDetailsDto.getAssignedUserId()))).isEmpty()) {
       return generateFailureResponse("Account with ID [" +
               addProtocolDetailsDto.getAssignedUserId() + "] does not exists",
           HttpStatus.NOT_FOUND);
@@ -163,7 +163,7 @@ public class AddProtocolEndpoint {
         protocolToBeCreated.setReoccurInMonths(addProtocolDetailsDto.getReoccurInMonths());
         protocolToBeCreated.setReoccurInDays(addProtocolDetailsDto.getReoccurInDays());
       }
-
+      protocolToBeCreated.setAssignedHouseholdId(null);
       protocolToBeCreated.setGoal(addProtocolDetailsDto.getGoal());
 
       protocolToBeCreated.setProtocolSteps(setupProtocolSteps(protocolTemplateOptional.get(),
