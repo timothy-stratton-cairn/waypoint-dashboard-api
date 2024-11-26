@@ -59,6 +59,9 @@ public class ProtocolStep extends BaseEntity {
   @JoinColumn(name = "linked_step_task_id")
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private StepTask linkedTask;
+  @JoinColumn(name = "parent_protocol_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  private Protocol parentProtocol;
 
   public Set<ProtocolStepNote> getNotes() {
     if (notes == null) {
@@ -73,9 +76,5 @@ public class ProtocolStep extends BaseEntity {
     }
     return attachments;
   }
-
-  @JoinColumn(name = "parent_protocol_id", nullable = false)
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-  private Protocol parentProtocol;
 
 }

@@ -1,7 +1,6 @@
 package com.cairn.waypoint.dashboard.service.data;
 
 import com.cairn.waypoint.dashboard.entity.HomeworkCategory;
-import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import com.cairn.waypoint.dashboard.repository.HomeworkCategoryRepository;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +28,7 @@ public class HomeworkCategoryDataService {
   public HomeworkCategory createCategory(HomeworkCategory homeworkCategory) {
     return homeworkCategoryRepository.save(homeworkCategory);
   }
+
   public HomeworkCategory updateCategory(HomeworkCategory homeworkCategory) {
     return homeworkCategoryRepository.save(homeworkCategory);
   }
@@ -36,6 +36,7 @@ public class HomeworkCategoryDataService {
   public HomeworkCategory getHomeowrkCategoryById(Long id) {
     return homeworkCategoryRepository.findById(id).orElse(null);
   }
+
   public HomeworkCategory getHomeworkCategoryByName(String name) {
     return homeworkCategoryRepository.findByName(name).orElse(null);
   }

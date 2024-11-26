@@ -10,12 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SqsUtility {
 
+  private final AmazonSQS sqsClient;
+  private final ObjectMapper mapper = new ObjectMapper();
   @Value("${waypoint.dashboard.email-notification-queue-url}")
   private String queueUrl;
-
-  private final AmazonSQS sqsClient;
-
-  private final ObjectMapper mapper = new ObjectMapper();
 
   public SqsUtility(AmazonSQS sqsClient) {
     this.sqsClient = sqsClient;

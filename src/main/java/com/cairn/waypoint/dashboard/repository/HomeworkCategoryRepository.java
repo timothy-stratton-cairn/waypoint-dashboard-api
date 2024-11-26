@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface HomeworkCategoryRepository extends JpaRepository<HomeworkCategory, Long> {
 
   Optional<HomeworkCategory> findById(Long id);
+
   Optional<HomeworkCategory> findByName(String name);
 }

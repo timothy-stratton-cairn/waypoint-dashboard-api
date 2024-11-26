@@ -2,14 +2,8 @@ package com.cairn.waypoint.dashboard.service.helper;
 
 import com.cairn.waypoint.dashboard.endpoints.homeworkquestion.dto.importHomeworkQuestionDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
-import com.cairn.waypoint.dashboard.entity.ExpectedResponse;
-import com.cairn.waypoint.dashboard.entity.Protocol;
-import com.cairn.waypoint.dashboard.entity.HomeworkCategory;
-import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
-import com.cairn.waypoint.dashboard.entity.enumeration.TemplateStatusEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 @Mapper

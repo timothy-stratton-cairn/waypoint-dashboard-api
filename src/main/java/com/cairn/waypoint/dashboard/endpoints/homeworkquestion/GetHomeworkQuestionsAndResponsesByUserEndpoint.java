@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +60,8 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
       QuestionResponsePairListDto questionResponsePairs = questionResponsePairDataService.findAllQuestionResponsePairsByUser(
           userId);
 
-      QuestionResponsePairListDto filteredResponse = new QuestionResponsePairListDto(filterLatestResponses(questionResponsePairs).getQuestions());
+      QuestionResponsePairListDto filteredResponse = new QuestionResponsePairListDto(
+          filterLatestResponses(questionResponsePairs).getQuestions());
 
       if (filteredResponse.getNumberOfPairs() == 0) {
         return generateFailureResponse("No questions or responses found for user ID: " + userId,
@@ -89,13 +89,16 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
         .collect(Collectors.toMap(
             pair -> pair.getQuestion().getId(),
             pair -> pair,
-            (pair1, pair2) -> pair1.getResponse().getUpdated().isAfter(pair2.getResponse().getUpdated()) ? pair1 : pair2
+            (pair1, pair2) ->
+                pair1.getResponse().getUpdated().isAfter(pair2.getResponse().getUpdated()) ? pair1
+                    : pair2
         ))
         .values()
         .stream()
         .collect(Collectors.toList());
     return new QuestionResponsePairListDto(filteredPairs);
   }
+
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
     log.warn(message);
     return new ResponseEntity<>(

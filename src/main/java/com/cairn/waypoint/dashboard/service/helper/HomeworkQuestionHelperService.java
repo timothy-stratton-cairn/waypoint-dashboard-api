@@ -19,6 +19,37 @@ public class HomeworkQuestionHelperService {
     this.expectedResponseDataService = expectedResponseDataService;
   }
 
+  public static boolean getIsValidTriggerRequest(
+      Boolean triggerProtocolCreation, Long triggeredProtocolId,
+      List<ExpectedResponseDto> responseOptions, ExpectedResponseDto triggeringResponse) {
+    if (!triggerProtocolCreation) {
+      return true;
+    } else if (triggeredProtocolId == null) {
+      return false;
+    } else if (responseOptions != null && responseOptions.isEmpty()) {
+      return false;
+    } else {
+      return responseOptions != null && triggeringResponse != null
+          && responseOptions.contains(triggeringResponse);
+    }
+  }
+
+  public static boolean getIsValidTriggerRequest(
+      Boolean triggerProtocolCreation, Long triggeredProtocolId,
+      List<UpdateExpectedResponseDetailsDto> responseOptions,
+      UpdateExpectedResponseDetailsDto triggeringResponse) {
+    if (!triggerProtocolCreation) {
+      return true;
+    } else if (triggeredProtocolId == null) {
+      return false;
+    } else if (responseOptions != null && responseOptions.isEmpty()) {
+      return false;
+    } else {
+      return responseOptions != null && triggeringResponse != null
+          && responseOptions.contains(triggeringResponse);
+    }
+  }
+
   public HomeworkQuestionDto generateHomeworkQuestionDto(HomeworkQuestion question) {
     return HomeworkQuestionDto.builder()
         .questionId(question.getId())
@@ -43,38 +74,6 @@ public class HomeworkQuestionHelperService {
           .id(homeworkQuestion.getTriggeredProtocol().getId())
           .name(homeworkQuestion.getTriggeredProtocol().getName())
           .build();
-    }
-  }
-
-  public static boolean getIsValidTriggerRequest(
-      Boolean triggerProtocolCreation, Long triggeredProtocolId,
-      List<ExpectedResponseDto> responseOptions, ExpectedResponseDto triggeringResponse) {
-    if (!triggerProtocolCreation) {
-      return true;
-    } else if (triggeredProtocolId == null) {
-      return false;
-    } else if (responseOptions != null && responseOptions.isEmpty()) {
-      return false;
-    } else {
-      return responseOptions != null && triggeringResponse != null
-          && responseOptions.contains(triggeringResponse);
-    }
-  }
-
-
-  public static boolean getIsValidTriggerRequest(
-      Boolean triggerProtocolCreation, Long triggeredProtocolId,
-      List<UpdateExpectedResponseDetailsDto> responseOptions,
-      UpdateExpectedResponseDetailsDto triggeringResponse) {
-    if (!triggerProtocolCreation) {
-      return true;
-    } else if (triggeredProtocolId == null) {
-      return false;
-    } else if (responseOptions != null && responseOptions.isEmpty()) {
-      return false;
-    } else {
-      return responseOptions != null && triggeringResponse != null
-          && responseOptions.contains(triggeringResponse);
     }
   }
 }

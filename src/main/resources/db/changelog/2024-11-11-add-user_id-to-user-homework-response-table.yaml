@@ -7,6 +7,6 @@ databaseChangeLog:
       author: wanderson
       changes:
         - sql:
-           dbms: 'h2, mysql'
-           sql: ALTER TABLE `homework_response`
-               ADD `user_id` bigint NOT NULL AFTER`homework_question_id`;
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `homework_response`
+              ADD `user_id` bigint NOT NULL AFTER`homework_question_id`;

@@ -83,12 +83,13 @@ public class HomeworkQuestionDataService {
         .map(HomeworkQuestionLinkedProtocolTemplate::getQuestion)
         .filter(question -> {
           // Attempt to find the question by ID, and skip if not found or inactive
-          Optional<HomeworkQuestion> foundQuestion = homeworkQuestionRepository.findById(question.getId());
-          return foundQuestion.isPresent() && foundQuestion.get().getActive() != null && foundQuestion.get().getActive();
+          Optional<HomeworkQuestion> foundQuestion = homeworkQuestionRepository.findById(
+              question.getId());
+          return foundQuestion.isPresent() && foundQuestion.get().getActive() != null
+              && foundQuestion.get().getActive();
         })
         .collect(Collectors.toList());
   }
-
 
 
   public void linkQuestionToProtocolTemplate(Long questionId, Long protocolTemplateId) {

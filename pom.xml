@@ -41,7 +41,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.12.1</version>
       </plugin>
-  </plugins>
+    </plugins>
 
   </build>
   <dependencies>
@@ -82,8 +82,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
+      <groupId>org.springframework.boot</groupId>
     </dependency>
 
     <dependency>
@@ -145,8 +145,8 @@
       <version>${aws-java-sdk-s3.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-sqs</artifactId>
+      <groupId>com.amazonaws</groupId>
       <version>1.12.744</version>
     </dependency>
 

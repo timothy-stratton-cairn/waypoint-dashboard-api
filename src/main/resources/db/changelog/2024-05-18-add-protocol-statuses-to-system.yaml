@@ -28,7 +28,7 @@ databaseChangeLog:
       changes:
         - sql:
             dbms: 'h2, mysql'
-            sql: ALTER TABLE protocol 
+            sql: ALTER TABLE protocol
               ADD `protocol_status_id` bigint DEFAULT NULL AFTER `completion_date`,
               ADD CONSTRAINT `FK22tpvuk2d68kxt0qmydhl02nt` FOREIGN KEY (`protocol_status_id`) REFERENCES `protocol_status` (`id`);
   - changeSet:

@@ -28,7 +28,7 @@ databaseChangeLog:
       changes:
         - sql:
             dbms: 'h2, mysql'
-            sql: ALTER TABLE protocol_commentary 
+            sql: ALTER TABLE protocol_commentary
               ADD `protocol_comment_type_id` bigint DEFAULT NULL AFTER `comment`,
               ADD CONSTRAINT `FK22tpvuk2d68kxt0qj6jhl02nt` FOREIGN KEY (`protocol_comment_type_id`) REFERENCES `protocol_comment_type` (`id`);
   - changeSet:
