@@ -9,13 +9,13 @@ databaseChangeLog:
         - sql:
           dbms: 'h2, mysql'
           sql: CREATE TABLE `homework_category` (
-            `id` bigint NOT NULL AUTO_INCREMENT,
-            `created` datetime DEFAULT CURRENT_TIMESTAMP,
-            `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            `modified_by` varchar(255) DEFAULT NULL,
-            `name` varchar(255) DEFAULT NULL,
-            `description` varchar(255) DEFAULT NULL,
-            `active` bit(1) DEFAULT 0,
-            PRIMARY KEY (`id`),
-            UNIQUE KEY (`name`)
-            )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+                 `id` bigint NOT NULL AUTO_INCREMENT,
+                 `created` datetime DEFAULT CURRENT_TIMESTAMP,
+                 `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                 `modified_by` varchar(255) DEFAULT NULL,
+                 `name` varchar(255) DEFAULT NULL,
+                 `description` varchar(255) DEFAULT NULL,
+                 `active` bit(1) DEFAULT 0,
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY (`name`)
+                  )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

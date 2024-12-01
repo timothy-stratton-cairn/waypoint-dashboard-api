@@ -29,7 +29,6 @@ public class ProtocolTemplateLinkedStepTemplate extends BaseEntity {
   private ProtocolTemplate protocolTemplate;
 
   @JoinColumn(name = "step_template_id", nullable = false)
-
   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   private StepTemplate stepTemplate;
 

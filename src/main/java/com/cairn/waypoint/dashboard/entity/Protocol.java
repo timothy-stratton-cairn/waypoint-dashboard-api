@@ -78,7 +78,7 @@ public class Protocol extends BaseEntity {
   @OrderBy("ordinalIndex ASC")
   @JoinColumn(name = "parent_protocol_id")
   @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-  private Set<ProtocolStep> protocolSteps = new HashSet<>();
+  private Set<ProtocolStep> protocolSteps;
 
   public void setStatus(ProtocolStatusEnum status) {
     this.status = status;

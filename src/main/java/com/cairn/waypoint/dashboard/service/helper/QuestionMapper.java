@@ -17,8 +17,6 @@ public interface QuestionMapper {
   @Mapping(source = "isRequired", target = "required")
   @Mapping(source = "category", target = "category")
   @Mapping(source = "triggersProtocolCreation", target = "triggersProtocolCreation")
-  //@Mapping(source = "triggeringResponse", target = "triggeringResponse")
-  //@Mapping(source = "protocolTemplate", target = "triggeredProtocol")
   @Mapping(target = "expectedHomeworkResponses", ignore = true)
   @Mapping(target = "active", constant = "true")
   @Mapping(target = "status", constant = "LIVE")
