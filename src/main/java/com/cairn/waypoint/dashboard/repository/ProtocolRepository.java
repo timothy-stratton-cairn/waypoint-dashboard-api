@@ -4,11 +4,17 @@ import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ProtocolRepository extends JpaRepository<Protocol, Long> {
+
+
+  Optional<Protocol> findById(Long aLong);
+
+  Optional<Protocol> findByName(String name);
 
   List<Protocol> findByProtocolTemplate_Id(Long protocolTemplateId);
 

@@ -10,6 +10,7 @@ import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolTemplateRepository;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,10 @@ public class HomeworkQuestionDataService {
     return this.homeworkQuestionRepository.save(homeworkQuestion);
   }
 
+  public void batchSaveHomeworkQuestions(List<HomeworkQuestion> homeworkQuestions) {
+    this.homeworkQuestionRepository.saveAll(homeworkQuestions);
+  }
+
   public List<HomeworkQuestion> findByTriggeredProtocol(ProtocolTemplate protocolTemplate) {
     return this.homeworkQuestionRepository.findByTriggeredProtocol(protocolTemplate);
   }
@@ -62,6 +67,7 @@ public class HomeworkQuestionDataService {
         templateId);
     return linkedProtocolTemplates.stream()
         .map(HomeworkQuestionLinkedProtocolTemplate::getQuestion)
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
@@ -77,12 +83,13 @@ public class HomeworkQuestionDataService {
         .map(HomeworkQuestionLinkedProtocolTemplate::getQuestion)
         .filter(question -> {
           // Attempt to find the question by ID, and skip if not found or inactive
-          Optional<HomeworkQuestion> foundQuestion = homeworkQuestionRepository.findById(question.getId());
-          return foundQuestion.isPresent() && foundQuestion.get().getActive() != null && foundQuestion.get().getActive();
+          Optional<HomeworkQuestion> foundQuestion = homeworkQuestionRepository.findById(
+              question.getId());
+          return foundQuestion.isPresent() && foundQuestion.get().getActive() != null
+              && foundQuestion.get().getActive();
         })
         .collect(Collectors.toList());
   }
-
 
 
   public void linkQuestionToProtocolTemplate(Long questionId, Long protocolTemplateId) {

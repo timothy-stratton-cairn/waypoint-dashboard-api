@@ -33,6 +33,6 @@ public class HomeworkQuestionLinkedProtocolTemplate {
 
 
   @JoinColumn(name = "homework_question_id", nullable = false)
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
   private HomeworkQuestion question;
 }

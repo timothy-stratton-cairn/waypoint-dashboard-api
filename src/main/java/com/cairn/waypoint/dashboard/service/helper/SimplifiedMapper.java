@@ -6,7 +6,6 @@ import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface SimplifiedMapper {
@@ -15,6 +14,8 @@ public interface SimplifiedMapper {
   SimplifiedHomeworkQuestionDto simplifyQuestion(HomeworkQuestion question);
 
   SimplifiedHomeworkResponseDto simplifyResponse(HomeworkResponse response);
+
+
 }
 
 

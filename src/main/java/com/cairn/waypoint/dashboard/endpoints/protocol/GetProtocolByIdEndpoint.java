@@ -86,6 +86,7 @@ public class GetProtocolByIdEndpoint {
             .name(returnedProtocol.getName())
             .description(returnedProtocol.getDescription())
             .goal(returnedProtocol.getGoal())
+            .userId(returnedProtocol.getUserId())
             .goalProgress(returnedProtocol.getGoalProgress())
             .createdAt(returnedProtocol.getCreated())
             .dueBy(returnedProtocol.getDueDate())

@@ -1,7 +1,20 @@
 package com.cairn.waypoint.dashboard.endpoints.protocol;
 
+import com.cairn.waypoint.dashboard.endpoints.filedownload.DownloadStepAttachmentEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AccountProtocolDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AccountProtocolListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.AssociatedStepsListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolCommentListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepAttachmentDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepAttachmentListDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.dto.ProtocolStepNoteListDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.mapper.AccountProtocolMapper;
 import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.helper.ProtocolCalculationHelperService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,28 +22,34 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/protocols")
 @Tag(name = "Protocol")
 public class GetAllProtocolsByUserIdEndpoint {
 
+  public static final String PATH = "/api/protocol/user/{userId}";
   private final ProtocolDataService protocolDataService;
+  private final AccountProtocolMapper accountProtocolMapper;
 
-  public GetAllProtocolsByUserIdEndpoint(ProtocolDataService protocolDataService) {
+  @Value("${waypoint.dashboard.base-url}")
+  private String baseUrl;
+
+  public GetAllProtocolsByUserIdEndpoint(ProtocolDataService protocolDataService, AccountProtocolMapper accountProtocolMapper) {
     this.protocolDataService = protocolDataService;
+    this.accountProtocolMapper = accountProtocolMapper;
   }
 
-  @GetMapping("/user/{userId}")
+  @GetMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
       summary = "Retrieve all protocols associated with the given user ID",
@@ -45,9 +64,14 @@ public class GetAllProtocolsByUserIdEndpoint {
           @ApiResponse(responseCode = "403", description = "Forbidden",
               content = {@Content(schema = @Schema(hidden = true))})
       })
-  public ResponseEntity<List<Protocol>> getProtocolsByUserId(@PathVariable Long userId) {
+  public ResponseEntity<AccountProtocolListDto> getProtocolsByUserId(@PathVariable Long userId) {
     log.info("Fetching all protocols for user ID [{}]", userId);
-    List<Protocol> protocols = protocolDataService.findByUserId(userId);
-    return ResponseEntity.ok(protocols);
+    List<Protocol> protocols = protocolDataService.getByUserId(userId);
+    List<AccountProtocolDto> protocolDtos = accountProtocolMapper.toAccountProtocolDtoList(protocols);
+
+    AccountProtocolListDto accountProtocolListDto = AccountProtocolListDto.builder()
+        .protocols(protocolDtos)
+        .build();
+    return ResponseEntity.ok(accountProtocolListDto);
   }
 }

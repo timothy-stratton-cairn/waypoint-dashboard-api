@@ -15,6 +15,10 @@ public class ExpectedResponseDataService {
     this.expectedResponseRepository = ExpectedResponseRepository;
   }
 
+  public Optional<ExpectedResponse> getExpectedResponseByResponse(String response) {
+    return this.expectedResponseRepository.findExpectedResponseByResponse(response);
+  }
+
   public List<ExpectedResponse> getAllExpectedResponses() {
     return this.expectedResponseRepository.findAll();
   }

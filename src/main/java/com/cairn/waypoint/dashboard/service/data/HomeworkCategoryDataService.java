@@ -29,6 +29,19 @@ public class HomeworkCategoryDataService {
     return homeworkCategoryRepository.save(homeworkCategory);
   }
 
+  public HomeworkCategory updateCategory(HomeworkCategory homeworkCategory) {
+    return homeworkCategoryRepository.save(homeworkCategory);
+  }
+
+  public HomeworkCategory getHomeowrkCategoryById(Long id) {
+    return homeworkCategoryRepository.findById(id).orElse(null);
+  }
+
+  public HomeworkCategory getHomeworkCategoryByName(String name) {
+    return homeworkCategoryRepository.findByName(name).orElse(null);
+  }
+
+
   @Transactional
   public HomeworkCategory updateCategory(Long id, HomeworkCategory updatedCategory) {
     return homeworkCategoryRepository.findById(id)

@@ -7,7 +7,6 @@ import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.SimplifiedHom
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import com.cairn.waypoint.dashboard.repository.HomeworkQuestionRepository;
 import com.cairn.waypoint.dashboard.repository.HomeworkResponseRepository;
-
 import com.cairn.waypoint.dashboard.service.helper.SimplifiedMapper;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;

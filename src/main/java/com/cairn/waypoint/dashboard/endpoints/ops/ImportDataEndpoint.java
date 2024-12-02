@@ -1,23 +1,68 @@
 package com.cairn.waypoint.dashboard.endpoints.ops;
 
-/*
+import com.cairn.waypoint.dashboard.endpoints.homeworkquestion.dto.importHomeworkQuestionDto;
+import com.cairn.waypoint.dashboard.endpoints.protocol.AddProtocolEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.protocoltemplate.AddProtocolTemplateEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.AddStepTemplateEndpoint;
+import com.cairn.waypoint.dashboard.endpoints.steptemplate.UpdateStepTemplateEndpoint;
+import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
+import com.cairn.waypoint.dashboard.entity.enumeration.QuestionTypeEnum;
+import com.cairn.waypoint.dashboard.service.data.AccountDataService;
+import com.cairn.waypoint.dashboard.service.data.ExpectedResponseDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkCategoryDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateCategoryDataService;
+import com.cairn.waypoint.dashboard.service.data.StepTemplateDataService;
+import com.cairn.waypoint.dashboard.service.helper.QuestionMapper;
+import com.cairn.waypoint.dashboard.utility.fileupload.S3FileUpload;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
+import java.io.IOException;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+
 @Slf4j
 @RestController
 @Tag(name = "Ops")
 public class ImportDataEndpoint {
 
   public static final String PATH = "/api/ops/import-data";
-  //private final AddStepTemplateEndpoint addStepTemplateEndpoint;
-  private final AddProtocolTemplateEndpoint addProtocolTemplateEndpoint;
-  private final HomeworkQuestion homeworkQuestion;
+  //private final AddStepTemplateEndpoint addStepTemplateEndpoint; These will be added back in eventually
+  //private final AddProtocolTemplateEndpoint addProtocolTemplateEndpoint; I just don't want to deal with them right now
   private final HomeworkQuestionDataService homeworkQuestionDataService;
   private final AddProtocolEndpoint addProtocolEndpoint;
-  //private final AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint;
   private final ProtocolTemplateDataService protocolTemplateDataService;
-  private final StepTemplateCategoryDataService stepTemplateCategoryDataService;
+  //private final StepTemplateCategoryDataService stepTemplateCategoryDataService;
   private final AccountDataService accountDataService;
-  //private final HomeworkTemplateDataService homeworkTemplateDataService;
   private final S3FileUpload s3FileUpload;
+  private final ExpectedResponseDataService expectedResponseDataService;
+  private final HomeworkCategoryDataService homeworkCategoryDataService;
+  private final ProtocolDataService protocolDataService;
+  private final QuestionMapper questionMapper;
   //private final StepTemplateDataService stepTemplateDataService;
   //private final UpdateStepTemplateEndpoint updateStepTemplateEndpoint;
   @Value("${waypoint.dashboard.s3.import-data-key-prefix}")
@@ -27,27 +72,28 @@ public class ImportDataEndpoint {
       AddProtocolTemplateEndpoint addProtocolTemplateEndpoint,
       HomeworkQuestionDataService homeworkQuestionDataService,
       AddProtocolEndpoint addProtocolEndpoint,
-      //AddHomeworkTemplateEndpoint addHomeworkTemplateEndpoint,
       ProtocolTemplateDataService protocolTemplateDataService,
       StepTemplateCategoryDataService stepTemplateCategoryDataService,
       AccountDataService accountDataService,
-
-      //HomeworkTemplateDataService homeworkTemplateDataService,
       S3FileUpload s3FileUpload,
+      ExpectedResponseDataService expectedResponseDataService,
       StepTemplateDataService stepTemplateDataService,
-      UpdateStepTemplateEndpoint updateStepTemplateEndpoint) {
+      UpdateStepTemplateEndpoint updateStepTemplateEndpoint,
+      QuestionMapper questionMapper,
+      HomeworkCategoryDataService homeworkCategoryDataService,
+      ProtocolDataService protocolDataService) {
     //this.addStepTemplateEndpoint = addStepTemplateEndpoint;
     this.addProtocolEndpoint = addProtocolEndpoint;
-    //this.addHomeworkTemplateEndpoint = addHomeworkTemplateEndpoint;
-    this.addProtocolTemplateEndpoint = addProtocolTemplateEndpoint;
+    //this.addProtocolTemplateEndpoint = addProtocolTemplateEndpoint;
     this.protocolTemplateDataService = protocolTemplateDataService;
-    this.stepTemplateCategoryDataService = stepTemplateCategoryDataService;
+    //this.stepTemplateCategoryDataService = stepTemplateCategoryDataService;
     this.accountDataService = accountDataService;
     this.homeworkQuestionDataService = homeworkQuestionDataService;
-    //this.homeworkTemplateDataService = homeworkTemplateDataService;
+    this.expectedResponseDataService = expectedResponseDataService;
     this.s3FileUpload = s3FileUpload;
-    //this.stepTemplateDataService = stepTemplateDataService;
-    //this.updateStepTemplateEndpoint = updateStepTemplateEndpoint;
+    this.homeworkCategoryDataService = homeworkCategoryDataService;
+    this.questionMapper = questionMapper;
+    this.protocolDataService = protocolDataService;
   }
 
   @Transactional
@@ -55,8 +101,19 @@ public class ImportDataEndpoint {
   @PreAuthorize("hasAuthority('SCOPE_admin.full')")
   @Operation(
       summary = "Allows a user to import data into the System, priming the backend for use",
-      security = @SecurityRequirement(name = "oAuth2JwtBearer"))
-  public ResponseEntity<String> importData(@RequestParam("file") MultipartFile file,
+      security = @SecurityRequirement(name = "oAuth2JwtBearer"),
+      requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+          description = "Upload an Excel file (.xls or .xlsx) to import data",
+          required = true,
+          content = @Content(
+              mediaType = "multipart/form-data",
+              schema = @Schema(type = "string", format = "binary", description = "Excel file to be uploaded")
+          )
+      )
+  )
+  public ResponseEntity<String> importData(
+      @Parameter(description = "Excel file to be uploaded", required = true)
+      @RequestParam("file") MultipartFile file,
       Principal principal) throws IOException {
     log.info("User [{}] is importing data", principal.getName());
 
@@ -68,57 +125,61 @@ public class ImportDataEndpoint {
       waypointsDataImportSpreadsheet = new HSSFWorkbook(file.getInputStream());
     }
     //importEmployeeAccounts(waypointsDataImportSpreadsheet.getSheet("Employee Accounts"));
-   // ClientCreationResponseListDto response1 = importClients(
-   //     waypointsDataImportSpreadsheet.getSheet("Client Accounts"));
-    //importProtocolTemplateDetails(waypointsDataImportSpreadsheet.getSheet("Protocols"),
-   //     principal);
+    // these will come back just
+    //just not working on them right now so I'm commenting them out so I can focus on HW
+    //ClientCreationResponseListDto response1 = importClients(
+    //    waypointsDataImportSpreadsheet.getSheet("Client Accounts"));
+    // See Above.
+    //importProtocolTemplateDetails(waypointsDataImportSpreadsheet.getSheet("Protocols"),principal);
     importHomework(waypointsDataImportSpreadsheet.getSheet("Homework"), principal);
-   // addStepTemplateHomeworkAssociations(waypointsDataImportSpreadsheet.getSheet("Protocols"),
-   //     principal);
-   // importProtocolAssignments(waypointsDataImportSpreadsheet.getSheet("Protocol Assignments"),
-   //     response1, principal);
+    //importProtocolAssignments(waypointsDataImportSpreadsheet.getSheet("Protocol Assignments"),
+    //    response1,
+    //    principal);
 
-    this.s3FileUpload.uploadFile(file, principal.getName(), baseKey);
+    //this.s3FileUpload.uploadFile(file, principal.getName(), baseKey);
 
     return ResponseEntity.ok("Successfully uploaded the file");
   }
-
-
 
   private void importHomework(Sheet homeworkSheet, Principal principal) {
     List<HomeworkQuestion> homeworkQuestions = new ArrayList<>();
 
     for (Row row : homeworkSheet) {
-      HomeworkQuestion homeworkQuestion = HomeworkQuestion.builder()
-              .questionAbbr(row.getCell(0).getStringCellValue())          // Column A (String)
-              .question(row.getCell(1).getStringCellValue())              // Column B (String)
-              .questionType(QuestionTypeEnum.valueOf(row.getCell(2).getStringCellValue())) // Column C (String, Enum)
-              .isRequired(row.getCell(3).getBooleanCellValue())           // Column D (Boolean)
-              .triggerProtocolCreation(row.getCell(4).getBooleanCellValue()) // Column E (Boolean)
-              .responseOptions(row.getCell(5) != null && !row.getCell(5).getStringCellValue().isEmpty()
-                      ? Arrays.stream(row.getCell(5).getStringCellValue().split(","))
-                      .map(response -> ExpectedResponseDto.builder()
-                              .response(response)
-                              .build())
-                      .collect(Collectors.toList())
-                      : null)                                                 // Column F (Comma-separated String)
-              .triggeringResponse(row.getCell(6).getStringCellValue())    // Column G (String)
-              .triggeredProtocolId(row.getCell(7) != null
-                      ? protocolTemplateDataService.findProtocolTemplateByName(row.getCell(7).getStringCellValue())
-                      .orElseThrow().getId()
-                      : null)                                                 // Column H (String)
-              .build();
+      try {
+        importHomeworkQuestionDto homeworkQuestionDto = importHomeworkQuestionDto.builder()
+            .category(
+                row.getCell(1) != null ? homeworkCategoryDataService.getHomeworkCategoryByName(
+                    row.getCell(1).getStringCellValue()) : null)
+            //.description(row.getCell(1).getStringCellValue())
+            .multipleResponses(row.getCell(3) != null ? row.getCell(3).getBooleanCellValue() : null)
+            .abbreviation(row.getCell(4) != null ? row.getCell(4).getStringCellValue() : null)
+            .question(row.getCell(5) != null ? row.getCell(5).getStringCellValue() : null)
+            .questionType(row.getCell(6) != null && !"AUTO".equalsIgnoreCase(
+                row.getCell(6).getStringCellValue())
+                ? QuestionTypeEnum.valueOf(
+                row.getCell(6).getStringCellValue().toUpperCase().replace("-", "_"))
+                : QuestionTypeEnum.valueOf("STRING"))
 
-      homeworkQuestions.add(homeworkQuestion);
+            .isRequired(row.getCell(7) != null ? row.getCell(7).getBooleanCellValue() : false)
+            .expectedResponse(row.getCell(8) != null ? row.getCell(8).getStringCellValue() : null)
+            //.triggeringResponse(expectedResponseDataService.getExpectedResponseByResponse(row.getCell(8).getStringCellValue()).orElse(null))
+            .triggersProtocolCreation(false)
+            .active(true)
+            //.protocolTemplate(protocolTemplateDataService.findProtocolTemplateByName(row.getCell(10).getStringCellValue()).orElse(null))
+            .build();
+
+        HomeworkQuestion homeworkQuestion = questionMapper.INSTANCE.toEntity(homeworkQuestionDto);
+        homeworkQuestions.add(homeworkQuestion);
+
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+      }
     }
 
     // Batch save all HomeworkQuestions
     homeworkQuestionDataService.batchSaveHomeworkQuestions(homeworkQuestions);
   }
-
-
-
-
+/*
   private void importProtocolAssignments(Sheet protocolAssignmentsSheet,
       ClientCreationResponseListDto createdClients, Principal principal) {
     for (Row row : protocolAssignmentsSheet) {
@@ -141,7 +202,8 @@ public class ImportDataEndpoint {
           .build(), principal);
     }
   }
-
+*/
+/*
   @SuppressWarnings({"OptionalGetWithoutIsPresent", "StatementWithEmptyBody"})
   private void importProtocolTemplateDetails(Sheet protocolsSheet, Principal principal) {
     Map<String, AddProtocolTemplateDetailsDto> protocolTemplates = new HashMap<>();
@@ -176,7 +238,7 @@ public class ImportDataEndpoint {
                 creationResponse.getBody())).getStepTemplateId());
       } else if (creationResponse.getStatusCode().isSameCodeAs(
           HttpStatusCode.valueOf(409))) {
-        Optional<StepTemplate> stepTemplateOptional = stepTemplateDataService.findStepTemplateByName(
+          Optional<StepTemplate> stepTemplateOptional = stepTemplateDataService.findStepTemplateByName(
             getCellValue(row.getCell(2)));
         associateProtocolTemplateWithProtocolStepTemplate(protocolTemplates, row,
             stepTemplateOptional.get().getId());
@@ -214,38 +276,6 @@ public class ImportDataEndpoint {
               .build());
     }
   }
-
-  @SuppressWarnings("StatementWithEmptyBody")
-  private void addStepTemplateHomeworkAssociations(Sheet protocolsSheet, Principal principal) {
-    for (Row row : protocolsSheet) {
-      if (row.getRowNum() == 0 || getCellValue(row.getCell(2)) == null) {
-        continue;
-      }
-      if (getCellValue(row.getCell(5)) != null && !Objects.requireNonNull(
-          getCellValue(row.getCell(5))).isEmpty()) {
-        Optional<StepTemplate> stepTemplateOptional = stepTemplateDataService.findStepTemplateByName(
-            getCellValue(row.getCell(2)));
-        //Optional<HomeworkTemplate> homeworkTemplateOptional = homeworkTemplateDataService.findHomeworkTemplateByName(
-        //    getCellValue(row.getCell(4)));
-
-  //      if (stepTemplateOptional.isPresent() /*&& homeworkTemplateOptional.isPresent()) {
-  //        ResponseEntity<?> creationResponse = updateStepTemplateEndpoint.updateStepTemplate(
-  //            stepTemplateOptional.get().getId(), UpdateStepTemplateDetailsDto.builder()
-  //                //.linkedHomeworkTemplateIds(List.of(homeworkTemplateOptional.get().getId()))
-  //                .build(), principal);
-  //        if (creationResponse.getStatusCode().isSameCodeAs(
-  //            HttpStatusCode.valueOf(409))) {
-  //          //Do Nothing
-  //        } else if (!creationResponse.getStatusCode().is2xxSuccessful()) {
-  //          throw new RuntimeException("Failed to associate step template with homework template");
-  //        }
-  //      }
-  //    }
-
-    }
-  }
-  */
-/*
   private void importEmployeeAccounts(Sheet employeeAccountsSheet) {
     List<BatchAddAccountDetailsDto> accountsToAdd = new ArrayList<>();
     for (int i = 1; i < employeeAccountsSheet.getLastRowNum(); i++) {
@@ -262,14 +292,14 @@ public class ImportDataEndpoint {
             .build());
       }
     }
-    */
-/*
+
+
     accountDataService.createBatchAccounts(BatchAddAccountDetailsListDto.builder()
         .accountBatch(accountsToAdd)
         .build());
   }
-  */
-/*
+*/
+  /*
   private ClientCreationResponseListDto importClients(Sheet cllientAccountsSheet) {
     List<BatchAddAccountDetailsDto> accountsToAdd = new ArrayList<>();
     for (int i = 1; i < cllientAccountsSheet.getLastRowNum(); i++) {
@@ -298,8 +328,8 @@ public class ImportDataEndpoint {
         .accountBatch(accountsToAdd)
         .build());
   }
-  */
-/*
+*/
+
   private String getCellValue(Cell cell) {
     try {
       return cell.getStringCellValue();
@@ -313,4 +343,4 @@ public class ImportDataEndpoint {
       return null;
     }
   }
-}*/
+}

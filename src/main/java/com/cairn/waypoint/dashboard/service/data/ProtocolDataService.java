@@ -41,6 +41,11 @@ public class ProtocolDataService {
     return this.protocolRepository.findById(id);
   }
 
+  public Optional<Protocol> getProtocolByName(String name) {
+    return this.protocolRepository.findByName(name);
+  }
+
+
   public Optional<Protocol> getByProtocolTemplateIdAndHouseholdId(Long protocolTemplateId,
       Long householdId) {
     return this.protocolRepository.findByAssignedHouseholdId(householdId).stream()
@@ -50,12 +55,24 @@ public class ProtocolDataService {
         .findFirst();
   }
 
+  public Optional<Protocol> getByProtocolTemplateIdAndUserId(Long protocolTemplateId, Long userId) {
+    return this.protocolRepository.findByUserId(userId).stream()
+        .filter(protocol -> protocol.getProtocolTemplate()
+            .getId()
+            .equals(protocolTemplateId)).findFirst();
+  }
+
   public List<Protocol> getByProtocolTemplateId(Long protocolTemplateId) {
     return this.protocolRepository.findByProtocolTemplate_Id(protocolTemplateId);
   }
 
+
   public List<Protocol> getByHouseholdId(Long householdId) {
     return this.protocolRepository.findByAssignedHouseholdId(householdId);
+  }
+
+  public List<Protocol> getByUserId(Long userId) {
+    return this.protocolRepository.findByUserId(userId);
   }
 
   @Transactional
@@ -96,9 +113,6 @@ public class ProtocolDataService {
     return this.protocolRepository.findByRecurrenceType(RecurrenceTypeEnum.ON_SCHEDULE);
   }
 
-  public List<Protocol> findByUserId(Long userId) {
-    return this.protocolRepository.findByUserId(userId);
-  }
 
   public List<Protocol> getAllUpcomingProtocols(LocalDate limitingDate) {
     return this.protocolRepository.findAllUpcomingProtocolsToDate(limitingDate,
