@@ -142,7 +142,7 @@ public class AddProtocolEndpoint {
           HttpStatus.UNPROCESSABLE_ENTITY);
     } else {
       Protocol protocolToBeCreated = setupProtocolToBeCreated(protocolTemplateOptional.get(),
-          principal.getName());
+          principal.getName(), addProtocolDetailsDto.getAssignedUserId());
 
       if (addProtocolDetailsDto.getProtocolName() != null) {
         protocolToBeCreated.setName(addProtocolDetailsDto.getProtocolName());
@@ -215,10 +215,10 @@ public class AddProtocolEndpoint {
     }
   }
 
-  private Protocol setupProtocolToBeCreated(ProtocolTemplate protocolTemplate, String modifiedBy) {
+  private Protocol setupProtocolToBeCreated(ProtocolTemplate protocolTemplate, String modifiedBy, Long assignedUserId) {
     Protocol protocolToBeCreated = ProtocolMapper.INSTANCE.protocolTemplateToProtocol(
         protocolTemplate);
-
+    protocolToBeCreated.setUserId(assignedUserId);
     protocolToBeCreated.setModifiedBy(modifiedBy);
     protocolToBeCreated.setProtocolTemplate(protocolTemplate);
     protocolToBeCreated.setMarkedForAttention(Boolean.FALSE);
@@ -237,10 +237,16 @@ public class AddProtocolEndpoint {
                     : protocolTemplate.getDefaultDueByInDays()));
     protocolToBeCreated.setRecurrenceType(protocolTemplate.getDefaultRecurrenceType());
     protocolToBeCreated.setTriggeringStatus(protocolTemplate.getDefaultTriggeringStatus());
-    protocolToBeCreated.setReoccurInYears(protocolTemplate.getDefaultReoccurInYears());
-    protocolToBeCreated.setReoccurInMonths(protocolTemplate.getDefaultReoccurInMonths());
-    protocolToBeCreated.setReoccurInDays(protocolTemplate.getDefaultReoccurInDays());
+    protocolToBeCreated.setReoccurInYears(protocolTemplate.getDefaultReoccurInYears() != null
+        ? protocolTemplate.getDefaultReoccurInYears() : 0);
+    protocolToBeCreated.setReoccurInMonths(protocolTemplate.getDefaultReoccurInMonths() != null
+        ? protocolTemplate.getDefaultReoccurInMonths() : 0);
+    protocolToBeCreated.setReoccurInDays(protocolTemplate.getDefaultReoccurInDays() != null
+        ? protocolTemplate.getDefaultReoccurInDays() : 0);
     //IMPORTANT - Must go AFTER setRecurrenceType()
+    if (protocolToBeCreated.getProtocolSteps() == null) {
+      protocolToBeCreated.setProtocolSteps(Set.of());
+    }
     protocolToBeCreated.setStatus(ProtocolStatusEnum.IN_PROGRESS);
 
     return protocolToBeCreated;
@@ -248,6 +254,10 @@ public class AddProtocolEndpoint {
 
   private Set<ProtocolStep> setupProtocolSteps(ProtocolTemplate protocolTemplate,
       String modifiedBy) {
+    if (protocolTemplate.getProtocolTemplateSteps() == null) {
+      log.warn("Protocol Template [{}] has no steps defined.", protocolTemplate.getId());
+      return Set.of();
+    }
     return protocolTemplate.getProtocolTemplateSteps()
         .stream()
         .map(stepTemplateLink -> {
