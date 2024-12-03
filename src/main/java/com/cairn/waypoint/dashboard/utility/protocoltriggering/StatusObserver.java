@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Objects;
 import org.springframework.util.SerializationUtils;
 
 public interface StatusObserver {
@@ -77,18 +78,20 @@ public interface StatusObserver {
           ProtocolCommentTypeEnum.CONDITIONAL_COMPLETION_NOTE));
     });
 
-    protocolToReoccur.getComments().forEach(protocolCommentary -> {
-      entityManager.detach(protocolCommentary);
-      protocolCommentary.setCommentType(protocol.getComments().stream()
-          .filter(referenceProtocolComment ->
-              referenceProtocolComment.getId().equals(protocolCommentary.getId()))
-          .findFirst()
-          .orElseThrow()
-          .getCommentType());
-      protocolCommentary.setId(null);
-      protocolCommentary.setModifiedBy("triggering-system");
-    });
-    protocolToReoccur.getProtocolSteps();
+    if (Objects.nonNull(protocolToReoccur.getComments())) {
+      protocolToReoccur.getComments().forEach(protocolCommentary -> {
+        entityManager.detach(protocolCommentary);
+        protocolCommentary.setCommentType(protocol.getComments().stream()
+            .filter(referenceProtocolComment ->
+                referenceProtocolComment.getId().equals(protocolCommentary.getId()))
+            .findFirst()
+            .orElseThrow()
+            .getCommentType());
+        protocolCommentary.setId(null);
+        protocolCommentary.setModifiedBy("triggering-system");
+      });
+    }
+      protocolToReoccur.getProtocolSteps();
 
   }
 }

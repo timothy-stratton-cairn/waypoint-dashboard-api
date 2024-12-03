@@ -93,10 +93,6 @@ public class GetAllProtocolsGroupedByProtocolTemplateEndpoint {
                     .map(ProtocolCalculationHelperService::getProtocolCompletionPercentage).reduce(
                         BigDecimal.ZERO, BigDecimal::add)
                     .divide(new BigDecimal(assignedProtocols.size()), RoundingMode.HALF_UP))
-                .assignedHousehold(
-                    householdDataService.getHouseholdDetailsListByIdList(assignedProtocols.stream()
-                        .map(Protocol::getAssignedHouseholdId)
-                        .collect(Collectors.toList())))
                 .build());
           } else {
             globalProtocolViewDtos.add(GlobalProtocolViewDto.builder()

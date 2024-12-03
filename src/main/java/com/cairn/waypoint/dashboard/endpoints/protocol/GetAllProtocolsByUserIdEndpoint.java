@@ -67,7 +67,7 @@ public class GetAllProtocolsByUserIdEndpoint {
   public ResponseEntity<AccountProtocolListDto> getProtocolsByUserId(@PathVariable Long userId) {
     log.info("Fetching all protocols for user ID [{}]", userId);
     List<Protocol> protocols = protocolDataService.getByUserId(userId);
-    List<AccountProtocolDto> protocolDtos = accountProtocolMapper.toAccountProtocolDtoList(protocols);
+    List<AccountProtocolDto> protocolDtos = protocols.stream().map(accountProtocolMapper::toAccountProtocolDto).toList();
 
     AccountProtocolListDto accountProtocolListDto = AccountProtocolListDto.builder()
         .protocols(protocolDtos)

@@ -42,7 +42,6 @@ public class Protocol extends BaseEntity {
   private String goalProgress;
   private LocalDate dueDate;
   private LocalDate completionDate;
-  private Long assignedHouseholdId;
 
   @Column(name = "user_id")
   private Long userId;
