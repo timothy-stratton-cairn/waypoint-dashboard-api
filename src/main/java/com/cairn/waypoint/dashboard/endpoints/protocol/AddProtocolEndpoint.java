@@ -163,7 +163,6 @@ public class AddProtocolEndpoint {
         protocolToBeCreated.setReoccurInMonths(addProtocolDetailsDto.getReoccurInMonths());
         protocolToBeCreated.setReoccurInDays(addProtocolDetailsDto.getReoccurInDays());
       }
-      protocolToBeCreated.setAssignedHouseholdId(null);
       protocolToBeCreated.setGoal(addProtocolDetailsDto.getGoal());
 
       protocolToBeCreated.setProtocolSteps(setupProtocolSteps(protocolTemplateOptional.get(),

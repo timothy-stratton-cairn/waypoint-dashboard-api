@@ -30,13 +30,10 @@ public interface AccountProtocolMapper {
   @Mapping(target = "needsAttention", source = "markedForAttention")
   @Mapping(target = "lastStatusUpdateTimestamp", source = "lastStatusUpdateTimestamp")
   @Mapping(target = "assignedUserId", source = "userId")
-  @Mapping(target = "assignedHouseholdId", source = "assignedHouseholdId")
   @Mapping(target = "completionPercentage", expression = "java(calculateCompletionPercentage(protocol))")
   @Mapping(target = "protocolComments", source = "comments", qualifiedByName = "mapProtocolComments")
   @Mapping(target = "associatedSteps", source = "protocolSteps", qualifiedByName = "mapProtocolSteps")
   AccountProtocolDto toAccountProtocolDto(Protocol protocol);
-
-  List<AccountProtocolDto> toAccountProtocolDtoList(List<Protocol> protocols);
 
   @Named("mapProtocolComments")
   default ProtocolCommentListDto mapProtocolComments(Set<ProtocolCommentary> comments) {

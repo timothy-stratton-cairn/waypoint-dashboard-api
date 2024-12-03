@@ -115,7 +115,7 @@ public class GetProtocolByIdEndpoint {
                 .build())
             .completionPercentage(
                 ProtocolCalculationHelperService.getProtocolCompletionPercentage(returnedProtocol))
-            .assignedHouseholdId(returnedProtocol.getAssignedHouseholdId())
+
             .associatedSteps(
                 AssociatedStepsListDto.builder()
                     .steps(returnedProtocol.getProtocolSteps().stream()

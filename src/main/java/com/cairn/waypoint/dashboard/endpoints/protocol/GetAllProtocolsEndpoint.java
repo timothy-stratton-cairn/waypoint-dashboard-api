@@ -87,7 +87,6 @@ public class GetAllProtocolsEndpoint {
                         .needsAttention(protocol.getMarkedForAttention())
                         .lastStatusUpdateTimestamp(protocol.getLastStatusUpdateTimestamp())
                         .status(protocol.getStatus().name())
-                        .assignedHouseholdId(protocol.getAssignedHouseholdId())
                         .completionPercentage(
                             ProtocolCalculationHelperService.getProtocolCompletionPercentage(
                                 protocol))

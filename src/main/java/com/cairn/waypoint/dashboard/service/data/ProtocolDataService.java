@@ -1,15 +1,20 @@
 package com.cairn.waypoint.dashboard.service.data;
 
+import com.cairn.waypoint.dashboard.dto.authorization.AccountListDto;
+import com.cairn.waypoint.dashboard.dto.authorization.HouseholdAccountDetailsDto;
+import com.cairn.waypoint.dashboard.dto.authorization.HouseholdDetailsDto;
 import com.cairn.waypoint.dashboard.entity.Protocol;
 import com.cairn.waypoint.dashboard.entity.ProtocolCommentary;
 import com.cairn.waypoint.dashboard.entity.ProtocolStep;
 import com.cairn.waypoint.dashboard.entity.enumeration.ProtocolStatusEnum;
 import com.cairn.waypoint.dashboard.entity.enumeration.RecurrenceTypeEnum;
+import com.cairn.waypoint.dashboard.repository.HouseholdRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolCommentaryRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolRepository;
 import com.cairn.waypoint.dashboard.repository.ProtocolStepRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -24,13 +29,16 @@ public class ProtocolDataService {
   private final ProtocolRepository protocolRepository;
   private final ProtocolStepRepository protocolStepRepository;
   private final ProtocolCommentaryRepository protocolCommentaryRepository;
+  private final HouseholdRepository householdRepository;
 
   public ProtocolDataService(ProtocolRepository protocolRepository,
       ProtocolStepRepository protocolStepRepository,
-      ProtocolCommentaryRepository protocolCommentaryRepository) {
+      ProtocolCommentaryRepository protocolCommentaryRepository,
+      HouseholdRepository householdRepository) {
     this.protocolRepository = protocolRepository;
     this.protocolStepRepository = protocolStepRepository;
     this.protocolCommentaryRepository = protocolCommentaryRepository;
+    this.householdRepository = householdRepository;
   }
 
   public List<Protocol> getAllProtocols() {
@@ -46,15 +54,6 @@ public class ProtocolDataService {
   }
 
 
-  public Optional<Protocol> getByProtocolTemplateIdAndHouseholdId(Long protocolTemplateId,
-      Long householdId) {
-    return this.protocolRepository.findByAssignedHouseholdId(householdId).stream()
-        .filter(protocol -> protocol.getProtocolTemplate()
-            .getId()
-            .equals(protocolTemplateId))
-        .findFirst();
-  }
-
   public Optional<Protocol> getByProtocolTemplateIdAndUserId(Long protocolTemplateId, Long userId) {
     return this.protocolRepository.findByUserId(userId).stream()
         .filter(protocol -> protocol.getProtocolTemplate()
@@ -68,7 +67,23 @@ public class ProtocolDataService {
 
 
   public List<Protocol> getByHouseholdId(Long householdId) {
-    return this.protocolRepository.findByAssignedHouseholdId(householdId);
+
+    Optional<HouseholdDetailsDto> householdOptional = householdRepository.getHouseholdById(householdId);
+
+    if (householdOptional.isEmpty()) {
+      throw new IllegalArgumentException("Household with ID " + householdId + " not found.");
+    }
+
+    List<HouseholdAccountDetailsDto> accounts = householdOptional.get().getHouseholdAccounts().getAccounts();
+
+    List<Protocol> allProtocols = new ArrayList<>();
+
+    for (HouseholdAccountDetailsDto account : accounts) {
+      List<Protocol> protocolsForUser = protocolRepository.findByUserId(account.getClientAccountId());
+      allProtocols.addAll(protocolsForUser);
+    }
+
+    return allProtocols;
   }
 
   public List<Protocol> getByUserId(Long userId) {

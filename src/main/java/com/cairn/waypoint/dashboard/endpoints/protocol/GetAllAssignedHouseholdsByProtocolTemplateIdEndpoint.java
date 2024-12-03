@@ -48,6 +48,7 @@ public class GetAllAssignedHouseholdsByProtocolTemplateIdEndpoint {
     this.householdDataService = householdDataService;
   }
 
+  // TODO I had to break this one for now, we don't use it for anything but reports on the app which is not implimented, but I have an idea how to do it I just need some time to figure out some of the connections.
   @GetMapping(PATH)
   @PreAuthorize("hasAnyAuthority('SCOPE_protocol.full', 'SCOPE_admin.full')")
   @Operation(
@@ -78,23 +79,8 @@ public class GetAllAssignedHouseholdsByProtocolTemplateIdEndpoint {
           protocolTemplateId + "]", HttpStatus.NOT_FOUND);
     } else {
 
-      List<Long> householdIds = this.protocolDataService.getByProtocolTemplateId(protocolTemplateId)
-          .stream()
-          .map(Protocol::getAssignedHouseholdId)
-          .toList();
-
-      HouseholdListDto householdListDto = this.householdDataService.getHouseholdDetailsListByIdList(
-          householdIds);
-
       return ResponseEntity.ok(
           ProtocolTemplateGroupedHouseholdListDto.builder()
-              .households(householdListDto.getHouseholds().stream()
-                  .map(householdDto -> ProtocolTemplateGroupedHouseholdDto.builder()
-                      .id(householdDto.getId())
-                      .householdName(householdDto.getName())
-                      .householdAccountList(householdDto.getHouseholdAccounts())
-                      .build())
-                  .collect(Collectors.toList()))
               .build()
       );
     }

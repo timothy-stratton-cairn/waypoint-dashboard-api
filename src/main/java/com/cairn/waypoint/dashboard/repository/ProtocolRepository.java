@@ -20,8 +20,6 @@ public interface ProtocolRepository extends JpaRepository<Protocol, Long> {
 
   List<Protocol> findByUserId(Long userId);
 
-  List<Protocol> findByAssignedHouseholdId(Long householdId);
-
   List<Protocol> findByRecurrenceType(RecurrenceTypeEnum recurrenceTypeEnum);
 
   @Query(value =

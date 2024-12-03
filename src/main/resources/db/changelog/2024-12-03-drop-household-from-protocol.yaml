@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: drop assigned household id from protocol
+      author: wanderson
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `protocol`
+              DROP COLUMN `assigned_household_id`;
