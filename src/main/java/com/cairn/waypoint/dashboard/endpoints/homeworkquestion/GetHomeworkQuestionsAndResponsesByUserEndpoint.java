@@ -3,7 +3,15 @@ package com.cairn.waypoint.dashboard.endpoints.homeworkquestion;
 import com.cairn.waypoint.dashboard.endpoints.ErrorMessage;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionResponsePairDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.QuestionResponsePairListDto;
+import com.cairn.waypoint.dashboard.endpoints.homeworkresponse.dto.SimplifiedHomeworkResponseDto;
+import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
+import com.cairn.waypoint.dashboard.entity.HomeworkResponse;
+import com.cairn.waypoint.dashboard.entity.Protocol;
+import com.cairn.waypoint.dashboard.service.data.HomeworkQuestionLinkedProtocolTemplateDataService;
+import com.cairn.waypoint.dashboard.service.data.HomeworkResponseDataService;
+import com.cairn.waypoint.dashboard.service.data.ProtocolDataService;
 import com.cairn.waypoint.dashboard.service.data.QuestionResponsePairDataService;
+import com.cairn.waypoint.dashboard.service.helper.SimplifiedMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,10 +39,22 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
   public static final String PATH = "/api/homework-question-response/user/{userId}";
 
   private final QuestionResponsePairDataService questionResponsePairDataService;
+  private final ProtocolDataService protocolDataService;
+  private final HomeworkQuestionLinkedProtocolTemplateDataService homeworkQuestionLinkedProtocolTemplateDataService;
+  private final SimplifiedMapper simplifiedMapper;
+  private final HomeworkResponseDataService homeworkResponseDataService;
 
   public GetHomeworkQuestionsAndResponsesByUserEndpoint(
-      QuestionResponsePairDataService questionResponsePairDataService) {
+      QuestionResponsePairDataService questionResponsePairDataService,
+      ProtocolDataService protocolDataService,
+      HomeworkQuestionLinkedProtocolTemplateDataService homeworkQuestionLinkedProtocolTemplateDataService,
+      SimplifiedMapper simplifiedMapper,
+      HomeworkResponseDataService homeworkResponseDataService) {
     this.questionResponsePairDataService = questionResponsePairDataService;
+    this.protocolDataService = protocolDataService;
+    this.homeworkQuestionLinkedProtocolTemplateDataService = homeworkQuestionLinkedProtocolTemplateDataService;
+    this.simplifiedMapper = simplifiedMapper;
+    this.homeworkResponseDataService = homeworkResponseDataService;
   }
 
   @GetMapping(PATH)
@@ -57,11 +77,31 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
       })
   public ResponseEntity<?> getHomeworkQuestionsAndResponsesByUser(@PathVariable Long userId) {
     try {
-      QuestionResponsePairListDto questionResponsePairs = questionResponsePairDataService.findAllQuestionResponsePairsByUser(
+      List<HomeworkQuestion> questions = findAllQuestionsByUser(userId);
+
+      List<HomeworkResponse> responses = homeworkResponseDataService.getAllResponsesByUser_Id(
           userId);
 
+      List<QuestionResponsePairDto> questionResponsePairs = questions.stream()
+          .map(question -> {
+            SimplifiedHomeworkQuestionDto simQuestion = simplifiedMapper.simplifyQuestion(question);
+
+            HomeworkResponse matchedResponse = responses.stream()
+                .filter(response -> response.getHomeworkQuestion().getId().equals(question.getId()))
+                .findFirst()
+                .orElse(null);
+
+            SimplifiedHomeworkResponseDto simResponse = matchedResponse != null
+                ? simplifiedMapper.simplifyResponse(matchedResponse)
+                : null;
+
+            return new QuestionResponsePairDto(simQuestion, simResponse);
+          })
+          .collect(Collectors.toList());
+
       QuestionResponsePairListDto filteredResponse = new QuestionResponsePairListDto(
-          filterLatestResponses(questionResponsePairs).getQuestions());
+          filterLatestResponses(
+              new QuestionResponsePairListDto(questionResponsePairs)).getQuestions());
 
       if (filteredResponse.getNumberOfPairs() == 0) {
         return generateFailureResponse("No questions or responses found for user ID: " + userId,
@@ -69,7 +109,6 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
       }
 
       return ResponseEntity.ok(filteredResponse);
-
 
     } catch (EntityNotFoundException e) {
       return generateFailureResponse("User with ID " + userId + " not found.",
@@ -84,20 +123,52 @@ public class GetHomeworkQuestionsAndResponsesByUserEndpoint {
     }
   }
 
+  private List<HomeworkQuestion> findAllQuestionsByUser(Long userId) {
+
+    List<Protocol> protocols = protocolDataService.getByUserId(userId);
+
+    if (protocols.isEmpty()) {
+      throw new EntityNotFoundException("No protocols found for user ID: " + userId);
+    }
+
+    List<Long> protocolTemplateIds = protocols.stream()
+        .map(protocol -> protocol.getProtocolTemplate().getId())
+        .distinct()
+        .collect(Collectors.toList());
+
+    return protocolTemplateIds.stream()
+        .flatMap(templateId ->
+            homeworkQuestionLinkedProtocolTemplateDataService.findAllByProtocolTemplate(templateId)
+                .stream()
+                .map(linked -> linked.getQuestion())
+        )
+        .distinct()
+        .collect(Collectors.toList());
+  }
+
+
   private QuestionResponsePairListDto filterLatestResponses(QuestionResponsePairListDto pairs) {
     List<QuestionResponsePairDto> filteredPairs = pairs.getQuestions().stream()
         .collect(Collectors.toMap(
             pair -> pair.getQuestion().getId(),
             pair -> pair,
-            (pair1, pair2) ->
-                pair1.getResponse().getUpdated().isAfter(pair2.getResponse().getUpdated()) ? pair1
-                    : pair2
+            (pair1, pair2) -> {
+              if (pair1.getResponse() == null) {
+                return pair2;
+              }
+              if (pair2.getResponse() == null) {
+                return pair1;
+              }
+              return pair1.getResponse().getUpdated().isAfter(pair2.getResponse().getUpdated())
+                  ? pair1 : pair2;
+            }
         ))
         .values()
         .stream()
         .collect(Collectors.toList());
     return new QuestionResponsePairListDto(filteredPairs);
   }
+
 
   private ResponseEntity<ErrorMessage> generateFailureResponse(String message, HttpStatus status) {
     log.warn(message);
