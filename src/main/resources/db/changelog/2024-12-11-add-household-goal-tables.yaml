@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+
+  - changeSet:
+      id: create-household-goal-template-table
+      author: wanderson
+      changes:
+        - sql:
+            dbms: 'mysql'
+            sql: |
+              CREATE TABLE `household_goal_template` (
+                `id` BIGINT NOT NULL AUTO_INCREMENT,
+                `created` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                `modified_by` VARCHAR(255) DEFAULT NULL,
+                `name` VARCHAR(255) DEFAULT NULL,
+                `description` VARCHAR(255) DEFAULT NULL,
+                `active` BIT(1) DEFAULT 0,
+                `category_id` BIGINT DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                CONSTRAINT `FK_category_id_goal_category` FOREIGN KEY (`category_id`) REFERENCES `goal_category` (`id`)
+              );
+
+  - changeSet:
+      id: create-goal-category-table
+      author: wanderson
+      changes:
+        - sql:
+            dbms: 'mysql'
+            sql: |
+              CREATE TABLE `goal_category` (
+                `id` BIGINT NOT NULL AUTO_INCREMENT,
+                `created` DATETIME DEFAULT CURRENT_TIMESTAMP,
+                `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                `modified_by` VARCHAR(255) DEFAULT NULL,
+                `name` VARCHAR(255) DEFAULT NULL,
+                `description` VARCHAR(255) DEFAULT NULL,
+                `active` BIT(1) DEFAULT 0,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY (`name`)
+              );
+
+  - changeSet:
+      id: create-goal-template-linked-protocol-templates-table
+      author: wanderson
+      changes:
+        - sql:
+            dbms: 'mysql'
+            sql: |
+              CREATE TABLE `goal_template_linked_protocol_templates` (
+                `id` BIGINT NOT NULL AUTO_INCREMENT,
+                `goal_template_id` BIGINT DEFAULT NULL,
+                `protocol_template_id` BIGINT DEFAULT NULL,
+                `active` BIT(1) DEFAULT 0,
+                PRIMARY KEY (`id`),
+                CONSTRAINT `FK_goal_template_id_household_goal_template` FOREIGN KEY (`goal_template_id`) REFERENCES `household_goal_template` (`id`),
+                CONSTRAINT `FK_protocol_template_id_protocol_template` FOREIGN KEY (`protocol_template_id`) REFERENCES `protocol_template` (`id`)
+              );
