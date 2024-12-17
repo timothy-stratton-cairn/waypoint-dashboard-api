@@ -8,5 +8,4 @@ public interface HouseholdGoalsLinkedProtocolTemplateRepository extends JpaRepos
 
   boolean existsByProtocolTemplateIdAndGoalTemplateId(Long protocolTemplateId, Long goalTemplateId);
 
-  List<HouseholdLinkedProtocolGoalTemplates> findByGoalTemplateHouseholdId(Long householdId);
 }

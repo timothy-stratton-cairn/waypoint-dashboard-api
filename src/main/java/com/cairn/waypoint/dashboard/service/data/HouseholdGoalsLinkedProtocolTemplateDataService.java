@@ -29,9 +29,7 @@ public class HouseholdGoalsLinkedProtocolTemplateDataService {
     return goalLinkedProtocolRepository.save(newLink);
   }
 
-  public List<HouseholdLinkedProtocolGoalTemplates> getGoalsByHouseholdId(Long householdId) {
-    return goalLinkedProtocolRepository.findByGoalTemplateHouseholdId(householdId);
-  }
+
 
   public List<HouseholdLinkedProtocolGoalTemplates> getAllHouseholdLinkedProtocolGoalTemplates() {
     return goalLinkedProtocolRepository.findAll();

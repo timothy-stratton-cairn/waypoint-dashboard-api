@@ -79,6 +79,9 @@ databaseChangeLog:
       file: db/changelog/2024-11-18-drop-protocol-id-from-response.yaml
   - include:
       file: db/changelog/2024-12-03-drop-household-from-protocol.yaml
-
-
-
+  - include:
+      file: db/changelog/2024-12-04-add-parent-category-to-homework-category-table.yaml
+  - include:
+      file: db/changelog/2024-12-11-add-household-goal-tables.yaml
+  - include:
+      file: db/changelog/2024-12-11-create-household-goal-and-linked-tables.yaml

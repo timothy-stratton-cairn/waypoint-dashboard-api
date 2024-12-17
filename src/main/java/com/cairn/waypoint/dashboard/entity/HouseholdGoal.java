@@ -13,7 +13,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor
 @AllArgsConstructor
 @SQLRestriction("active=1")
-@Table(name = "household_goal")
+@Table(name = "household_goals")
 public class HouseholdGoal extends BaseEntity {
 
   private String name;

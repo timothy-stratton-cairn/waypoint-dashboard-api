@@ -8,5 +8,6 @@ databaseChangeLog:
       changes:
         - sql:
             dbms: 'h2, mysql'
-            sql: ALTER TABLE `homework_category`
-              ADD `parent_category_id`;
+            sql: |
+              ALTER TABLE `homework_category`
+              ADD `parent_category_id` BIGINT NULL;
