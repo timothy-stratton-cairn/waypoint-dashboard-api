@@ -16,6 +16,10 @@ public class HouseholdGoalDataService {
     return repository.findByHouseholdId(householdId);
   }
 
+  public List<HouseholdGoal> getAllGoals() {
+    return repository.findAll();
+  }
+
   public HouseholdGoal createGoal(HouseholdGoal householdGoal) {
     return repository.save(householdGoal);
   }
