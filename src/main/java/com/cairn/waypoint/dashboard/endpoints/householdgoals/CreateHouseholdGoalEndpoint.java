@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Goals")
 public class CreateHouseholdGoalEndpoint {
 
-  public static final String PATH = "/api/goal";
+  public static final String PATH = "/api/goals/";
   private final HouseholdGoalDataService goalDataService;
   private final HouseholdGoalMapper goalMapper;
 
