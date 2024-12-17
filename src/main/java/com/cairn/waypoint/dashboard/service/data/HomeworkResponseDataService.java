@@ -54,10 +54,6 @@ public class HomeworkResponseDataService {
     return this.homeworkResponseRepository.findHomeworkResponseByHomeworkQuestion(homeworkQuestion);
   }
 
-  public List<HomeworkResponse> getHomeworkResponseByCategory(Long categoryId) {
-    return this.homeworkResponseRepository.getHomeworkResponseByCategory_Id(categoryId);
-  }
-
   public HomeworkResponseListDto getHomeResponseByProtocol_Id(Long protocolId) {
     Protocol protocol = protocolRepository.findById(protocolId)
         .orElseThrow(() -> new IllegalArgumentException("Invalid protocol ID: " + protocolId));

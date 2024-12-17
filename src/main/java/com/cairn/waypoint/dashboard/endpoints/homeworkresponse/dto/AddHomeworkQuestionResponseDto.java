@@ -7,7 +7,6 @@ public class AddHomeworkQuestionResponseDto {
   private Long questionId;
   private Long userId;
   private String response;
-  private Long categoryId;
   @JsonIgnore
   private String fileGuid;
 
@@ -42,14 +41,6 @@ public class AddHomeworkQuestionResponseDto {
 
   public void setResponse(String response) {
     this.response = response;
-  }
-
-  public Long getCategoryId() {
-    return categoryId;
-  }
-
-  public void setCategoryId(Long categoryId) {
-    this.categoryId = categoryId;
   }
 
 }

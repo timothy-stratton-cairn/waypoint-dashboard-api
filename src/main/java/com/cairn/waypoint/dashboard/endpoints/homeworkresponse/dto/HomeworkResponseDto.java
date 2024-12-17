@@ -9,7 +9,6 @@ public class HomeworkResponseDto {
 
   private Long responseId;
   private Long questionId;
-  private Long categoryId;
   private Long userId;
   private String question;
   private String response;
