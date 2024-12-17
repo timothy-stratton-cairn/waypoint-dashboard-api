@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - preConditions:
+      onFail: HALT
+      onError: HALT
+  - changeSet:
+      id: drop-column-category-id-from-homework-response
+      author: wanderson
+      changes:
+        - sql:
+            dbms: 'h2, mysql'
+            sql: ALTER TABLE `homework_response`
+              DROP COLUMN`category_id`;
