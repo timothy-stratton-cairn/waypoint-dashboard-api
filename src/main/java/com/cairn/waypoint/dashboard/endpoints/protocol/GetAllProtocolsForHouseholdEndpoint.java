@@ -69,6 +69,7 @@ public class GetAllProtocolsForHouseholdEndpoint {
                         AccountProtocolDto.builder()
                             .id(protocol.getId())
                             .name(protocol.getName())
+                            .protocolTemplateId(protocol.getProtocolTemplate().getId())
                             .description(protocol.getDescription())
                             .goal(protocol.getGoal())
                             .goalProgress(protocol.getGoalProgress())
