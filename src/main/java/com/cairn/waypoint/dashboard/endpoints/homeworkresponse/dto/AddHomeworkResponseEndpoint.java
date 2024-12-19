@@ -83,20 +83,12 @@ public class AddHomeworkResponseEndpoint {
           HttpStatus.NOT_FOUND);
     }
 
-    Optional<HomeworkCategory> category = homeworkCategoryDataService.getCategoryById(
-        addHomeworkResponseDto.getCategoryId());
 
-    if (category.isEmpty()) {
-      return generateFailureResponse("Category with ID [" +
-              addHomeworkResponseDto.getCategoryId() + "] does not exist",
-          HttpStatus.NOT_FOUND);
-    }
     HomeworkResponse homeworkResponse = HomeworkResponse.builder()
         .response(addHomeworkResponseDto.getResponse())
         .homeworkQuestion(homeworkQuestionOpt.get())
         .userId(addHomeworkResponseDto.getUserId())
         .modifiedBy(principal.getName())
-        .category(category.get())
         .updated(LocalDateTime.now())
         .ordinalIndex(2)
         .fileGuid(addHomeworkResponseDto.getFileGuid())
@@ -109,7 +101,6 @@ public class AddHomeworkResponseEndpoint {
     HomeworkResponseDto responseDto = HomeworkResponseDto.builder()
         .responseId(createdResponse.getId())
         .questionId(createdResponse.getHomeworkQuestion().getId())
-        .categoryId(createdResponse.getCategory().getId())
         .userId(createdResponse.getUserId())
         .response(createdResponse.getResponse())
         .fileGuid(createdResponse.getFileGuid())

@@ -14,6 +14,7 @@ import lombok.Data;
 public class AccountProtocolDto {
 
   private Long id;
+  private Long protocolTemplateId;
   private String name;
   private String description;
   private String goal;
