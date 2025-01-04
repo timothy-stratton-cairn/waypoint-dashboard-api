@@ -21,9 +21,9 @@ spring:
     name: waypoint-dashboard-api
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/dashboard-db?useSSL=false
-    username: docker
-    password:
+    url: jdbc:mysql://localhost:3306/dashboarddb?useSSL=false
+    username: rob
+    password: 2muchjoy.
     hikari:
       poolName: Hikari
       auto-commit: true
@@ -33,8 +33,8 @@ spring:
         prepStmtCacheSqlLimit: 2048
         useServerPrepStmts: true
   liquibase:
-
-    enabled: true
+    enabled: false
+    drop-first: false
   jpa:
     hibernate:
       ddl-auto: validate
@@ -42,7 +42,7 @@ spring:
     properties:
       hibernate:
         format_sql: false
-
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
 
 server:
