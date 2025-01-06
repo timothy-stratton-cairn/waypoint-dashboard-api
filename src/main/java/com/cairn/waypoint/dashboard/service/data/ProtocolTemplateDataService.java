@@ -20,6 +20,10 @@ public class ProtocolTemplateDataService {
     return this.protocolTemplateRepository.findAll();
   }
 
+  public List<ProtocolTemplate> getAllActiveProtocolTemplates() {
+    return this.protocolTemplateRepository.findByActive(1);
+  }
+
   public Optional<ProtocolTemplate> getProtocolTemplateById(Long id) {
     return this.protocolTemplateRepository.findById(id);
   }
