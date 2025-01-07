@@ -1,6 +1,8 @@
 package com.cairn.waypoint.dashboard.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,7 +19,12 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "household_goal_template")
 public class GoalTemplate extends BaseEntity {
 
-  private Long categoryId;
   private String name;
   private String description;
+
+
+  @ManyToOne
+  @JoinColumn(name = "category_id", referencedColumnName = "id", insertable = false, updatable = false)
+  private GoalCategory goalCategory;
+
 }

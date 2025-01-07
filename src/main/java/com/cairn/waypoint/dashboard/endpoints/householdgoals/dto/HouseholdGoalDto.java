@@ -14,7 +14,7 @@ public class HouseholdGoalDto {
   private Long id;
   private String name;
   private String description;
-  private GoalCategory category;
+  private String category;
   private List<ProtocolTemplate> protocolTemplates;
 
 }

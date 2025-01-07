@@ -1,5 +1,6 @@
 package com.cairn.waypoint.dashboard.service.helper;
 
+import com.cairn.waypoint.dashboard.endpoints.homeworkquestion.dto.HomeworkQuestionDetailsDto;
 import com.cairn.waypoint.dashboard.endpoints.homeworkquestion.dto.importHomeworkQuestionDto;
 import com.cairn.waypoint.dashboard.entity.HomeworkQuestion;
 import org.mapstruct.Mapper;
@@ -21,5 +22,18 @@ public interface QuestionMapper {
   @Mapping(target = "active", constant = "true")
   @Mapping(target = "status", constant = "LIVE")
   HomeworkQuestion toEntity(importHomeworkQuestionDto dto);
+
+
+  @Mapping(source = "id", target = "questionId")
+  @Mapping(source = "questionAbbreviation", target = "questionAbbr")
+  @Mapping(source = "question", target = "question")
+  @Mapping(source = "status", target = "status")
+  @Mapping(source = "required", target = "isRequired")
+  @Mapping(source = "questionType", target = "questionType")
+  @Mapping(source = "triggersProtocolCreation", target = "triggersProtocolCreation")
+  @Mapping(source = "triggeredProtocol", target = "triggeredProtocol")
+  @Mapping(source = "expectedHomeworkResponses", target = "expectedHomeworkResponses")
+  @Mapping(source = "triggeringResponse", target = "triggeringResponse")
+  HomeworkQuestionDetailsDto toDetailsDto(HomeworkQuestion question);
 
 }

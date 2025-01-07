@@ -1,5 +1,7 @@
 package com.cairn.waypoint.dashboard.entity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +20,9 @@ public class HouseholdGoal extends BaseEntity {
 
   private String name;
   private String description;
-  private Long goalTemplateId;
   private Long householdId;
+
+  @ManyToOne
+  @JoinColumn(name = "goal_template_id", referencedColumnName = "id", insertable = false, updatable = false)
+  private GoalTemplate goalTemplate;
 }
