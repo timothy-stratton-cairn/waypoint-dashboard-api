@@ -74,7 +74,7 @@ public class GetAllProtocolsByProtocolTemplateIdEndpoint {
                         .goal(protocol.getGoal())
                         .goalProgress(protocol.getGoalProgress())
                         .createdAt(protocol.getCreated())
-                        .dueBy(protocol.getDueDate())
+                        .dueBy(protocol.getDueDate()).associatedHouseholdId(protocol.getUserId())
                         .completedOn(protocol.getCompletionDate())
                         .protocolComments(ProtocolCommentListDto.builder()
                             .comments(protocol.getComments().stream()
